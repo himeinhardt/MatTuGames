@@ -1,0 +1,71 @@
+#!/bin/bash
+#
+#
+
+usage="Usage: $0 [-m gmp/float] [-c true] args..."
+
+if [ -n "$(echo $1 | grep '-')" ]; then
+  while getopts ":c:m:cm:" opt; do
+#  echo "OPTIND is $OPTIND"
+#  echo "OPTARG is $OPTARG"
+    case $opt in
+        c  ) clean=$OPTARG  ;;
+        m  ) method=$OPTARG  ;;
+#        c|m  ) clean=$OPTARG | method=$OPTARG  ;;
+        \? ) echo $usage 
+             exit 1 
+     esac 
+   shift $(($OPTIND - 1))
+ done
+else 
+#  echo "OPTIND is $OPTIND"
+#  echo "OPTARG is $OPTARG"
+  clean=false
+  method=gmp
+fi
+
+filename=$1;
+extension=${filename##*.}
+inefile=${filename%.*}.ine
+extfile=${filename%.*}.ext
+outfile=${filename%.*}.dat
+sedfile="$HOME/tools/sed_core"
+
+
+
+if [ $extension == ine ]; then
+
+
+    if [ $method == gmp ]; then
+         lcdd_gmp < $filename > $extfile
+#         sed -f sed_core $extfile > $outfile    
+          if [ ! -e $sedfile ]; then
+          echo "corevert: No file $sedfile was found."
+          exit 1
+          else
+          sed -f $sedfile $extfile > $outfile    
+          fi
+    elif [ $method == float ]; then
+         lcdd < $filename > $extfile
+#         sed -f sed_core $extfile > $outfile    
+          if [ ! -e $sedfile ]; then
+          echo "corevert: No file $sedfile was found."
+          exit 1
+          else
+          sed -f $sedfile $extfile > $outfile    
+          fi
+    else
+         echo "No valid oxption to compute the vertices of a core!"
+         echo "Valid options are gmp or float."
+	 exit 1
+    fi 
+    
+ 
+
+
+
+else 
+      echo "$filename is not vaild input file. It must be an ine-file!"
+      echo "failed"
+fi
+
