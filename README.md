@@ -15,7 +15,7 @@ use *Matlab's Parallel Computing Toolbox* in connection with this toolbox to ben
 from a gain in performance by launching supplementary Matlab workers. Some information
 are provided how to call our *Mathematica* package *TuGames* within a running Matlab session.
 
-## 2. Getting started:
+## 2. Getting Started:
 In order to get some insight how to analyze a cooperative game,
 a so-called transferable utility game with the Game Theory Toolbox
 *MatTuGames*, we discuss a small example to demonstrate how one can
