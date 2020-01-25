@@ -165,7 +165,7 @@ prkQ =
 For a deeper discussion of the function set provided by the toolbox consult the Manual
 or type help mat_tug to get a short overview.
 
-## 4. Custom Installation
+## 3. Custom Installation
 
 To install the toolbox we recommend a custom installation while following the instructions that are given at the URL: 
 
@@ -173,14 +173,14 @@ To install the toolbox we recommend a custom installation while following the in
 
 A mltbx file is provided in the Release section. 
 
-## 5. Acknowledgment
+## 4. Acknowledgment
 
 
 The author acknowledges support by the state of Baden-Württemberg through bwHPC.
 
 Of course, the usual disclaimer applies.   
 
-## 6. License
+## 5. License
 
 This project is licensed under the FreeBSD License - see the [LICENSE](LICENSE.md) file.
 
