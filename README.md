@@ -1,4 +1,4 @@
-# *Matlab* Toolbox *MatTuGames* Version 1.0.0
+# *Matlab* Toolbox *MatTuGames* Version 1.7.0
 
 ## 1. Introduction
 
