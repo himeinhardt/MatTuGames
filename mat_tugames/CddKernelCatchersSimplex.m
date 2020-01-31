@@ -142,7 +142,7 @@ if isempty(tol)
   tol=10^9*eps; 
 end
 if isempty(vw_pt)
-  vw_pt='view(120,25)';
+  vw_pt='view(120,15)';
 end
 
 N=length(v);

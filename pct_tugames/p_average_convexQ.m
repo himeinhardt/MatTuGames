@@ -26,6 +26,7 @@ function [acvQ Smarg sumMg]=p_average_convexQ(v,tol)
 %   06/27/2012        0.2 beta         hme
 %   10/27/2012        0.3              hme
 %   05/16/2014        0.5              hme
+%   08/02/2018        1,0             hme
 %                
 
 
@@ -62,8 +63,9 @@ grSq=false(lt,1);
 it=0:-1:1-n;
 vecT=rem(floor(sT(:)*pow2(it)),2)==1;
 
-if lt==1
-   grSq=v(T)>=tol;
+if lt==1 %% S is empty or S=T
+   %grSq=v(T)>=tol;
+   grSq=true;
 else
 
  J=1:n;

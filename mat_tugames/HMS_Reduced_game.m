@@ -3,11 +3,14 @@ function v_t=HMS_Reduced_game(v,x,str)
 % games on S at x of game v.
 %
 % Usage: v_t=HMS_Reduced_game(v,x,str)
+%
 % Define variables:
+%
 %  output:
 %  v_t{1,:} -- All Hart-MasColell reduced games w.r.t. x.
 %  v_t{2,:} -- The corresponding Shapley values of all reduced games.
 %  v_t{3,:} -- The corresponding sub-coalitions which define a reduced game.
+%
 %  input:
 %  v        -- A Tu-Game v of length 2^n-1. 
 %  x        -- payoff vector of size(1,n). Must be efficient.
@@ -20,6 +23,8 @@ function v_t=HMS_Reduced_game(v,x,str)
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value, 
 %               which is, the original definition. 
+%              'MODIC' that is, the Hart-MasColell reduced game 
+%               in accordance with the modiclus.
 %              Default is 'SHAP'.
 
 %  Author:        Holger I. Meinhardt (hme)
@@ -32,6 +37,7 @@ function v_t=HMS_Reduced_game(v,x,str)
 %   08/19/2010        0.1 beta        hme
 %   06/17/2012        0.2 beta        hme
 %   05/27/2013        0.3             hme
+%   02/10/2018        0.9             hme
 %                
 
 if nargin<2
@@ -92,6 +98,16 @@ for k=1:lgt
         subg_sh{k}=Prenucl(subg{k});
       catch
         subg_sh{k}=PreNucl(subg{k}); % use a thrid party solver instead! 
+      end
+   end
+elseif strcmp(str,'MODIC')
+   if length(subg{k})==1
+      subg_sh{k}=subg{k};
+   else
+      try
+        subg_sh{k}=cplex_modiclus(subg{k});
+      catch
+        subg_sh{k}=Modiclus(subg{k}); % use a thrid party solver instead! 
       end
    end
  elseif strcmp(str,'PRK')

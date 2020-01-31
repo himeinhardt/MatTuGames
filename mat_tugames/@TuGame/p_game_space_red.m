@@ -1,15 +1,15 @@
-function [v_sp A]=p_game_space_red(clv,x,slc,smc)
+function [v_sp, A]=p_game_space_red(clv,x,slc,smc)
 % P_GAME_SPACE_RED computes the game space which replicates x as a pre-kernel element.
 % Same as the function p_game_space() but with less output arguments to save memory.
 % Using Matlab's PCT.
 %
-% Usage: [v_sp A]=p_game_space(clv,x,slc,smc)
+% Usage: [v_sp A]=clv.p_game_space(x,slc,smc)
 %
 % Define variables:
 % output:
 %  v_spc             -- Game space spanned by the basis of the null space
 %                       MatW.
-%  A                 -- Indicates the set of equivalence class/most
+%  A                 -- Indicates the set of equivalence classes/most
 %                       effective coalitions w.r.t. the pre-kernel
 %                       element x.
 %
@@ -28,41 +28,49 @@ function [v_sp A]=p_game_space_red(clv,x,slc,smc)
 %  Record of revisions:
 %   Date              Version         Programmer
 %   ====================================================
-%   10/29/2012        0.3             hme
+%   10/29/2012        0.3              hme
+%   05/15/2014        0.5              hme
 %                
 
-v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 
-S=1:N;
-onm=ones(n);
-drij=zeros(1,n);
-drji=zeros(1,n);
-upe=logical(tril(onm,-1));
-[~, A]=p_BestCoalitions(clv,x,smc);
+onm=true(n);
+upe=tril(onm,-1);
+[~, A]=clv.p_BestCoalitions(x,smc);
 trA=A';
 drij=trA(upe)';
 drji=A(upe)';
-uG=eye(N); % unity games
+uG=speye(N); % unity games
 
-MatV=uG(:,drji)-uG(:,drij);
-MatV(:,end+1)=uG(:,N);
+MatV=uG(drji,:)-uG(drij,:);
+MatV(end+1,:)=uG(N,:);
 MatV=sparse(MatV);
-alpvec=MatV'*v';
-[uc, gb]=p_unanimity_games(clv);
-MatW=MatV'*gb;
+[hd, gb]=clv.p_unanimity_games();
+MatW=MatV*gb;
 clear MatV;
 MatW=full(MatW);
 nlW=null(MatW);
 clear MatW;
-sW=size(nlW);
-hd=uc';
-HDm=repmat(hd,1,sW(2));
+[~,sW2]=size(nlW);
+hd=hd';
+HDm=repmat(hd,1,sW2);
 mat_hz=slc*nlW;
 clear nlW;
 mat_hd=HDm+mat_hz;
 clear mat_hz;
-w_sp=gb*mat_hd;
-clear mat_hd;
-v_sp=w_sp';
+if n>13
+ v_sp=zeros(sW2,N);
+ parfor k=1:sW2
+   v_sp(k,:)=gb*mat_hd(:,k);
+ end
+ clear mat_hd gb;
+else
+ spmd
+   cgb=codistributed(double(gb));
+   cmhd=codistributed(mat_hd);
+   v_sp1=cgb*cmhd;
+ end
+ clear mat_hd gb;
+ v_sp=gather(v_sp1)';
+end

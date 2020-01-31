@@ -45,6 +45,5 @@ end
 
 sutm=sparse(bg);
 bg_coord=(sutm\v')';
-%bg_coord=(inv(sutm)*v')';
 
 

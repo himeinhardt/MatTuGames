@@ -94,6 +94,7 @@ classdef TuVert < TuSol
 %   ====================================================
 %   11/11/2012        0.3             hme
 %   08/11/2014        0.5             hme
+%   05/15/2019        1.1             hme
 %
 
 
@@ -183,9 +184,19 @@ classdef TuVert < TuSol
          %
              if nargin < 2
                if isempty(obj.tu_crv)
-                  obj.tu_crv=CoreVertices(obj);
+                  try
+                     obj.tu_crv=CoreVertices(obj);
+                  catch
+                     vrt=CoreVertices(obj,'gmp');
+                     obj.tu_crv=str2num(vrt);
+                  end
                   obj.tu_cddv=CddCoreVertices(obj);
-                  obj.tu_imp=ImputationVertices(obj);
+                  try 
+                     obj.tu_imp=ImputationVertices(obj);
+                  catch
+                     ivrt=ImputationVertices(obj,'gmp');
+                     obj.tu_imp=str2num(ivrt);
+                  end
                   obj.tu_cddi=CddImputationVertices(obj);
                   obj.tu_ccv=CddCoreCoverVertices(obj);
                end

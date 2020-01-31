@@ -15,10 +15,10 @@ function v_t=HMS_ImputSavingReducedGame(clv,x,str)
 %  str      -- A string that defines different Methods. 
 %              Permissible methods are: 
 %              'PRN' that is, the Hart-MasColell imputation saving reduced game 
-%               in accordance with the pre-nucleolus to compute 
+%               in accordance with the nucleolus to compute 
 %               a full set of reduced games.
 %              'PRK' that is, the Hart-MasColell imputation saving reduced game 
-%               in accordance with pre-kernel solution to compute
+%               in accordance with kernel solution to compute
 %               a full set of reduced games.
 %              'SHAP' that is, Hart-MasColell imputation saving reduced game 
 %               in accordance with the Shapley Value, 
@@ -33,6 +33,7 @@ function v_t=HMS_ImputSavingReducedGame(clv,x,str)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/14/2015        0.7             hme
+%   02/23/2017        0.9             hme
 %                
 
 v=clv.tuvalues;
@@ -87,18 +88,18 @@ for k=1:lgt
  subg{k}=v(subT{k});
  if strcmp(str,'SHAP')
    subg_sh{k}=ShapleyValue(subg{k});
- elseif strcmp(str,'PRN')
+ elseif strcmp(str,'NUC')
    if length(subg{k})==1
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=cplex_prenucl(subg{k});
+        subg_sh{k}=cplex_nucl(subg{k});
       catch
-        subg_sh{k}=PreNucl(subg{k}); % use a thrid party solver instead! 
+        subg_sh{k}=nucl(subg{k}); % use a thrid party solver instead! 
       end
    end
- elseif strcmp(str,'PRK')
-   subg_sh{k}=PreKernel(subg{k});
+ elseif strcmp(str,'KRN')
+   subg_sh{k}=Kernel(subg{k});
  else
    subg_sh{k}=ShapleyValue(subg{k});
  end

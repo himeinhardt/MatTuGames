@@ -2,7 +2,7 @@ function asd_vl=p_SolidarityShapleyValue(clv,cs)
 % P_SOLIDARITYSHAPLEY computes the solidarity Shapley value w.r.t. 
 % the coalition structure cs.    
 %
-% Usage: sh_cs=p_SolidarityShapleyValue(clv,cs)
+% Usage: sh_cs=clv.p_SolidarityShapleyValue(cs)
 %
 % Define variables:
 %  output:
@@ -23,11 +23,14 @@ function asd_vl=p_SolidarityShapleyValue(clv,cs)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/27/2013        0.4             hme
+%   05/12/2014        0.5             hme
 % 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 if isa(clv,'TuVal')
+   ptn = clv.tu_ptn;
+elseif isa(clv,'p_TuVal')
    ptn = clv.tu_ptn;
 else
    ptn='';
@@ -106,7 +109,7 @@ csm=rem(floor(cs(:)*pow2(int)),2)==1;
   asd_vl(idx{j})=iow{j};
   end
 else
-   asd_vl=ShapleyValue(v);
+   asd_vl=clv.p_ShapleyValue(clv);
 end    
 %-----------------------------------------
 function av=altered_game(v,rcs,pj,sS)

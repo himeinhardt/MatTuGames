@@ -139,6 +139,7 @@ v_prk=ToSimplex3d(v_prk);
 v_prn=ToSimplex3d(v_prn);
 v_sh=ToSimplex3d(v_sh);
 
+clf;
 if n==4
 % Plot Imputation Set
  if imp_sol==1

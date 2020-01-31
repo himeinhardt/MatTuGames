@@ -53,9 +53,9 @@ for k=1:n, PlyMat(:,k) = bitget(S,k);end
 % Defining anti-core constraints.
 %
 
-A1=PlyMat(end,:);
+A1=-PlyMat(end,:);
 A2=PlyMat(1:N-1,:);
-B1=v(N);
+B1=-v(N);
 B2=v(1:N-1)';
 % Defining the H polyhedron
 H=struct('A',[A1;A2],'B',[B1;B2],'lin',(1:size(B1,1))');

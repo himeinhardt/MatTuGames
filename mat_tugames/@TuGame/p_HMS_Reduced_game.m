@@ -22,6 +22,8 @@ function v_t=p_HMS_Reduced_game(clv,x,str)
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value, 
 %               which is, the original definition. 
+%              'MODIC' that is, the Hart-MasColell reduced game 
+%               in accordance with the modiclus.
 %              Default is 'SHAP'.
 
 %  Author:        Holger I. Meinhardt (hme)
@@ -100,6 +102,16 @@ for k=1:lgt
    end
  elseif strcmp(str,'PRK')
    subg_sh{k}=PreKernel(subg{k});
+ elseif strcmp(str,'MODIC')
+   if length(subg{k})==1
+      subg_sh{k}=subg{k};
+   else
+      try
+         subg_sh{k}=cplex_modiclus(subg{k});
+      catch
+         subg_sh{k}=modiclus(subg{k});
+      end
+   end
  else
    subg_sh{k}=ShapleyValue(subg{k});
  end

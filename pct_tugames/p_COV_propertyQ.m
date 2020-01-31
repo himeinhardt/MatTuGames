@@ -1,5 +1,5 @@
 function COV=p_COV_propertyQ(v,x,m,t,str)
-% COV_PROPERTYQ verifies if the payoff x satisfies the covariance
+% P_COV_PROPERTYQ verifies if the payoff x satisfies the covariance
 % with strategic equivalence property w.r.t. (v,m,t) using Matlab's PCT.
 % 
 %  Usage: COV=p_COV_propertyQ(v,x,m,t,str)
@@ -27,6 +27,12 @@ function COV=p_COV_propertyQ(v,x,m,t,str)
 %               equivalence in accordance with the pre-kernel.
 %              'SHAP' that is, checking covariance with strategic
 %               equivalence in accordance with the Shapley value.
+%              'MODIC' that is, checking covariance with strategic
+%               equivalence in accordance with the modiclus.
+%              'MPRK' that is, checking covariance with strategic
+%               in accordance with modified pre-kernel solution.
+%              'PMPRK' that is, checking covariance with strategic 
+%               in accordance with proper modified pre-kernel solution.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -40,6 +46,8 @@ function COV=p_COV_propertyQ(v,x,m,t,str)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/18/2015        0.7             hme
+%   02/10/2018        0.9             hme
+%   03/11/2018        1.0             hme
 %
 
 
@@ -103,16 +111,40 @@ if strcmp('PRK',str)
        sol_v2=p_PreKernel(v2,sgm);
    end
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
-elseif strcmp('PRN',str)
+elseif strcmp('MPRK',str)
+   sgm=t*x + m;
+   if ModPrekernelQ(v2,sgm)
+      sol_v2=sgm;
+   else
+       sol_v2=p_ModPreKernel(v2,sgm);
+   end
+   covQ=all(abs(sgm-sol_v2)<10^6*eps);
+elseif strcmp('PMPRK',str)
+   sgm=t*x + m;
+   if PModPrekernelQ(v2,sgm)
+      sol_v2=sgm;
+   else
+       sol_v2=p_PModPreKernel(v2,sgm);
+   end
+   covQ=all(abs(sgm-sol_v2)<10^6*eps);
+elseif strcmp('PRN',str) % does not run in parallel!
    try 
-       sol_v2=cplex_prenucl(v2);
+       sol_v2=cplex_prenucl_llp(v2);
    catch
-       sol_v2=Prenucl(v2);
+       sol_v2=Prenucl_llp(v2);
    end
    sgm=t*x + m;
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('SHAP',str)
    sol_v2=p_ShapleyValue(v2);
+   sgm=t*x + m;
+   covQ=all(abs(sgm-sol_v2)<10^6*eps);
+elseif strcmp('MODIC',str) % does not run in parallel!
+   try
+       sol_v2=cplex_modiclus(v2);
+   catch
+       sol_v2=Modiclus(v2);
+   end
    sgm=t*x + m;
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 else

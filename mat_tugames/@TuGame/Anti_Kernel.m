@@ -25,6 +25,8 @@ function [x, Lerr, smat, xarr]=Anti_Kernel(clv,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/19/2013        0.3             hme
+%   04/25/2019        1.0             hme
+%   05/11/2019        1.1             hme
 %                
 
 if nargin<2
@@ -59,6 +61,8 @@ if nargin<2
   end
 else
   v=clv.tuvalues;
+  N=clv.tusize;
+  n=clv.tuplayers;
   gt=clv.tutype;
   smc=1;
 end
@@ -66,6 +70,14 @@ end
 if islogical(v)
    v=double(v);
 end
+k=1:n;
+Nk=N-2.^(k-1);
+vi=v(Nk)';
+if sum(vi)<v(N)
+   error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.');
+   return;
+end
+
 
 [x, Lerr, smat, xarr]=computeAkr(v,x,smc,0);
 smat=tril(smat,-1)+triu(smat,1);
@@ -101,9 +113,11 @@ m=1+n*(n-1)/2;
 upe=true(n);
 
 ofval=inf;
-ra = reasonable_outcome(v)';
+ra = smallest_amount(v)';
 k=1:n;
-vi=v(bitset(0,k))';
+%vi=v(bitset(0,k))';
+Nk=N-2.^(k-1);
+vi=v(Nk)';
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
@@ -128,7 +142,7 @@ while cnt<CNT
     if n==2, a=a'; end;
     err=norm(E*x-a)^2; if err<eps, x=x';break; end
 % checking anti-kernel property
-    ir=(x-vi)';
+    ir=(vi-x)';
     irQ=all(ir>-tol);
     if irQ
       smat=tril(smat,-1)+triu(smat,1);
@@ -138,7 +152,7 @@ while cnt<CNT
       effQ=abs(v(end)-sum(x))<tol;
       krQ=all(kriQ) && effQ;
     else
-      krQ=0;
+      krQ=false;
     end
     if krQ == 1; x=x'; break; end
 
@@ -147,13 +161,13 @@ while cnt<CNT
 
 % Calling quadratic programming solver.
 % Uncomment these lines if you don't have Mosek
-%    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-14);
+    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
 % Comment the two lines about out if you don't have Mosek.
-    opts = optimset;
-    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-11,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-11);
+%    opts = optimset;
+%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-11,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-11);
 %    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
 
-    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
+    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),ra,vi,x,opts);
     if exitflag ~= 1
        x=x';
        warning('Aker:No','Probably no anti-kernel point found!');
@@ -166,7 +180,7 @@ while cnt<CNT
           kriQ=all((krm.*irm)<=tol);
           krQ=all(kriQ);
        else
-          krQ=0;
+          krQ=false;
        end
        x=x';
        if krQ==0
@@ -200,7 +214,7 @@ if cnt==CNT, % should trigger errors ....
           kriQ=all((krm.*irm)<=tol);
           krQ=all(kriQ);
        else
-          krQ=0;
+          krQ=false;
        end
        x=x';
        if krQ==0

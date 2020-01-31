@@ -1,5 +1,5 @@
 function [crq, x]=CddCoreQ(v,tol)
-% COREQ checks the existence of the core of game v.
+% CDDCOREQ checks the existence of the core of game v using cddmex.
 % 
 %
 % Usage: [crq x]=CddCoreQ(v,tol)

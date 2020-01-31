@@ -3,7 +3,7 @@ function ex=p_excess(clv,x)
 % using Matlab's PCT.
 %
 %
-% Usage: ex=excess(clv,x)
+% Usage: ex=clv.p_excess(x)
 %
 % Define variables:
 % output:
@@ -22,6 +22,7 @@ function ex=p_excess(clv,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   05/11/2014        0.5             hme
 %                
 
 v=clv.tuvalues;
@@ -30,12 +31,20 @@ n=clv.tuplayers;
 
 % Computing the excess vector w.r.t. x.
 S=1:N;
-if matlabpool('size') < 6
-  it=0:-1:1-n;
-  PlyMat=rem(floor(S(:)*pow2(it)),2);
+poolobj = gcp('nocreate');
+if isempty(poolobj)
+    poolsize = 0;
 else
-  PlyMat=zeros(N,n);
-  parfor i = 1:n, PlyMat(:,i) = bitget(S,i); end
+    poolsize = poolobj.NumWorkers;
 end
-PayMat=PlyMat*x';
-ex=(v-PayMat');
+if poolsize < 6
+  it=0:-1:1-n;
+  PlyMat=x*rem(floor(S(:)*pow2(it)),2)';
+else
+  PlyMat=zeros(n,N);
+  parfor i = 1:n, PlyMat(i,:) = bitget(S,i); end
+  clear S;
+  PlyMat=x*PlyMat;
+end
+ex=v-PlyMat;
+

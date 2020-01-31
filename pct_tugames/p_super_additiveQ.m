@@ -23,6 +23,7 @@ function [saq subgC]=p_super_additiveQ(v)
 %   05/20/2011        0.1 alpha        hme
 %   06/19/2012        0.2 beta         hme
 %   10/27/2012        0.3              hme
+%   05/16/2014        0.5              hme
 %                
 
 N=length(v);
@@ -33,12 +34,6 @@ sdv=cell(1,N);
 lvq=cell(1,N);
 saql=false(1,N);
 
-spmd
- codistributed(sdv);
- codistributed(lvq);
- codistributed(saql);
-end
-
 
 parfor k=1:N-1;
  sS=subsets(k,n);
@@ -47,10 +42,6 @@ parfor k=1:N-1;
  lvq{k}=subgC{k}<=sdv{k};
  saq1(k)=all(lvq{k});
 end
-
-sdv=gather(sdv);
-lvq=gather(lvq);
-saql=gather(saql);
 
 sdv{N}=dual_game(v);
 lvq{N}=v<=sdv{N};

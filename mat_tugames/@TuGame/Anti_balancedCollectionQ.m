@@ -27,6 +27,7 @@ function [bcQ, cmat, iS]=Anti_balancedCollectionQ(clv,x,tol)
 %   ====================================================
 %   01/03/2015        0.6             hme
 %   03/29/2015        0.7             hme
+%   02/24/2018        0.9             hme
 %                
 
 v=clv.tuvalues;
@@ -52,7 +53,7 @@ end
 
 bcQ=false;
 
-effQ=abs((sum(x)-v(N))<tol);
+effQ=abs(sum(x)-v(N))<tol;
 
 if effQ==0
    return;
@@ -71,20 +72,25 @@ rsx=sx;
 rsx(slc)=[];
 idx(slc)=[];
 
+warning('off','all');
 while 1
    [cmat,xS,ef]=CheckAntiBal(n,S);
    if isempty(S)
       bcQ=false;
+      warning('on','all');
       break;
    elseif ef~=1
       bcQ=false;
+      warning('on','all');
       break;
    end
    bcQ=all(abs(zv-xS)<tol);
    rk=rank(cmat);
    if bcQ==0
       break;
+      warning('on','all');
    elseif rk==n && bcQ==1
+      warning('on','all');
       break;
    end
    slc=rsx>=thex;
@@ -128,8 +134,13 @@ zf=A'*ovn;
 f=zf';
 Aeq=ov';
 beq=0;
+mtv=verLessThan('matlab','9.1.0');
     try
-      options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
+      if mtv==1
+         options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
+      else
+         options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+      end
       options.barrier.convergetol=1e-12;
       options.simplex.tolerances.feasibility=1e-9;
       options.simplex.tolerances.optimality=1e-9;

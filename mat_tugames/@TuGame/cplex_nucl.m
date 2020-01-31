@@ -26,6 +26,7 @@ function [x1, fmin]=cplex_nucl(clv,tol)
 %   12/28/2012        0.3             hme
 %   10/15/2013        0.5             hme
 %   02/24/2018        0.9             hme
+%   04/01/2019        1.0             hme
 %                
 
 
@@ -65,12 +66,22 @@ if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
   options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.LargeScale='on';
+  options.Algorithm='dual-simplex';
+  options.TolFun=1e-10;
+  options.TolX=1e-10;
+  options.TolRLPFun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.Preprocess='none';
+  options.TolCon=1e-6;
+  options.MaxIter=10*(N+n);
 end
 warning('on','all');
 S=1:N;
-for k=1:n, PlyMat(:,k) = bitget(S,k);end
-A1=-PlyMat(1:N,:);
-A1(N+1,:)=PlyMat(end,:);
+A1=zeros(N,n);
+for k=1:n, A1(:,k) = -bitget(S,k);end
+A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;
 A1(N:N+1,end)=0;
 A2=sparse(A1);

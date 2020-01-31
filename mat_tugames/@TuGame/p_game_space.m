@@ -1,21 +1,20 @@
-function [v_sp mat_hd MatW MatV A mat_vz]=p_game_space(clv,x,slc,smc)
+function [v_sp, mat_hd, MatW, MatV, A, mat_vz]=p_game_space(clv,x,slc,smc)
 % P_GAME_SPACE computes the game space which replicates x as a pre-kernel element.
 % Using Matlab's PCT.
 %
-% Usage: [v_sp mat_hd MatW MatV A mat_vz]=p_game_space(clv,x,slc,smc)
+% Usage: [v_sp mat_hd MatW MatV A mat_vz]=clv.p_game_space(x,slc,smc)
 %
 % Define variables:
 % output:
-%  v_spc             -- Game space spanned by the basis of the null space
+%  v_sp              -- Game space spanned by the basis of the null space
 %                       MatW.
 %  mat_hd            -- basis of the null space MatW.
-%  MatW              -- Matrix given by equation 2 on page 48 Meinhardt
-%                       2010.
+%  MatW              -- Matrix given by equation 7.16 on page 152 Meinhardt
+%                       2013.
 %  MatV              -- Matrix obtained by the unity games that
 %                       constitutes balancedness of the maximal surpluses.
-%  cA                -- Indicates the set of equivalence class/most
-%                       effective coalitions w.r.t. the pre-kernel
-%                       element x.
+%  A                 -- Matrix of most effective coalitions (eq. class).
+%  mat_vz            -- Set of null games.  
 %
 %
 %  input:
@@ -32,40 +31,60 @@ function [v_sp mat_hd MatW MatV A mat_vz]=p_game_space(clv,x,slc,smc)
 %  Record of revisions:
 %   Date              Version         Programmer
 %   ====================================================
-%   10/29/2012        0.3             hme
+%   10/29/2012        0.3              hme
+%   05/15/2014        0.5              hme
 %                
 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 
-S=1:N;
-onm=ones(n);
-drij=zeros(1,n);
-drji=zeros(1,n);
-upe=logical(tril(onm,-1));
-[~, A]=p_BestCoalitions(clv,x,smc);
+onm=true(n);
+upe=tril(onm,-1);
+[~, A]=clv.p_BestCoalitions(x,smc);
 trA=A';
 drij=trA(upe)';
 drji=A(upe)';
-uG=eye(N); % unity games
+uG=speye(N); % unity games
 
-MatV=uG(:,drji)-uG(:,drij);
-MatV(:,end+1)=uG(:,N);
+MatV=uG(drji,:)-uG(drij,:);
+MatV(end+1,:)=uG(N,:);
 MatV=sparse(MatV);
-alpvec=MatV'*v';
-[uc, gb]=p_unanimity_games(clv);
-MatW=MatV'*gb;
+[hd, gb]=clv.p_unanimity_games();
+MatW=MatV*gb;
 MatW=full(MatW);
 nlW=null(MatW);
-sW=size(nlW);
-hd=uc';
-HDm=repmat(hd,1,sW(2));
+[~,sW2]=size(nlW);
+hd=hd';
+HDm=repmat(hd,1,sW2);
 mat_hz=slc*nlW;
-mat_vz=gb*mat_hz;
-mat_vz=mat_vz';
+clear nlW hd;
+if n>13
+ mat_vz=zeros(sW2,N);
+ parfor k=1:sW2
+   mat_vz(k,:)=gb*mat_hz(:,k);
+ end
+else
+ spmd
+   cmhz=codistributed(mat_hz);
+   cgb=codistributed(double(gb));
+   mat_vz1=cgb*cmhz;
+ end
+ mat_vz=gather(mat_vz1)';
+ clear mat_vz1;
+end
 mat_hd=HDm+mat_hz;
-w_sp=gb*mat_hd;
-v_sp=w_sp';
-
-
+clear HDm mat_hz mat_vz1;
+if n>13
+ v_sp=zeros(sW2,N);
+ parfor k=1:sW2
+   v_sp(k,:)=gb*mat_hd(:,k);
+ end
+ clear gb;
+else
+ spmd
+   cmhd=codistributed(mat_hd);
+   v_sp1=cgb*cmhd;
+ end
+ v_sp=gather(v_sp1)';
+end

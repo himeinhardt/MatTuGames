@@ -1,5 +1,5 @@
 function sh=ShapleyValueM(v)
-% SHAPLEY_VALUEM computes the Shapley value by the marginal contributions 
+% SHAPLEYVALUEM computes the Shapley value by the marginal contributions 
 % of TU-game v. For n>10 use the function ShapleyValue() instead.
 %
 % Usage: sh=ShapleyValueM(v)

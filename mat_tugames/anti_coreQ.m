@@ -2,7 +2,7 @@ function [acrq x]=anti_coreQ(v,tol)
 % ANTI_COREQ checks the existence of the anti-core of game v.
 % 
 %
-% Usage: [crq x]=coreQ(v,tol)
+% Usage: [acrq x]=anti_coreQ(v,tol)
 % Define variables:
 %  output:
 %  acrq     -- Returns 1 (true) or 0 (false).
@@ -35,12 +35,27 @@ N=length(v);
 S=1:N;
 for k=1:n, PlyMat(:,k) = bitget(S,k);end
 S(N)=[];
-v1(S)=v(S)-tol;
+v1(S)=v(S)+tol;
 v1(N)=v(N);
 
+opts.Display='off';
+opts.Simplex='on';
+opts.LargeScale='on';
+opts.Algorithm='dual-simplex';
+opts.TolFun=1e-10;
+opts.TolX=1e-10;
+opts.TolRLPFun=1e-10;
+%% for dual-simplex
+opts.MaxTime=9000;
+opts.Preprocess='none';
+opts.TolCon=1e-6;
+opts.MaxIter=10*(N+n);
 
-opts=optimset('Simplex','on','LargeScale','on','Algorithm','simplex','MaxIter',128);
-[x,fval,exitflag]=linprog(ones(n,1),PlyMat,v1,[],[],[],[],[],opts);
+
+%opts=optimset('Simplex','on','LargeScale','on','Algorithm','simplex','MaxIter',128);
+[x,fval,exitflag]=linprog(-ones(n,1),PlyMat,v1,[],[],[],[],[],opts);
 x=x';
+%exitflag
+%fval
 acrq=abs(v(N)-fval)<=abs(tol);
 

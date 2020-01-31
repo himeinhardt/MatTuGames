@@ -2,9 +2,9 @@ function [RepSol RepBMat]=p_replicate_prk(clv,x,scl,smc)
 % P_REPLICATE_PRK replicates the pre-kernel solution x as a pre-kernel of
 % the game space v_sp.
 %
-% Usage: RepSol=p_replicate_prk(clv,x,scl,smc)
+% Usage: RepSol=clv.p_replicate_prk(x,scl,smc)
 % or 
-% Usage: [RepSol RepBMat]=p_replicate_prk(clv,x,scl,smc)
+% Usage: [RepSol RepBMat]=clv.p_replicate_prk(x,scl,smc)
 %
 % This call needs for a 14-person game more than 6 GB disk space.
 % One should have at least 10 GB physical memory. Note, adding
@@ -22,7 +22,7 @@ function [RepSol RepBMat]=p_replicate_prk(clv,x,scl,smc)
 %  SBC                   -- Indicates the set of equivalence class/most
 %                           effective coalitions w.r.t. the pre-kernel
 %                           element x.
-%  Mat_W                 -- Matrix given by equation (5.15) Meinhardt, 2010.
+%  Mat_W                 -- Matrix given by equation (7.16) Meinhardt, 2013.
 %  P_Basis               -- Basis of the parameter space (null space of mat_W).
 %  VarP_Basis            -- Variation in the parameter basis. 
 %
@@ -42,6 +42,7 @@ function [RepSol RepBMat]=p_replicate_prk(clv,x,scl,smc)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3              hme
+%   05/17/2014        0.5              hme
 %                
 
 if nargin==1
@@ -50,33 +51,33 @@ if nargin==1
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=PreKernel(clv);
+      x=clv.PreKernel();
    end
    if isempty(x)
-     x=PreKernel(clv);
+     x=clv.PreKernel();
    end
    scl=1;
    smc=1;
-   tol=10^6*eps;
+   tol=10^7*eps;
 elseif nargin==2
    scl=1;
    smc=1;
-   tol=10^6*eps;
+   tol=10^7*eps;
 elseif nargin==3 
    smc=1;
-   tol=10^6*eps;
+   tol=10^7*eps;
 else
    if smc > 1, smc=1; 
    elseif smc < 0, smc=0;
    else smc=round(smc);  
    end
-   tol=10^6*eps;
+   tol=10^7*eps;
 end
 
 if isempty(x)
-     x=p_PreKernel(clv);
+     x=clv.p_PreKernel();
 else
-     prkQ=p_PrekernelQ(clv,x);
+     prkQ=clv.PrekernelQ(x);
    if prkQ==0 
        warning('Input vector is not a pre-kernel element!')
        warning('Input vector must be a pre-kernel element!')
@@ -88,10 +89,10 @@ end
     
 
 if  nargout>1
-  [v_spc mat_uc mat_W mat_V A_v mat_vz]=p_game_space(clv,x,scl,smc);
+  [v_spc, mat_uc, mat_W, ~, A_v, mat_vz]=clv.p_game_space(x,scl,smc);
   mat_hd=mat_uc';
 else
-  [v_spc A_v]=p_game_space_red(clv,x,scl,smc);
+  [v_spc, A_v]=clv.p_game_space_red(x,scl,smc);
 end
 
 sz_v=size(v_spc);
@@ -101,44 +102,20 @@ v_spc_prkQ=false(1,lgsp);
 sbcQ=false(1,lgsp);
 
 
-% Bug work around
-% attempt to serialize data which is too large.
 N=clv.tusize;
 n=clv.tuplayers;
-if n>15 
-sm=matlabpool('size');
-stp=floor(lgsp/sm);
-start=1;
- for idx=1:sm+1
-  mst=idx*stp;
-  if mst<lgsp;
-    fin=mst; 
-  else  
-    fin=lgsp;
-  end 
-  parfor k=start:fin
-    [e cA{k} smat]=BestCoalitions(v_spc(k,:),x,smc);
-    lms=abs(smat-smat')<tol;
-    v_spc_prkQ(k)=all(all(lms));
-    sbcQ(k)=all(all(cA{k}==A_v));
-  end
-  start=fin+1;
- end
-else
-% disp('here')
- parfor k=1:lgsp
-   [e cA{k} smat]=BestCoalitions(v_spc(k,:),x,smc);
+parfor k=1:lgsp
+   [~, cA{k} smat]=BestCoalitions(v_spc(k,:),x,smc);
    lms=abs(smat-smat')<tol;
    v_spc_prkQ(k)=all(all(lms));
    sbcQ(k)=all(all(cA{k}==A_v));
- end
 end
 cA{lgsp+1}=A_v;
 
 
 % Formatting output
 fields=cell(lgsp+1,1);
-for k=1:lgsp+1
+parfor k=1:lgsp+1
  fields{k}=strcat('Eq', num2str(k));
 end
 

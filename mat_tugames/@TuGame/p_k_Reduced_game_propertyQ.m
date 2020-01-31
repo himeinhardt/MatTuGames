@@ -2,7 +2,7 @@ function [KRGP KRGPC]=p_k_Reduced_game_propertyQ(clv,x,K,str,tol)
 % P_K_REDUCED_GAME_PROPERTYQ checks whether an imputation x satisfies the
 % k-reduced game property (k-consistency) using Matlab's PCT.
 %
-% Usage: [KRGP KRGPC]=p_k_Reduced_game_propertyQ(clv,x,K,str,tol)
+% Usage: [KRGP KRGPC]=clv.p_k_Reduced_game_propertyQ(x,K,str,tol)
 % Define variables:
 %  output: Fields
 %  rgpQ     -- Returns 1 (true) whenever the RGP is satisfied, 
@@ -54,10 +54,10 @@ if nargin<2
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=p_PreKernel(clv);
+      x=clv.p_PreKernel();
    end
    if isempty(x)
-     x=p_PreKernel(clv);
+     x=clv.p_PreKernel();
    end
   n=length(x);
   tol=10^6*eps;
@@ -122,17 +122,17 @@ parfor k=1:siPM2
   if strcmp(str,'SHAP')
 % Checks whether a solution x restricted to S is a solution of the 
 % reduced game vS.
-   vS{k}=HMS_RedGame(clv,x,cl2(k)); %Hart-MasColell reduced game.
+   vS{k}=clv.HMS_RedGame(x,cl2(k)); %Hart-MasColell reduced game.
    sol{k}=ShapleyValue(vS{k});
    rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
    rgpq(k)=all(rgpq_sol{k});
   elseif strcmp(str,'PRK')
 % Checks whether a solution x restricted to S is a solution of the 
 % reduced game vS.  
-   vS{k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    rgpq(k)=PrekernelQ(vS{k},impVec{k}); 
   elseif strcmp(str,'PRN')
-   vS{k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    if length(vS{k})==1
      rgpq(k)=PrekernelQ(vS{k},impVec{k});
    else
@@ -145,10 +145,10 @@ parfor k=1:siPM2
      rgpq(k)=all(rgpq_sol{k});
    end
   elseif strcmp(str,'HMS_PK')
-   vS{k}=HMS_RedGame(clv,x,cl2(k)); % Hart-MasColell reduced game.
+   vS{k}=clv.HMS_RedGame(x,cl2(k)); % Hart-MasColell reduced game.
    rgpq(k)=PrekernelQ(vS{k},impVec{k});
   elseif strcmp(str,'HMS_PN')
-   vS{k}=HMS_RedGame(clv,x,cl2(k)); % Hart-MasColell reduced game.
+   vS{k}=clv.HMS_RedGame(x,cl2(k)); % Hart-MasColell reduced game.
    if length(vS{k})==1
      rgpq(k)=PrekernelQ(vS{k},impVec{k});
    else

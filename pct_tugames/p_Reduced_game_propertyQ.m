@@ -23,10 +23,18 @@ function [RGP RGPC]=p_Reduced_game_propertyQ(v,x,str,tol)
 %               in accordance with pre-kernel solution.
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value.
+%              'MODIC' that is, Davis-Maschler reduced game
+%               equivalence in accordance with the modiclus
 %              'HMS_PK' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleous.
+%              'HMS_MODIC' that is, Hart/MasColell reduced game
+%               equivalence in accordance with the modiclus.
+%              'MPRK' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the modified pre-kernel.
+%              'PMPRK' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the proper modified pre-kernel.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -43,6 +51,9 @@ function [RGP RGPC]=p_Reduced_game_propertyQ(v,x,str,tol)
 %   06/29/2012        0.2 beta         hme
 %   05/29/2013        0.3              hme
 %   05/16/2014        0.5              hme
+%   05/16/2014        0.5              hme
+%   02/10/2018        0.9              hme
+%   04/09/2018        1.0              hme
 %                
 
 
@@ -88,6 +99,10 @@ elseif strcmp(str,'HMS_PN')
   vSa=p_HMS_Reduced_game(v,x,'PRN');
   vS=vSa{:,1};
   clear vSa;
+elseif strcmp(str,'HMS_MODIC')
+  vSa=p_HMS_Reduced_game(v,x,'MODIC');
+  vS=vSa{:,1};
+  clear vSa;
 else
   vSa=p_DM_Reduced_game(v,x);
   vS=vSa{:,1};
@@ -99,7 +114,7 @@ parfor k=1:N-1
   if strcmp(str,'SHAP')
 % Checks whether a solution x restricted to S is a solution of the
 % reduced game vS.
-   sol{k}=ShapleyValue(vS{1,k});
+   sol{k}=ShapleyValue(vS{k});
    rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
    rgpq(k)=all(rgpq_sol{k});
   elseif strcmp(str,'PRK')
@@ -107,6 +122,10 @@ parfor k=1:N-1
 % reduced game vS. To speed up computation, we use this code below for both,
 % the pre-nucleolus and and the pre-kernel.
    rgpq(k)=PrekernelQ(vS{k},impVec{k});
+  elseif strcmp(str,'MPRK')
+   rgpq(k)=ModPrekernelQ(vS{k},impVec{k});
+  elseif strcmp(str,'PMPRK')
+   rgpq(k)=PModPrekernelQ(vS{k},impVec{k});
   elseif strcmp(str,'PRN')
    if length(vS{k})==1
      rgpq(k)=PrekernelQ(vS{k},impVec{k});
@@ -115,6 +134,18 @@ parfor k=1:N-1
        sol{k}=Prenucl(vS{k},impVec{k}); % using adjusted Derks pre-nucleolus function.
      catch
        sol{k}=PreNucl2(vS{k},impVec{k}); % use a third party solver instead!
+     end
+     rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
+     rgpq(k)=all(rgpq_sol{k});
+   end
+  elseif strcmp(str,'MODIC')
+   if length(vS{k})==1
+     rgpq(k)=modiclusQ(vS{k},impVec{k});
+   else
+     try
+       sol{k}=cplex_modiclus(vS{k}); % using cplex pre-nucleolus function. 
+     catch
+       sol{k}=Modiclus(vS{k}); % use a third party solver instead!
      end
      rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
      rgpq(k)=all(rgpq_sol{k});
@@ -133,6 +164,20 @@ parfor k=1:N-1
      rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
      rgpq(k)=all(rgpq_sol{k});
    end
+  elseif strcmp(str,'HMS_MODIC')
+   if length(vS{k})==1
+     rgpq(k)=modiclusQ(vS{k},impVec{k});
+   else
+     try  
+       sol{k}=cplex_modiclus(vS{k}); % using adjusted Derks pre-nucleolus function.
+     catch
+       sol{k}=Modiclus(vS{k}); % use a third party solver instead!
+     end
+     rgpq_sol{k}=abs(sol{k}-impVec{k})<tol;
+     rgpq(k)=all(rgpq_sol{k});
+   end
+  else
+     rgpq(k)=PrekernelQ(vS{k},impVec{k});
   end
 end
 
@@ -143,12 +188,24 @@ if strcmp(str,'SHAP')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'PRK')
   rgpq(N)=p_PrekernelQ(v,x);
+elseif strcmp(str,'MPRK')
+  rgpq(N)=p_ModPrekernelQ(v,x);
+elseif strcmp(str,'PMPRK')
+  rgpq(N)=p_PModPrekernelQ(v,x);
 elseif strcmp(str,'PRN')
    try
      sol{N}=Prenucl(v,x); % using adjusted Derks pre-nucleolus function.
   catch
      sol{N}=PreNucl2(v,x); % use a third party solver instead!
    end 
+   rgpq_sol{N}=abs(sol{N}-x)<tol;
+   rgpq(N)=all(rgpq_sol{N});
+elseif strcmp(str,'MODIC')
+   try
+     sol{N}=cplex_modiclus(v); % using adjusted Derks pre-nucleolus function.
+   catch
+     sol{N}=Modiclus(v); % use a third party solver instead!
+   end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'HMS_PK')
@@ -161,6 +218,16 @@ elseif strcmp(str,'HMS_PN')
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
+elseif strcmp(str,'HMS_MODIC')
+   try
+      sol{N}=cplex_modiclus(v); % using adjusted Derks pre-nucleolus function.
+   catch
+      sol{N}=Modiclus(v); % use a third party solver instead!
+   end
+   rgpq_sol{N}=abs(sol{N}-x)<tol;
+   rgpq(N)=all(rgpq_sol{N});
+else 
+  rgpq(N)=p_PrekernelQ(v,x);
 end
 
 

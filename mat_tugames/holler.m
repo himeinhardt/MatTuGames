@@ -25,7 +25,6 @@ function hidx=holler(th,w_vec)
 n=length(w_vec);
 sWCk=zeros(1,n);
 mWC=minimal_winning(th,w_vec);
-SWC=length(mWC);
 for k=1:n;
   mWCk=mWC(bitget(mWC,k)==1);
   sWCk(k)=length(mWCk);

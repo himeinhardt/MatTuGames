@@ -5,7 +5,7 @@ function [core_vert crst]=CoreVertices(clv,method,tol)
 % Note: Windows users must port the shell script 'corevert' to get full 
 % operationality.
 %
-% Usage: [core_vert crst]=CoreVertices(clv,method,tol)
+% Usage: [core_vert crst]=clv.CoreVertices(method,tol)
 %
 % Define variables:
 %  output:
@@ -32,6 +32,7 @@ function [core_vert crst]=CoreVertices(clv,method,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   05/15/2019        1.1             hme
 %                
 
 v=clv.tuvalues;
@@ -54,6 +55,7 @@ else
     error('Core is empty!');
   else
   end
+  v=v+tol;
 end
 
 if strcmp(method,'gmp')
@@ -116,7 +118,7 @@ fprintf(fid,format,crst');
 fprintf(fid,'%s\n','end');
 fclose(fid);
  else
-   disp('Output file open failed');
+   disp('Failed to open Output file');
 end
 
 % Calling the external library cdd.
@@ -137,8 +139,14 @@ if fid>0
       jj=1;
       while 1
          tline = fgetl(fid);
-         if ~ischar(tline)
-              break
+         tchQ=ischar(tline);
+         if  tchQ==0
+              if tline==-1 && jj>1
+                 break
+              else
+                 core_vert=[];
+                 break
+              end
          else
             core_vert(jj,:)=str2num(tline);
             jj=jj+1;
@@ -153,14 +161,14 @@ if fid>0
    end
   fclose(fid);
  else
-  error('Output file open failed');
+  error('Failed to open Output file');
 end
 
 % Reformating the output
 if strcmp(method,'gmp')
   if isempty(core_vert)
-   core_vert=tline;
-   core_vert=str2num(core_vert);
+%   core_vert=tline;
+%   core_vert=str2num(core_vert);
   else
    core_vert(:,1)=[]; % deleting the first column vector of ones.
   end

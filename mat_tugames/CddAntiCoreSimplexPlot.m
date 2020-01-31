@@ -127,8 +127,8 @@ if isempty(tol)
   tol=10^9*eps; 
 end
 if isempty(vw_pt)
-%  vw_pt='view(120,25)';
-vw_pt='view(235,25)';
+vw_pt='view(120,15)';
+%vw_pt='view(235,25)';
 end
 
 N=length(v);
@@ -149,6 +149,7 @@ v_prk=ToSimplex3d(v_prk);
 v_prn=ToSimplex3d(v_prn);
 v_sh=ToSimplex3d(v_sh);
 
+clf;
 if n==4
 % Plot Imputation Set
  if imp_sol==1
@@ -157,8 +158,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hp=plot3(v_prk(1),v_prk(2),v_prk(3));
       grid on;
       set(hp,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
@@ -182,8 +183,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hp=plot3(v_prk(1),v_prk(2),v_prk(3));
       grid on;
       set(hp,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
@@ -203,8 +204,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hn=plot3(v_prn(1),v_prn(2),v_prn(3));
       grid on;
       set(hn,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -224,8 +225,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hs=plot3(v_sh(1),v_sh(2),v_sh(3));
       grid on;
       set(hs,'Marker','o','MarkerSize',6,'MarkerFaceColor','y');
@@ -245,8 +246,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       Pip.plot('alpha',0,'linewidth', 0.7);
       grid on;
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)],'ZLim',[sm(3) lr(3)]);
@@ -264,8 +265,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       Pip.plot('alpha',0,'linewidth', 0.7);
       grid on;
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)],'ZLim',[sm(3) lr(3)]);
@@ -286,8 +287,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hp=plot3(v_prk(1),v_prk(2),v_prk(3));
       grid on;
       set(hp,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
@@ -311,8 +312,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hp=plot3(v_prk(1),v_prk(2),v_prk(3));
       grid on;
       set(hp,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
@@ -332,8 +333,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hn=plot3(v_prn(1),v_prn(2),v_prn(3));
       grid on;
       set(hn,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -353,8 +354,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
       hs=plot3(v_sh(1),v_sh(2),v_sh(3));
       grid on;
       set(hs,'Marker','o','MarkerSize',6,'MarkerFaceColor','y');
@@ -374,8 +375,8 @@ if n==4
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
-      sm=floor(min(ms1,ms2))-mrg;
-      lr=ceil(max(ml1,ml2))+mrg;
+      sm=min(floor(min(ms1,ms2))-mrg,ms1);
+      lr=min(ceil(max(ml1,ml2))+mrg,ml1);
 %      Pip.plot('alpha',0,'linewidth', 0.7);
       grid on;
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)],'ZLim',[sm(3) lr(3)]);

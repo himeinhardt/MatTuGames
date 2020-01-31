@@ -23,6 +23,7 @@ function [epsv, x1, A1, B1]=CddLeastCore(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   12/12/2012        0.3             hme
+%   04/21/2019        1.0             hme
 %                
 
 
@@ -34,9 +35,9 @@ end
 N=length(v);
 [~, n]=log2(N);
 S=1:N;
-for k=1:n, PlyMat(:,k) = bitget(S,k);end
-A1=-PlyMat(1:N,:);
-A1(N+1,:)=PlyMat(end,:);
+A1=zeros(N,n);
+for k=1:n, A1(:,k) = -bitget(S,k);end
+A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;
 A1(N:N+1,end)=0;
 B1=[-v';v(N)];

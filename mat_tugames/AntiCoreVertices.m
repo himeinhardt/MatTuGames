@@ -33,6 +33,7 @@ function [core_vert crst]=AntiCoreVertices(v,method,tol)
 %   07/10/2012        0.2 beta        hme
 %   10/27/2012        0.3             hme
 %   07/16/2015        0.7             hme
+%   05/15/2019        1.1             hme
 %                
 
 % Here we assume that the user has represented the game correctly.
@@ -112,7 +113,7 @@ fprintf(fid,format,crst');
 fprintf(fid,'%s\n','end');
 fclose(fid);
  else
-   disp('Output file open failed');
+   disp('Failed to open Output file');
 end
 
 % Calling the external library cdd.
@@ -133,8 +134,14 @@ if fid>0
       jj=1;
       while 1
          tline = fgetl(fid);
-         if ~ischar(tline)
-              break
+         tchQ=ischar(tline);
+         if  tchQ==0
+              if tline==-1 && jj>1
+                 break
+              else
+                 core_vert=[];
+                 break
+              end
          else
             core_vert(jj,:)=str2num(tline);
             jj=jj+1;
@@ -149,22 +156,22 @@ if fid>0
    end
   fclose(fid);
  else
-  error('Output file open failed');
+  error('Failed to open Output file');
 end
 
 % Reformating the output
 if strcmp(method,'gmp')
   if isempty(core_vert)
-   core_vert=tline;
-   core_vert=str2num(core_vert);
+%   core_vert=tline;
+%   core_vert=str2num(core_vert);
   else
    core_vert(:,1)=[]; % deleting the first column vector of ones.
-  end
 % Converting string into real numbers in order to reformat output. 
 %  core_vert=str2num(core_vert);
 % Converting real numbers into a rational number approximation represented 
 % as a string.
-  core_vert=rats(core_vert); 
+  core_vert=rats(core_vert);
+  end 
 else
   core_vert=core_vert';
   core_vert(:,1)=[]; % deleting the first column vector of ones.

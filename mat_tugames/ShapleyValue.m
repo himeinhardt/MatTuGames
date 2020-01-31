@@ -61,8 +61,8 @@ for k=1:lNk
    pb=(factorial(cS-1).*factorial(sk-cS))/factorial(sk);
    pot(k)=vS*pb;
 end
-idx(end)=[];
-shv=pot(end)-pot(idx);
+idx(lNk)=[];
+shv=pot(lNk)-pot(idx);
 
 %--------------------------------------
 function sS=Subsets(S,n)

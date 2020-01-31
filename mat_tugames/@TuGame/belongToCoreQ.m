@@ -2,7 +2,7 @@ function [crq, bS]=belongToCoreQ(clv,x,str,tol)
 % BELONGTOCOREQ checks whether the imputation x belongs to the core of game v.
 % 
 %
-%  Usage: [crq bS]=belongToCoreQ(clv,x,str,tol)
+%  Usage: [crq bS]=clv.belongToCoreQ(x,str,tol)
 %
 % Define variables:
 %  output:
@@ -31,21 +31,35 @@ function [crq, bS]=belongToCoreQ(clv,x,str,tol)
 %   10/29/2012        0.3             hme
 %                
 
-if ischar(x) % Convert a rational number into reals.
-    x=str2num(x);
-end
-
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 
 S=1:N;
-if nargin<3
+if nargin<2
+  if isa(clv,'TuSol')
+     x=clv.tu_prk;
+  elseif isa(clv,'TuVal')
+     x=clv.tu_sh;
+  elseif isa(clv,'p_TuVal')
+     x=clv.tu_sh;
+  elseif isa(clv,'TuGame')
+     x=clv.PreKernel();
+  end
+  impv=num2str(x);
+  msg='A second input argument was not given. Using default imputation: \n\n %s \n';
+  warning(msg,impv) ;
+  str='rat'; % assuming rational numbers.
+  tol=2*10^4*eps;
+elseif nargin<3
    str='rat'; % assuming rational numbers.
    tol=2*10^4*eps;
- elseif nargin<4
+elseif nargin<4
    tol=10^8*eps;
- else
+else
+end
+if ischar(x) % Convert a rational number into reals.
+    x=str2num(x);
 end
 tol=-tol;
 grq=false(N,1);

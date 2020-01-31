@@ -27,6 +27,7 @@ function [krQ, kriQ, smat]=Anti_kernelQ(clv,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/17/2013        0.3             hme
+%   05/11/2019        1.1             hme
 %                
 
 if nargin < 2
@@ -48,6 +49,7 @@ end
 
 v=clv.tuvalues;
 n=clv.tuplayers;
+N=clv.tusize;
 smat=-inf;
 e=0;
 effQ=abs(v(end)-sum(x))<tol;
@@ -56,7 +58,11 @@ if effQ==0, return; end
 
 smat=msrpls(v,x,n);
 l=1:n;
-ir=x-v(bitset(0,l));
+%ir=x-v(bitset(0,l));
+%vi=v(bitset(0,k))';
+Nk=N-2.^(l-1);
+vi=v(Nk);
+ir=vi-x;
 irQ=all(ir>-tol);
 if irQ
    krm=smat-smat';

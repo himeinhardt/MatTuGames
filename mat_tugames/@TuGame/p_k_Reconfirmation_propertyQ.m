@@ -3,7 +3,7 @@ function [kRCP kRCPC]=p_k_Reconfirmation_propertyQ(clv,x,K,str,tol)
 % Using Matlab's PCT.
 %
 %
-% Usage: [kRCP kRCPC]=p_k_Reconfirmation_propertyQ(clv,x,K,str,tol)
+% Usage: [kRCP kRCPC]=clv.p_k_Reconfirmation_propertyQ(x,K,str,tol)
 %
 % Define variables:
 %  output: Fields
@@ -58,10 +58,10 @@ if nargin<2
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=p_PreKernel(clv);
+      x=clv.p_PreKernel();
    end
    if isempty(x)
-     x=p_PreKernel(clv);
+     x=clv.p_PreKernel();
    end
   tol=10^6*eps;
   str='PRK';
@@ -108,13 +108,13 @@ parfor int=1:K;
 
  for k=1:lgtK(int)
   if strcmp(str,'SHAP')
-    vSK{k}=HMS_RedGame(clv,x,clK{int}(k));
+    vSK{k}=clv.HMS_RedGame(x,clK{int}(k));
   elseif strcmp(str,'HMS_PK')
-    vSK{k}=HMS_RedGame(clv,x,clK{int}(k));
+    vSK{k}=clv.HMS_RedGame(x,clK{int}(k));
   elseif strcmp(str,'HMS_PN')
-    vSK{k}=HMS_RedGame(clv,x,clK{int}(k));
+    vSK{k}=clv.HMS_RedGame(x,clK{int}(k));
   else
-    vSK{k}=RedGame(clv,x,clK{int}(k));
+    vSK{k}=clv.RedGame(x,clK{int}(k));
   end
  end
 vS{int}=vSK;
@@ -136,7 +136,7 @@ parfor int=1:K
      vS_sol{k}=PreKernel(vk); % solution y restricted to S.
      rSk=PlyMatK{int}(k,:);
      vS_y{k}(rSk)=vS_sol{k}; % extension to (y,x_N\S).
-     rcpq{k}=PrekernelQ(clv,vS_y{k});
+     rcpq{k}=clv.PrekernelQ(vS_y{k});
    elseif strcmp(str,'PRN')
       vk=cell2mat(vS{int}(k));     
       if length(vk)==1
@@ -183,7 +183,7 @@ parfor int=1:K
      vS_sol{k}=PreKernel(vk); % solution y restricted to S.
      rSk=PlyMatK{int}(k,:);
      vS_y{k}(rSk)=vS_sol{k}; % extension to (y,x_N\S)
-     rcpq{k}=PrekernelQ(clv,vS_y{k});
+     rcpq{k}=clv.PrekernelQ(vS_y{k});
    end
   rcpQ{1,int}(k)=all(rcpq{1,k});
  end

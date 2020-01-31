@@ -23,12 +23,15 @@ function cs_vl=p_CoalitionSolidarity(clv,cs)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/28/2013        0.4             hme
+%   05/12/2014        0.5             hme
 % 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 
 if isa(clv,'TuVal')
+   ptn = clv.tu_ptn;
+elseif isa(clv,'p_TuVal')
    ptn = clv.tu_ptn;
 else
    ptn='';

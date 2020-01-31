@@ -10,7 +10,7 @@ function [krQ, kriQ, smat]=Anti_kernelQ(v,x,tol)
 %  krQ      -- Returns 1 (true) whenever the impuatation x is 
 %              an anti-kernel element, otherwise 0 (false).
 %  kriQ     -- Returns a list of true (1) and/or false (0) of length n.
-%  smat     -- Matrix of maximum surpluses.
+%  smat     -- Matrix of minimum surpluses.
 %  input:
 %  v        -- A Tu-Game v of length 2^n-1. 
 %  x        -- payoff vector of size(1,n) (optional)
@@ -26,6 +26,7 @@ function [krQ, kriQ, smat]=Anti_kernelQ(v,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/17/2013        0.3             hme
+%   05/11/2019        1.1             hme
 %                
 
 if nargin < 2
@@ -50,12 +51,16 @@ end
 smat=-inf;
 e=0;
 effQ=abs(v(end)-sum(x))<tol;
-krQ=0;
+krQ=false;
 if effQ==0, return; end 
 
 smat=msrpls(v,x,n);
 l=1:n;
-ir=x-v(bitset(0,l));
+%ir=x-v(bitset(0,l));
+%vi=v(bitset(0,k))';
+Nk=N-2.^(l-1);
+vi=v(Nk);
+ir=vi-x;
 irQ=all(ir>-tol);
 if irQ
    krm=smat-smat';
@@ -63,8 +68,8 @@ if irQ
    kriQ=all((krm.*irm)<=tol);
    krQ=all(kriQ);
 else
-  kriQ=0;
-  krQ=0;
+  kriQ=false;
+  krQ=false;
 end
 
 
@@ -83,8 +88,7 @@ function smat=msrpls(v,x,n)
 % Borrowed from J. Derks
 Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
 e=v-Xm;
-v=[];
-Xm=[];
+clear v Xm;
 % Determing min surpluses.
 [se, sC]=sort(e,'ascend');
 smat=-inf(n);

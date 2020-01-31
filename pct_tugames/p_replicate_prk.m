@@ -1,4 +1,4 @@
-function [RepSol RepBMat]=p_replicate_prk(v,x,scl,smc)
+function [RepSol, RepBMat]=p_replicate_prk(v,x,scl,smc,method)
 % P_REPLICATE_PRK replicates the pre-kernel solution x as a pre-kernel of
 % the game space v_sp.
 %
@@ -21,17 +21,23 @@ function [RepSol RepBMat]=p_replicate_prk(v,x,scl,smc)
 %  SBC                   -- Indicates the set of equivalence class/most
 %                           effective coalitions w.r.t. the pre-kernel
 %                           element x.
-%  Mat_W                 -- Matrix given by equation (5.15) Meinhardt, 2010.
+%  Mat_W                 -- Matrix given by equation (7.16) Meinhardt, 2013.
 %  P_Basis               -- Basis of the parameter space (null space of mat_W).
 %  VarP_Basis            -- Variation in the parameter basis. 
 %
 %
 %  input:
-%  v      -- A Tu-Game v of length 2^n-1. 
-%  x      -- pre-kernel payoff of length(1,n)
-%  scl    -- scaling factor
-%  smc    -- selecting from effc the smallest/largest 
-%            cardinality (optional). Value 1 or 0.
+%  v                     -- A Tu-Game v of length 2^n-1. 
+%  x                     -- pre-kernel payoff of length(1,n)
+%  scl                   -- scaling factor
+%  smc                   -- selecting from effc the smallest/largest 
+%                           cardinality (optional). Value 1 or 0.
+%  method                -- Permissible methods are:
+%                           'sparse'  or 
+%                            'full'
+%                           to compute spares or dense matrices. Default is full.
+%                           If you have a memory problem use 'sparse' instead.
+
 
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
@@ -42,6 +48,7 @@ function [RepSol RepBMat]=p_replicate_prk(v,x,scl,smc)
 %   ====================================================
 %   05/18/2011        0.1 alpha        hme
 %   10/27/2012        0.3              hme
+%   05/12/2014        0.5              hme
 %                
 
 if nargin<1
@@ -51,13 +58,23 @@ elseif nargin==1
    scl=1;
    smc=1;
    tol=10^6*eps;
+   method = 'full';
 elseif nargin==2
    scl=1;
    smc=1;
    tol=10^6*eps;
+   method = 'full';
 elseif nargin==3 
    smc=1;
    tol=10^6*eps;
+   method = 'full';
+elseif nargin==4
+   if smc > 1, smc=1;
+   elseif smc < 0, smc=0;
+   else smc=round(smc);
+   end
+   tol=10^6*eps;
+   method = 'full';
 else
    if smc > 1, smc=1; 
    elseif smc < 0, smc=0;
@@ -69,7 +86,7 @@ end
 if isempty(x)
      x=p_PreKernel(v);
 else
-     prkQ=p_PrekernelQ(v,x);
+     prkQ=PrekernelQ(v,x);
    if prkQ==0 
        warning('Input vector is not a pre-kernel element!')
        warning('Input vector must be a pre-kernel element!')
@@ -81,10 +98,10 @@ end
     
 
 if  nargout>1
-  [v_spc mat_uc mat_W mat_V A_v mat_vz]=p_game_space(v,x,scl,smc);
+  [v_spc, mat_uc, mat_W, ~, A_v, mat_vz]=p_game_space(v,x,scl,smc,method);
   mat_hd=mat_uc';
 else
-  [v_spc A_v]=p_game_space_red(v,x,scl,smc);
+  [v_spc, A_v]=p_game_space_red(v,x,scl,smc,method);
 end
 
 sz_v=size(v_spc);
@@ -93,53 +110,18 @@ cA=cell(lgsp,1);
 v_spc_prkQ=false(1,lgsp);
 sbcQ=false(1,lgsp);
 
-spmd
- codistributed(cA);
- codistributed(v_spc_prkQ);
- codistributed(sbcQ);
-end
-
-% Bug work around
-% attempt to serialize data which is too large.
-N=length(v);
-[~, n]=log2(N);
-if n>15 
-sm=matlabpool('size');
-stp=floor(lgsp/sm);
-start=1;
- for idx=1:sm+1
-  mst=idx*stp;
-  if mst<lgsp;
-    fin=mst; 
-  else  
-    fin=lgsp;
-  end 
-  parfor k=start:fin
-    [e cA{k} smat]=BestCoalitions(v_spc(k,:),x,smc);
-    lms=abs(smat-smat')<tol;
-    v_spc_prkQ(k)=all(all(lms));
-    sbcQ(k)=all(all(cA{k}==A_v));
-  end
-  start=fin+1;
- end
-else
-% disp('here')
- parfor k=1:lgsp
-   [e cA{k} smat]=BestCoalitions(v_spc(k,:),x,smc);
-   lms=abs(smat-smat')<tol;
-   v_spc_prkQ(k)=all(all(lms));
-   sbcQ(k)=all(all(cA{k}==A_v));
- end
+parfor k=1:lgsp
+  [~, cA{k}, smat]=BestCoalitions(v_spc(k,:),x,smc);
+  lms=abs(smat-smat')<tol;
+  v_spc_prkQ(k)=all(all(lms));
+  sbcQ(k)=all(all(cA{k}==A_v));
 end
 cA{lgsp+1}=A_v;
 
-cA=gather(cA);
-v_spc_prkQ=gather(v_spc_prkQ);
-sbcQ=gather(sbcQ);
 
 % Formatting output
 fields=cell(lgsp+1,1);
-for k=1:lgsp+1
+parfor k=1:lgsp+1
  fields{k}=strcat('Eq', num2str(k));
 end
 

@@ -36,7 +36,21 @@ S(N)=[];
 v1(S)=v(S)-tol;
 v1(N)=v(N);
 
-opts=optimset('Simplex','on','LargeScale','on','Algorithm','simplex','MaxIter',128);
+opts.Display='off';
+opts.Simplex='on';
+opts.LargeScale='on';
+opts.Algorithm='dual-simplex';
+opts.TolFun=1e-10;
+opts.TolX=1e-10;
+opts.TolRLPFun=1e-10;
+%% for dual-simplex
+opts.MaxTime=9000;
+opts.Preprocess='none';
+opts.TolCon=1e-6;
+opts.MaxIter=10*(N+n);
+
+
+%opts=optimset('Simplex','on','LargeScale','on','Algorithm','simplex','MaxIter',128);
 [x,fval,exitflag]=linprog(ones(n,1),PlyMat,v1,[],[],[],[],[],opts);
 x=x';
 acrq=abs(v(N)-fval)<=abs(tol);

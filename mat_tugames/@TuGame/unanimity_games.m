@@ -22,23 +22,26 @@ function [u_coord, sutm]=unanimity_games(clv)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/28/2012        0.3             hme
-%   09/30/2012        0.4             hme
+%   09/30/2013        0.4             hme
+%   05/12/2014        0.5             hme
 %                
 
 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
-sS=cell(1,N);
-utmat=zeros(N);
+utmat=false(N);
 S=1:N;
 
 for k=1:N
-   sS{k}=Subsets(k,n);
-   utmat(k,:)=ismember(S,sS{k});
+   sS=Subsets(k,n);
+   utmat(k,:)=ismembc(S,sS);
 end
 
 sutm=sparse(utmat);
+if islogical(v)
+   v=double(v);
+end
 u_coord=(sutm\v')';
 
 
@@ -46,10 +49,9 @@ u_coord=(sutm\v')';
 function sS=Subsets(S,n)
 
 it=0:-1:1-n;
-vecS=rem(floor(S(:)*pow2(it)),2);
+slcP=rem(floor(S(:)*pow2(it)),2)==0;
 
 J=1:n;
-slcP=vecS==0;
 sP=J(slcP);
 
 S1=1:S; 

@@ -7,7 +7,7 @@ function [vt subg subg_sh]=HMS_RedGame(v,x,S)
 %  output:
 %  vt       -- The Hart-MasColell reduced game vS w.r.t. x.
 %  subg     -- The corresponding sub-game of v on S to define 
-%             the reduced game vS.
+%              the reduced game vS.
 %  subg_sh  -- The list of Shapley values w.r.t. all sub-games subg. 
 %
 %  input:

@@ -27,6 +27,7 @@ function [x, Lerr, smat, xarr]=p_cls_kernel(v,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   05/28/2013        0.3             hme
+%   05/12/2019        1.1             hme
 %                
 
 
@@ -44,7 +45,7 @@ elseif nargin<2
     if slb==1
       error('Game is not essential!')
     end
-    if N==1,
+    if N==1
       Si=N;
      else
       Si=bitset(N,k,0);
@@ -159,7 +160,7 @@ while cnt<CNT
     E(m,:)=ones(1,n);
     a=(v(ec21)-v(ec12))';
     a(m)=v(N);
-    if n==2, a=a'; end;
+    if n==2, a=a'; end
     err=norm(E*x-a)^2; if err<eps, x=x'; break; end
 % checking kernel property
     ir=(x-vi)';
@@ -182,13 +183,13 @@ while cnt<CNT
     c=[-vi;ra;a(m)];
 % Calling solver constrainted ordinary least squares.
 % Comment these two lines out if you do not have Mosek.
-    opts = optimset;
-    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-10,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-9);
+%    opts = optimset;
+%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-10,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-9);
 %    opts = optimset(opts,'MSK_IPAR_OPTIMIZER', 1 ,'MSK_IPAR_INTPNT_BASIS','MSK_ON','MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
 % uncomment these values if you do not have Mosek.
-%    opts1 = optimset('LargeScale','on','TolFun',2.2204e-16,'TolPCG',0.2);
+    opts = optimset('LargeScale','on','TolFun',2.2204e-12,'TolPCG',0.2);
 % opts=[]; 
-    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
+    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,[],opts);
 % exitflag
     if exitflag ~= 1 
        x=x';
@@ -224,7 +225,7 @@ while cnt<CNT
     xarr(cnt,:)=x'; % intermediate results
 end
 
-if cnt==CNT, % should trigger errors ....
+if cnt==CNT % should trigger errors ....
   if slv==0 && smc==1
        msg01='No Kernel Element found. Changing Cardinality.';
        warning('Kr:ChangCard',msg01);
@@ -303,8 +304,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0 
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
@@ -319,58 +320,39 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
-
-slcCell=cell(n);
 A=eye(n);
-
-
 % Selecting the set of most effective coalitions 
 % having smallest/largest cardinality.
-
+% Assigning the set of selected coalitions to 
+% matrix A
 parfor i=1:n
    a=bitget(tS,i)==1;
    for j=1:n
-     if i<j
+    if i~=j
        b=bitget(tS,j)==0;
        lij=a & b;
        c_ij=tS(lij);
-       ex_ij=te(lij);
+       ve=te;
+       ex_ij=ve(lij);
        abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
-      elseif i>j
-       b=bitget(tS,j)==0;
-       lij=a & b;
-       c_ij=tS(lij);
-       ex_ij=te(lij);
-       abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
+       slc_cij=c_ij(abest_ij);
+       lC=length(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
     end
    end
-end
-
-% Assigning the set of selected coalitions to 
-% matrix A.
-parfor i=1:n
-  for j=1:n
-   if A(i,j)== 0
-      lC=length(slcCell{i,j});
-     if lC==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell_ij=SortSets(slcCell{i,j},n,lC,smc);
-      if smc==1
-           A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
-       elseif smc==0
-           A(i,j)=binCell_ij(end); % Selecting largest cardinality.
-      else
-           A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
-      end
-     end
-   end
-  end
 end
 
 

@@ -35,7 +35,7 @@ sS=cell(lwC,1);
 
 for k=1:lwC
   sS{k}=SubSets(wC(k),n);
-  [vl idx]=max(wm(sS{k}));
+  [vl, idx]=max(wm(sS{k}));
   smS=sS{k}(idx);
   if smS==wC(k)
       mWS(k)=wC(k);

@@ -2,10 +2,10 @@ function [x1, fmin]=cplex_AntiPreNucl(clv,tol)
 % CPLEX_ANTIPRENUCL computes the anti pre-nucleolus of game v using cplexmex.
 %
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.5.1 and higher)
+% (compatible with CPLEX Version 12.8.0 and higher)
 % 
 %
-% Usage: [x, alp]=cplex_AntiPreNucl(v,tol)
+% Usage: [x, alp]=clv.cplex_AntiPreNucl(tol)
 % Define variables:
 %  output:
 %  x1        -- The anti pre-nucleolus of game v.
@@ -24,6 +24,7 @@ function [x1, fmin]=cplex_AntiPreNucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/29/2014        0.5             hme
+%   02/24/2018        0.9             hme
 %                
 
 
@@ -38,14 +39,21 @@ N=clv.tusize;
 n=clv.tuplayers;
 
 % solver parameter
-ra = reasonable_outcome(v);
+ra = clv.reasonable_outcome;
 ub=[ra,inf];
 x1=[];
 lb=[-inf(1,n),-inf];
 x0=[];
 warning('off','all');
-options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
-warning('on','all');
+%cplex = Cplex('null');
+%str=cplex.getVersion;
+mtv=verLessThan('matlab','9.1.0');
+if mtv==1
+  options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
+else 
+  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+end
+%warning('on','all');
 
 S=1:N;
 for k=1:n, A1(:,k) = bitget(S,k);end
@@ -66,6 +74,7 @@ while 1
   bA=find(A1(:,end)==0)';
   bS2=setdiff(bS1,bA);
   if isempty(bS2)==1
+     warning('on','all');
      break;
   end
   it=0:-1:1-n;
@@ -76,9 +85,11 @@ while 1
   wgh=pinv(tmS2)*ov';
   posQ=all(wgh>-tol);
   if exitflag ~=1
+     warning('on','all');
      warning('Prn:Exit','Probably no pre-nucleolus found!')
      break; 
   elseif rk==n && posQ == 1
+     warning('on','all');
      break;
   end
   A1(bS2,end)=0;

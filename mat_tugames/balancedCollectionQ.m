@@ -157,6 +157,16 @@ mtv=verLessThan('matlab','9.1.0');
       opts.MaxIter=10*(N+n);
       [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
     end
+%lambda
+%w=lambda.lower
+%z=lambda.upper
+%y1=lambda.ineqlin
+%y2=lambda.eqlin
+%y=[y1;y2];
+%-cmat
+%bq=-cmat*(y1+1)+y2*ov
+%z=bq;
+%[cmat,ov]*y + w -z - zf
 ef=exitflag; 
 
 

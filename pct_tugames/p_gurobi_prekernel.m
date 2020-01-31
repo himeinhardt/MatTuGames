@@ -29,6 +29,7 @@ function [x, Lerr, smat, xarr]=p_gurobi_prekernel(v,x)
 %   ====================================================
 %   05/28/2013        0.3             hme
 %   08/02/2016        0.9             hme
+%   05/03/2019        1.1             hme
 %                
 
 if nargin<1
@@ -278,8 +279,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0 
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
@@ -294,61 +295,40 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
-
-
-slcCell=cell(n);
 A=eye(n);
-
-
 % Selecting the set of most effective coalitions 
 % having smallest/largest cardinality.
-
+% Assigning the set of selected coalitions to 
+% matrix A
 parfor i=1:n
    a=bitget(tS,i)==1;
    for j=1:n
-     if i<j
+    if i~=j
        b=bitget(tS,j)==0;
        lij=a & b;
        c_ij=tS(lij);
-       ex_ij=te(lij);
+       ve=te;
+       ex_ij=ve(lij);
        abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
-      elseif i>j
-       b=bitget(tS,j)==0;
-       lij=a & b;
-       c_ij=tS(lij);
-       ex_ij=te(lij);
-       abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
+       slc_cij=c_ij(abest_ij);
+       lC=length(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
     end
    end
 end
-
-% Assigning the set of selected coalitions to 
-% matrix A.
-parfor i=1:n
-  for j=1:n
-   if A(i,j)== 0
-      lC=length(slcCell{i,j});
-     if lC==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell_ij=SortSets(slcCell{i,j},n,lC,smc);
-      if smc==1
-           A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
-       elseif smc==0
-           A(i,j)=binCell_ij(end); % Selecting largest cardinality.
-      else
-           A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
-      end
-     end
-   end
-  end
-end
-
 
 %-------------------------------
 function Seff=SortSets(effij,n,bd,smc)

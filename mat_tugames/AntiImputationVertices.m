@@ -1,4 +1,4 @@
-function [imp_vert crst]=AntiImputationVertices(v,method)
+function [imp_vert crst]=AntiImputationVertices(v,method,tol)
 % ANTIIMPUTATIONVERTICES computes all vertices of the anti imputation set of game v, 
 % whenever the anti-imputation set is  essential. The cdd-library by 
 % Komei Fukuda is needed.
@@ -20,6 +20,7 @@ function [imp_vert crst]=AntiImputationVertices(v,method)
 %                'gmp' that is, results are given by rational numbers.
 %                Choose this method whenever the result with 'float'
 %                is not as expected. This method needs more time to complete. 
+%  tol        -- A positive tolerance value. Its default value is set to 10^9*eps.
 %
 
 %  Author:        Holger I. Meinhardt (hme)
@@ -30,6 +31,7 @@ function [imp_vert crst]=AntiImputationVertices(v,method)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/16/2015        0.7             hme
+%   05/15/2019        1.1             hme
 %                
 
 N=length(v);
@@ -39,11 +41,13 @@ if (2^n-1)~=N
 end
 
 
-
 if nargin<2
   method='float';
- else
+  tol=10^9*eps;
+ elseif nargin<3
+  tol=10^9*eps;
 end
+
 
 if strcmp(method,'gmp')
 elseif strcmp(method,'float')
@@ -59,6 +63,7 @@ s_vi=vi*ones(n,1);
 if s_vi<=v(N)
   error('Game is inessential!');
 end
+v=v+tol;
 Nk(end+1)=N;
 lS=length(Nk);
 v1=v(Nk);
@@ -160,19 +165,19 @@ imp_vert=fliplr(imp_vert);
 % Reformating the output
 if strcmp(method,'gmp')
   if isempty(imp_vert)
-   imp_vert=line;
+%   imp_vert=line;
    imp_vert=str2num(imp_vert);
   else
    line=str2num(line);
    imp_vert=str2num(imp_vert);
    imp_vert=[line;imp_vert];
-  end
 % Converting string into real numbers in order to reformat output. 
 %  imp_vert=str2num(imp_vert);
 % Converting real numbers into a rational number approximation represented 
 % as a string.
   imp_vert=rats(imp_vert); 
   imp_vert(:,1:11)=[]; % deleting the first column vector of ones.
+  end
 else
   imp_vert=imp_vert';
   imp_vert(:,1)=[]; % deleting the first column vector of ones.

@@ -44,6 +44,7 @@ ub=[ra,Inf];
 lb=[-inf(1,n),-Inf];
 
 S=1:N;
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(:,end+1)=-1;
 A1(N,end)=0;

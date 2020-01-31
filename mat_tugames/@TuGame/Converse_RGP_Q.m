@@ -2,7 +2,7 @@ function [CRGP CRGPC]=Converse_RGP_Q(clv,x,str,tol)
 % Converse_RGP_Q checks whether an imputation x satisfies the CRGP, that is,
 % the converse reduced game property (converse consistency).
 %
-% Usage [CRGP CRGPC]=Converse_RGP_Q(clv,x,str,tol)
+% Usage [CRGP CRGPC]=clv.Converse_RGP_Q(x,str,tol)
 %
 % Define variables:
 %  output: Fields
@@ -52,10 +52,10 @@ if nargin<2
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=PreKernel(clv);
+      x=clv.PreKernel();
    end
    if isempty(x)
-     x=PreKernel(clv);
+     x=clv.PreKernel();
    end
   tol=10^6*eps;
   str='PRK';
@@ -99,24 +99,24 @@ rS=cell(1,siPM2);
 for k=1:siPM2
 sV_x{1,k}=x;
  if strcmp(str,'SHAP')
-   vS{1,k}=HMS_RedGame(clv,x,cl2(k)); %Hart-MasColell reduced game.
+   vS{1,k}=clv.HMS_RedGame(x,cl2(k)); %Hart-MasColell reduced game.
    stdsol{1,k}=StandardSolution(vS{1,k}); % solution x restricted to S.
    rS{k}=PlyMat2(k,:);
    sV_x{1,k}(rS{k})=stdsol{1,k}; % extension to (x,x_N\S).
    crgpq{k}=abs(sV_x{1,k}-x)<tol;
    crgpQ(k)=all(crgpq{k});
  else
-   vS{1,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{1,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    stdsol{1,k}=StandardSolution(vS{1,k}); % solution x restricted to S.
    rS{k}=PlyMat2(k,:);
    sV_x{1,k}(rS{k})=stdsol{1,k}; % extension to (x,x_N\S).
    if strcmp(str,'PRK')
-     crgpQ(k)=PrekernelQ(clv,sV_x{1,k});
+     crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
    elseif strcmp(str,'PRN')
     crgpq{k}=abs(sV_x{1,k}-x)<tol;
     crgpQ(k)=all(crgpq{k});
    else
-    crgpQ(k)=PrekernelQ(clv,sV_x{1,k});
+    crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
    end
  end
 end

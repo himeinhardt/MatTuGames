@@ -1,4 +1,4 @@
-function [imp_vert crst]=ImputationVertices(clv,method)
+function [imp_vert crst]=ImputationVertices(clv,method,tol)
 % IMPUTATIONVERTICES computes all vertices of the imputation set of game v, 
 % whenever the imputation set is  essential. The cdd-library by 
 % Komei Fukuda is needed.
@@ -22,7 +22,10 @@ function [imp_vert crst]=ImputationVertices(clv,method)
 %                'gmp' that is, results are given by rational numbers.
 %                Choose this method whenever the result with 'float'
 %                is not as expected. This method needs more time to complete. 
+%  tol        -- A positive tolerance value. Its default value is set to 10^9*eps.
 %
+
+
 
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
@@ -32,16 +35,18 @@ function [imp_vert crst]=ImputationVertices(clv,method)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   05/15/2019        1.1             hme
 %                
 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 
-
 if nargin<2
   method='float';
- else
+  tol=10^9*eps;
+ elseif nargin<3
+  tol=10^9*eps;
 end
 
 if strcmp(method,'gmp')
@@ -57,6 +62,7 @@ s_vi=vi*ones(n,1);
 if s_vi>v(N)
   error('Game is inessential!');
 end
+v=v+tol;
 S(end+1)=N;
 lS=length(S);
 v1=v(S);
@@ -158,19 +164,19 @@ end
 % Reformating the output
 if strcmp(method,'gmp')
   if isempty(imp_vert)
-   imp_vert=line;
+%   imp_vert=line;
    imp_vert=str2num(imp_vert);
   else
    line=str2num(line);
    imp_vert=str2num(imp_vert);
    imp_vert=[line;imp_vert];
-  end
 % Converting string into real numbers in order to reformat output. 
 %  imp_vert=str2num(imp_vert);
 % Converting real numbers into a rational number approximation represented 
 % as a string.
   imp_vert=rats(imp_vert); 
   imp_vert(:,1:11)=[]; % deleting the first column vector of ones.
+  end
 else
   imp_vert=imp_vert';
   imp_vert(:,1)=[]; % deleting the first column vector of ones.

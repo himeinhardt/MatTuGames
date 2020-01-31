@@ -1,5 +1,5 @@
 function [x, Lerr, smat, xarr]=msk_prekernel(clv,x)
-% P_MSK_PREKERNEL computes from (v,x) a pre-kernel element using qpas.mex
+% P_MSK_PREKERNEL computes from (v,x) a pre-kernel element using mosekmex
 % and Matlab's PCT.
 % Source: Meinhardt, 2010.
 %
@@ -28,6 +28,7 @@ function [x, Lerr, smat, xarr]=msk_prekernel(clv,x)
 %   ====================================================
 %   05/29/2013        0.3             hme
 %   08/02/2016        0.9             hme
+%   04/29/2019        1.1             hme
 %                
 
 if nargin<2
@@ -85,6 +86,7 @@ if islogical(v)
 end
 
 [x, Lerr, smat, xarr]=computePrk(v,x,smc,0,mnQ);
+x=x';
 smat=tril(smat,-1)+triu(smat,1);
 
 % Main function to compute a
@@ -126,24 +128,16 @@ if any(cvr)
 end
 
 
-
-
-[rcode,res] = mosekopt('param echo(0)');
+% Conic Optimization
+[rcode,res] = mosekopt('param symbcon echo(0)');
 param=res.param;
 param.MSK_IPAR_INTPNT_BASIS   = 'MSK_ON';
-% param.MSK_IPAR_OPTIMIZER = 1;  % Using interior-point optimizer.
-param.MSK_IPAR_OPTIMIZER = 'MSK_OPTIMIZER_INTPNT'; % MSK 8
-param.MSK_DPAR_INTPNT_TOL_DFEAS = 1.0000e-12;
-param.MSK_DPAR_INTPNT_TOL_PFEAS = 1.0000e-12;
-param.MSK_DPAR_INTPNT_TOL_MU_RED = 1.0000e-14;
-if n < 22
-  param.MSK_DPAR_INTPNT_TOL_REL_GAP = 1.0000e-12; % Adjust this value if the solution is not correct.
-else
-  param.MSK_DPAR_INTPNT_TOL_REL_GAP = 1.0000e-10;
-end
-%param.MSK_DPAR_INTPNT_TOL_REL_STEP = 0.25;
-%param=[];
-%param.MSK_DPAR_INTPNT_TOL_REL_GAP
+param.MSK_DPAR_INTPNT_CO_TOL_DFEAS = 1.0000e-10;
+param.MSK_DPAR_INTPNT_CO_TOL_PFEAS = 1.0000e-10;
+param.MSK_DPAR_INTPNT_CO_TOL_MU_RED = 1.0000e-10;
+param.MSK_DPAR_INTPNT_CO_TOL_REL_GAP = 1.0000e-10;
+param.MSK_DPAR_INTPNT_CO_TOL_INFEAS = 1.0000e-10;
+
 
 % Cycling may occur, so that we need an artificial halt
 while cnt<CNT  
@@ -161,35 +155,33 @@ while cnt<CNT
     a=(v(ec21)-v(ec12))';
     a(m)=v(N);
     if n==2, a=a'; end;
-    err=norm(E*x-a)^2; if err<eps, x=x';break; end
+    err=norm(E*x-a)^2; if err<eps, break; end
     Q=2*E'*E;
-    b=sparse(-2*E'*a);
-    [qi,qj,qs] = find(tril(Q));
+    b=sparse(2*E'*a);
 
+% Calling conic programming solver.
+    Q1=[E(m,:),zeros(1,n);Q,-eye(n)];
+    Q1(:,end+1)=0;
+    prob.a=sparse(Q1);
+    prob.blc=[a(m);b];
+    prob.buc=[a(m);b];
+    lb=[-inf(2*n+1,1)];
+    prob.blx=lb;
+    c=[zeros(n,1);zeros(n,1);1];
+    prob.c=c;
+    prob.cones.type   = [res.symbcon.MSK_CT_QUAD];
+    prob.cones.sub    = [2*n+1,n+1:2*n];
+    prob.cones.subptr = [1];
 
-% Calling quadratic programming solver.
-    prob.qosubi=qi;
-    prob.qosubj=qj;
-    prob.qoval=qs;
-    prob.c=b;
-    subi=ones(n,1);
-    subj=1:n;
-    valij=E(m,:);
-    prob.a = sparse(subi,subj,valij);
-    prob.blc=a(m);
-    prob.buc=a(m);
-    prob.blx=[];
-    prob.bux=sparse(ra);
-    [r,res] = mosekopt('minimize echo(0)',prob,param);
-    sol=res.sol;
+    [r,res2] = mosekopt('minimize echo(0)',prob,param);
+    sol=res2.sol;
     obj=sol.itr.pobjval;
-    if strcmp(sol.itr.solsta,'OPTIMAL') ~= 1 
-       x=sol.itr.xx';
+    if strcmp(sol.itr.solsta,'OPTIMAL') ~= 1
+       x=sol.itr.xx(1:n)';
        warning('ker:No','Probably no pre-kernel point found!');
        break;
     end
-    x=sol.itr.xx;
-
+    x=sol.itr.xx(1:n);
 
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
@@ -281,8 +273,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0 
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
@@ -297,58 +289,39 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
-
-slcCell=cell(n);
 A=eye(n);
-
-
 % Selecting the set of most effective coalitions 
 % having smallest/largest cardinality.
-
+% Assigning the set of selected coalitions to 
+% matrix A
 parfor i=1:n
    a=bitget(tS,i)==1;
    for j=1:n
-     if i<j
+    if i~=j
        b=bitget(tS,j)==0;
        lij=a & b;
        c_ij=tS(lij);
-       ex_ij=te(lij);
+       ve=te;
+       ex_ij=ve(lij);
        abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
-      elseif i>j
-       b=bitget(tS,j)==0;
-       lij=a & b;
-       c_ij=tS(lij);
-       ex_ij=te(lij);
-       abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
+       slc_cij=c_ij(abest_ij);
+       lC=length(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
     end
    end
-end
-
-% Assigning the set of selected coalitions to 
-% matrix A.
-parfor i=1:n
-  for j=1:n
-   if A(i,j)== 0
-      lC=length(slcCell{i,j});
-     if lC==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell_ij=SortSets(slcCell{i,j},n,lC,smc);
-      if smc==1
-           A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
-       elseif smc==0
-           A(i,j)=binCell_ij(end); % Selecting largest cardinality.
-      else
-           A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
-      end
-     end
-   end
-  end
 end
 
 

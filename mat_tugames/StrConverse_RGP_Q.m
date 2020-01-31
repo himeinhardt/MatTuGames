@@ -7,7 +7,7 @@ function [CRGP CRGPC]=StrConverse_RGP_Q(v,x,str,tol)
 % Usage: [CRGP CRGPC]=StrConverse_RGP_Q(v,x,str,tol)
 % Define variables:
 %  output: Fields
-%  CrgpQ    -- Returns 1 (true) whenever the CRGP is satisfied, 
+%  CrgpQ    -- Returns 1 (true) whenever the strong CRGP is satisfied, 
 %              otherwise 0 (false).
 %  crgpQ    -- Gives a precise list of reduced games for which the 
 %              restriction of x on S is a solution of the reduced game vS. 

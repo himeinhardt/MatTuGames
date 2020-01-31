@@ -23,11 +23,14 @@ function asd_vl=SolidarityShapleyValue(clv,cs)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/27/2013        0.4             hme
+%   05/12/2014        0.5             hme
 % 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 if isa(clv,'TuVal')
+   ptn = clv.tu_ptn;
+elseif isa(clv,'p_TuVal')
    ptn = clv.tu_ptn;
 else
    ptn='';
@@ -77,7 +80,7 @@ idx=cell(1,lcs);
 J=1:n;
 int=0:-1:1-n;
 csm=rem(floor(cs(:)*pow2(int)),2)==1;
-  parfor jj=1:lcs
+  for jj=1:lcs
       Tj=csm(jj,:);
       idx{jj}=J(Tj);
       pj=2.^(idx{jj}-1);

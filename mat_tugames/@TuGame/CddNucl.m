@@ -52,6 +52,7 @@ if any(cvr)
 end
 
 S=1:N;
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
 A1=[A1;-eye(n);eye(n)];
@@ -59,7 +60,7 @@ A1(:,end+1)=-1;
 A1(N:end,end)=0;
 B1=[-v';v(N);-vi;ra];
 objective=[zeros(1,n),1];
-
+it=0:-1:1-n;
 while 1
   IN=struct('obj',objective,'A',A1,'B',B1);
   OUT = cddmex('solve_lp_DS',IN);
@@ -74,7 +75,6 @@ while 1
   if isempty(bS2)==1
      break;
   end
-  it=0:-1:1-n;
   mS2=rem(floor(bA(:)*pow2(it)),2);
   tmS2=mS2';
   rk=rank(mS2);

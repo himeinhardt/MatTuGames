@@ -1,8 +1,9 @@
 function hidx=p_holler(th,w_vec)
-% HOLLER computes the Holler index from the set of minimal winning coalitions
+% P_HOLLER computes the Holler index from the set of minimal winning coalitions
 % while using Matlab's PCT.
 %
-% Usage: hidx=holler(th,w_vec)
+% Usage: hidx=p_holler(th,w_vec)
+%
 % Define variables:
 %  output:
 %  hidx      -- The Holler index.
@@ -25,7 +26,6 @@ function hidx=p_holler(th,w_vec)
 n=length(w_vec);
 sWCk=zeros(1,n);
 mWC=p_minimal_winning(th,w_vec);
-SWC=length(mWC);
 parfor k=1:n;
   mWCk=mWC(bitget(mWC,k)==1);
   sWCk(k)=length(mWCk);

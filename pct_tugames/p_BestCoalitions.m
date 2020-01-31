@@ -31,6 +31,7 @@ function [e,A,smat]=p_BestCoalitions(v,x,smc)
 %   05/18/2011        0.1 alpha       hme
 %   09/12/2012        0.2             hme
 %   10/22/2012        0.3             hme
+%   05/15/2014        0.5             hme
 %                
 
 
@@ -46,11 +47,10 @@ end
 tol=5000*eps;
 n=length(x);
 % Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % the excesses of x wrt. the game v
-e=v-Xm;
-v=[];
-Xm=[];
+e=v-Xm{1};
+clear v Xm;
 % Truncate data arrays. 
 [se, sC]=sort(e,'descend');
 B=eye(n);
@@ -78,13 +78,12 @@ while q~=q0
   end
   k=k+1;
 end
-m=max(max(B));
+m=max(B(:));
 e1=se(m)-tol;
 le=se>=e1;
 tS=sC(le);
 te=se(le);
-se=[];
-sC=[];
+clear se sC;
 
 % Computing the set of most effective coalitions
 % and matrix of maximum surpluses.

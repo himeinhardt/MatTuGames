@@ -29,16 +29,39 @@ function [bcQ, cmat, rk, cf]=balancedQ(cS,n,tol)
 %    0.5000
 %
 %
+%
 % 2. Example:
 % A collection of sets given by their unique integer representation:
 %
 % cS=[1   254   253     2    16   239   252     3   127   191   223   247   251     4];
 % n=8;
-% bSQ=balancedQ(cS,n) 
 % 
-% bSQ =
+%  [bcQ, ~, ~,cf]=balancedQ(cS,n)
 %
-%     1
+% bcQ =
+%
+%  logical
+%
+%   1
+%
+%
+% cf =
+%
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.1818
+%    0.1818
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.0909
+%    0.1818
+%    0.0909
+%
 % 
 % Define variables:
 %  output:
@@ -64,6 +87,7 @@ function [bcQ, cmat, rk, cf]=balancedQ(cS,n,tol)
 %   01/02/2015        0.6             hme
 %   03/28/2015        0.7             hme
 %   02/24/2018        0.9             hme
+%   05/25/2019        1.1             hme
 %                
 
     
@@ -157,49 +181,26 @@ mtv=verLessThan('matlab','9.1.0');
       opts.Preprocess='none';
       opts.TolCon=1e-6;
       opts.MaxIter=10*(N+n);
-      [sol,fval,ef] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      [sol,fval,ef,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
     end
 %
 % Trying to find positive weights.
 %
-tol1=1000*tol;
-if nargout == 4
-  if ef==1
-     B=[cmat,ov];
-     [sb1,sb2]=size(B);
-     dlb=zeros(sb2,1); %+tol1
-%     dlb(sb2)=tol1;
-     dub=ones(sb2,1);
-     db=ones(n,1);
-     dzf=[-ovn;beq];
-
-     try
-        %options = cplexoptimset('MaxIter',128,'Simplex','off','Display','off');
-        %options.Param.lpmethod=3;
-%        [cf,dfval,def] = cplexlp(dzf,B,db,[],[],dlb,dub,[],options);
-        [cf,dfval,def] = cplexlp(dzf,[],[],B,db,dlb,dub,[],options);
-     catch
-        [cf,dfval,def] = linprog(dzf,[],[],B,db,dlb,dub,[],opts);
-     end
-     cf(end)=[];
-     zQ=any(cf<tol*100);
-     if zQ==1
-       nv=null(cmat);
-       if isempty(nv);
-          cf=cmat\ov;
-       else
-          nv2=size(nv,2);
-          if nv2==1 
-             cf=pinv(cmat)*ov;
-%             cf=cf+nv
-          else
-            cf1=nv*ones(nv2,1)/nv2;
-            ncf1=pinv(cmat)*ov;
-            cf=cf1+ncf1;
-          end
-       end
-     end
+if ef==1
+  y1=lambda.ineqlin;
+  y2=lambda.eqlin;
+  cf=(y1+1);
+%% Cross check! Result must give the zero vector.
+%  zv=zeros(n,1);
+  cv=cmat*cf;
+  bq=-cv+y2*ov;
+  aeqQ=all(abs(bq)<=tol);
+  if aeqQ==1
+    cf=cf/cv(1);
   else
-    cf=[];
+    warning('blInQ:Wrn0','Balanced weights may not be correct! Set a tolerance value.');
+    cf=cf/cv(1);
   end
+else
+  cf=[];
 end

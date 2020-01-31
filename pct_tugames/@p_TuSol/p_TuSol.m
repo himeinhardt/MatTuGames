@@ -80,6 +80,7 @@ classdef p_TuSol < TuGame
 %   05/27/2013        0.3               hme
 %   08/06/2013        0.4               hme    
 %   08/03/2016        0.9               hme
+%   04/29/2019        1.1               hme
 %
 
 
@@ -228,16 +229,16 @@ classdef p_TuSol < TuGame
         function obj = set.tu_prn(obj,pt)
           if isempty(pt)
              try
-               [solvQ,qq,pp,y]= prenucl(obj);
-             catch
-               solvQ = PreNucl(obj);
+               solvQ = PreNucl_llp(obj);
                y=0;
+             catch
+               [solvQ,qq,pp,y]= prenucl(obj);
              end
               if y==Inf
                  pnQ = PrekernelQ(obj,solvQ);
                  if pnQ == 1
                     obj.tu_prn = solvQ;
-                    obj.prn_valid = balancedCollectionQ(obj);
+                    obj.prn_valid = balancedCollectionQ(obj);;
                     obj.tu_prk2 = solvQ;
                     obj.prk2_valid = true;
                  else
@@ -258,7 +259,6 @@ classdef p_TuSol < TuGame
              obj.prn_valid = p_checkPreNuc(obj);
           end
         end
-
 
          function obj = p_setShapley(obj,sol)
          % P_SETSHAPLEY sets the Shapley value to the class object p_TuSol.
@@ -491,15 +491,15 @@ classdef p_TuSol < TuGame
                  pkQ = PrekernelQ(obj,solvQ);
                  if pkQ == 1
                     pnQ = balancedCollectionQ(obj);
-                    obj.prk2 = solvQ;
+                    obj.tu_prk2 = solvQ;
                     obj.prk2_valid = true;
                  else
                     pnQ = false;
                  end
-              else
+              else 
                 pkQ = PrekernelQ(obj,obj.tu_prn);
                 if pkQ == 1
-                   pnQ = balancedCollectionQ(obj); 
+                   pnQ = balancedCollectionQ(obj);
                 else
                    pnQ = false;
                  end

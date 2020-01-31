@@ -4,7 +4,7 @@ function [SCRGP SCRGPC]=p_k_StrConverse_RGP_Q(clv,x,K,str,tol)
 % for every 2<=|S|<=K.
 % Using Matlab's PCT.
 %
-% Usage: [SCRGP SCRGPC]=p_k_StrConverse_RGP_Q(clv,x,K,str,tol)
+% Usage: [SCRGP SCRGPC]=clv.p_k_StrConverse_RGP_Q(x,K,str,tol)
 %
 % Define variables:
 %  output:
@@ -57,10 +57,10 @@ if nargin<2
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=p_PreKernel(clv);
+      x=clv.p_PreKernel();
    end
    if isempty(x)
-     x=p_PreKernel(clv);
+     x=clv.p_PreKernel();
    end
   tol=10^6*eps;
   str='PRK';
@@ -109,7 +109,7 @@ parfor int=2:K;
  for k=1:siPM2
  sV_x{int,k}=x;
    if strcmp(str,'SHAP')
-     vS{int,k}=HMS_RedGame(clv,x,cl2(k)); %Hart-MasColell reduced game.
+     vS{int,k}=clv.HMS_RedGame(x,cl2(k)); %Hart-MasColell reduced game.
      stdsol{int,k}=ShapleyValue(vS{int,k}); % solution x restricted to S.
      rS{int,k}=PlyMat2(k,:);
      sV_x{int,k}(rS{int,k})=stdsol{int,k}; % extension to (x,x_N\S).
@@ -117,12 +117,12 @@ parfor int=2:K;
      crgpQ(int,k)=all(crgpq{int,k});
    elseif strcmp(str,'PRK')
      rS{int,k}=PlyMat2(k,:);
-     vS{int,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+     vS{int,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
      stdsol{int,k}=PreKernel(vS{int,k},x(rS{int,k})); % solution x restricted to S.
      sV_x{int,k}(rS{int,k})=stdsol{int,k}; % extension to (x,x_N\S).
-     crgpQ(int,k)=PrekernelQ(clv,sV_x{int,k});
+     crgpQ(int,k)=clv.PrekernelQ(sV_x{int,k});
    elseif strcmp(str,'PRN')
-     vS{int,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+     vS{int,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
      try
        stdsol{int,k}=Prenucl(vS{int,k}); % solution x restricted to S.
      catch
@@ -134,10 +134,10 @@ parfor int=2:K;
      crgpQ(int,k)=all(crgpq{int,k});
    else
      rS{int,k}=PlyMat2(k,:);
-     vS{int,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+     vS{int,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
      stdsol{int,k}=PreKernel(vS{int,k},x(rS{int,k})); % solution x restricted to S.
      sV_x{int,k}(rS{int,k})=stdsol{int,k}; % extension to (x,x_N\S).
-     crgpQ(int,k)=PrekernelQ(clv,sV_x{int,k});
+     crgpQ(int,k)=clv.PrekernelQ(sV_x{int,k});
    end
   end
  kvS{int-1}=vS{int,:};

@@ -23,8 +23,6 @@ function subg=SubGame(clv,S)
 %   10/28/2012        0.3             hme
 %                
 
-v=clv.tuvalues;
-N=clv.tusize;
 n=clv.tuplayers;
 subS=SubSets(S,n);
 subg=v(subS);

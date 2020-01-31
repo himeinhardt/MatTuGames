@@ -58,7 +58,7 @@ end
 lb=[vi,-Inf];
 ub=[ra,Inf];
 
-
+A1=zeros(N,n);
 for k=1:n, PlyMat(:,k) = bitget(S,k);end
 A1=-PlyMat(1:N,:);
 A1(N+1,:)=PlyMat(end,:);

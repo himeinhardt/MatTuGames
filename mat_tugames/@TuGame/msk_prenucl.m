@@ -45,7 +45,7 @@ S=1:N;
 %ra = reasonable_outcome(v);
 %ub=[ra,inf]';
 lb=[-inf(n,1);-inf];
-
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;

@@ -1,8 +1,8 @@
 function [crq, x]=CddCoreQ(clv,tol)
-% COREQ checks the existence of the core of game v.
+% CDDCOREQ checks the existence of the core of game v using cddmex.
 % 
 %
-% Usage: [crqi, x, lS]=CddCoreQ(v,tol)
+% Usage: [crqi, x, lS]=clv.CddCoreQ(tol)
 % Define variables:
 %  output:
 %  crq      -- Returns 1 (true) or 0 (false).

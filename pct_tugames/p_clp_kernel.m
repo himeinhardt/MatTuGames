@@ -27,7 +27,9 @@ function [x, Lerr, smat, xarr]=p_clp_kernel(v,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   05/28/2013        0.3             hme
+%   05/12/2019        1.1             hme
 %                
+
 
 if nargin<1
     error('At least the game must be given!');
@@ -43,7 +45,7 @@ elseif nargin<2
     if slb==1
       error('Game is not essential!')
     end
-    if N==1,
+    if N==1
       Si=N;
      else
       Si=bitset(N,k,0);
@@ -155,7 +157,7 @@ while cnt<CNT
     E(m,:)=ones(1,n);
     a=(v(ec21)-v(ec12))';
     a(m)=v(N);
-    if n==2, a=a'; end;
+    if n==2, a=a'; end
     err=norm(E*x-a)^2; if err<eps, x=x';break; end
 % checking kernel property
     ir=(x-vi)';
@@ -197,7 +199,7 @@ while cnt<CNT
     xarr(cnt,:)=x'; % intermediate results
 end
 
-if cnt==CNT, % should trigger errors ....
+if cnt==CNT % should trigger errors ....
   if slv==0 && smc==1
        msg01='No Kernel Element found. Changing Cardinality.';
        warning('Kr:ChangCard',msg01);
@@ -275,8 +277,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0 
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.

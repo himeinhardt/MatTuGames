@@ -25,6 +25,7 @@ function [aprkQ smat e]=p_Anti_PrekernelQ(v,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   11/03/2012        0.3              hme
+%   05/16/2014        0.5              hme
 %                
 
 if nargin < 2
@@ -74,10 +75,9 @@ function [e, smat]=p_msrpls(v,x,n)
 
 % the excesses of x wrt. the game v
 % Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
-e=v-Xm;
-v=[];
-Xm=[];
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
+e=v-Xm{1};
+clear v Xm;
 % Determining min surpluses.
 spmd
  [se, sC]=sort(e,'ascend');

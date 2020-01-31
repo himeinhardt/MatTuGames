@@ -27,6 +27,7 @@ function bcQ=balancedCollectionQ(clv,x,tol)
 %   01/03/2015        0.6             hme
 %   03/29/2015        0.7             hme
 %   02/24/2018        0.9             hme
+%   04/29/2019        1.1             hme
 %                
 
 v=clv.tuvalues;
@@ -34,8 +35,10 @@ N=clv.tusize;
 n=clv.tuplayers;
 
 if nargin < 2 
-   tol=10^4*eps;
+   tol=10^5*eps;
    if isa(clv,'TuSol');
+      x=clv.tu_prn;
+   elseif isa(clv,'p_TuSol');
       x=clv.tu_prn;
    else
       try
@@ -45,7 +48,7 @@ if nargin < 2
       end
    end
 elseif nargin<3
-   tol=10^4*eps;
+   tol=10^5*eps;
 end
 
 

@@ -8,7 +8,7 @@ function [CRGP CRGPC]=p_StrConverse_RGP_Q(v,x,str,tol)
 % Usage: [CRGP CRGPC]=p_StrConverse_RGP_Q(v,x,str,tol)
 % Define variables:
 %  output: Fields
-%  CrgpQ    -- Returns 1 (true) whenever the CRGP is satisfied, 
+%  CrgpQ    -- Returns 1 (true) whenever the strong CRGP is satisfied, 
 %              otherwise 0 (false).
 %  crgpQ    -- Gives a precise list of reduced games for which the 
 %              restriction of x on S is a solution of the reduced game vS. 
@@ -137,7 +137,7 @@ parfor k=1:N-1
 end
 
 if strcmp(str,'PRK')
-  sV_sol{1,N}=PreKernel(v,x);
+  sV_sol{1,N}=p_PreKernel(v,x);
 elseif strcmp(str,'PRN')
   try
     sV_sol{1,N}=Prenucl(v);
@@ -145,9 +145,9 @@ elseif strcmp(str,'PRN')
     sV_sol{1,N}=PreNucl(v); % use a third party solver instead!
   end
 elseif strcmp(str,'SHAP')
-  sV_sol{1,N}=ShapleyValue(v);
+  sV_sol{1,N}=p_ShapleyValue(v);
 else
-  sV_sol{1,N}=PreKernel(v,x);
+  sV_sol{1,N}=p_PreKernel(v,x);
 end
 crgpq{N}=abs(sV_sol{1,N}-x)<tol;
 crgpQ(N)=all(crgpq{N});

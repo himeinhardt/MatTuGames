@@ -10,13 +10,13 @@ function [v prof_mat]=assignment_game(sl_vec,prof_mat)
 % Define variables:
 %  output:
 %  v        -- An assignment game v of length 2^n-1.
-%  prof_mat -- A symmetric profit matrix.
+%  prof_mat -- A square profit matrix.
 %            
 %  input:
 %  sl_vec   -- A vector of sellers. From this vector, the vector of 
 %              buyers will be constructed.
 %              Example: sl_vec=[1 2 3 4 5];
-%  prof_mat -- A non or symmetric profit matrix.
+%  prof_mat -- A non or square profit matrix.
 %              use the function profit_matrix() to compute one.
 %              or invoke
 %              prfm=magic(5);
@@ -30,6 +30,7 @@ function [v prof_mat]=assignment_game(sl_vec,prof_mat)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/15/2010        0.1 beta        hme
+%   03/02/2014        0.5             hme
 %                
 
 slnb=length(sl_vec);
@@ -64,9 +65,6 @@ M1=sl*ones(m,1);
 M2=by*ones(m,1);
 sm1=SubSets(M1,n);
 sm2=SubSets(M2,n);
-Si=cell(m);
-Sj=cell(m);
-Sij=cell(m);
 Pm=cell(m);
 
 
@@ -76,10 +74,10 @@ lC=length(slC);
 
 for i=1:m
   for j=1:m
-    Si{i,j}=bitget(slC,i)==1;
-    Sj{i,j}=bitget(slC,by_vec(j))==1;
-    Sij{i,j}=Si{i,j} & Sj{i,j};
-    Pm{i,j}=prof_mat(i,j)*Sij{i,j};
+    Si=bitget(slC,i)==1;
+    Sj=bitget(slC,by_vec(j))==1;
+    Sij=Si & Sj;
+    Pm{i,j}=prof_mat(i,j)*Sij;
   end
 end
 
@@ -87,8 +85,8 @@ end
 prm=perms(sl_vec);
 spr=size(prm);
 cb=spr(1);
-A=eye(m);
-Pk=zeros(m);
+A=speye(m);
+Pk=false(m);
 % This matrix needs for 8 sellers at least 2.52 GB memory.
 v1=zeros(cb,lC); 
 

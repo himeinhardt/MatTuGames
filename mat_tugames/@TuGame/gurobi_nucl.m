@@ -57,6 +57,7 @@ lb=[vi,-Inf];
 ub=[ra,Inf];
 
 S=1:N;
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(:,end+1)=-1;
 A1(N,end)=0;
@@ -73,7 +74,7 @@ params.method= 3; % Use concurrent.
 % params.method= 4; % Use deterministic concurrent.
 % params.start = PreKernel(v);
 params.TimeLimit = 1000;
-
+it=0:-1:1-n;
 while 1
   A2=sparse(A1);
   model.A=A2;
@@ -100,7 +101,6 @@ while 1
   if isempty(bS2)==1
      break;
   end
-  it=0:-1:1-n;
   mS2=rem(floor(bA(:)*pow2(it)),2);
   tmS2=mS2';
   rk=rank(mS2);

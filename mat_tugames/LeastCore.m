@@ -27,6 +27,7 @@ function [fmin,x,A1,B1,exitflag]=LeastCore(v,tol)
 %   12/22/2012        0.3             hme
 %   09/22/2014        0.5             hme
 %   03/28/2015        0.7             hme
+%   04/21/2019        1.0             hme
 %                
 
 
@@ -37,9 +38,9 @@ end
 N=length(v);
 [~, n]=log2(N);
 S=1:N;
-for k=1:n, PlyMat(:,k) = bitget(S,k);end
-A1=-PlyMat(1:N,:);
-A1(N+1,:)=PlyMat(end,:);
+A1=zeros(N,n);
+for k=1:n, A1(:,k) = -bitget(S,k);end
+A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;
 A1(N:N+1,end)=0;
 A2=sparse(A1);

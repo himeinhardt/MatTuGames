@@ -27,6 +27,7 @@ function [bcQ, cmat, S]=Anti_balancedCollectionQ(v,x,tol)
 %   ====================================================
 %   01/03/2015        0.6             hme
 %   03/28/2015        0.7             hme
+%   02/24/2018        0.9             hme
 %                
 
     
@@ -40,7 +41,7 @@ bcQ=false;
 
 N=length(v);
 [~, n]=log2(N);
-effQ=abs((sum(x)-v(N))<tol);
+effQ=abs(sum(x)-v(N))<tol;
 
 if effQ==0
    cmat=[];
@@ -123,15 +124,27 @@ zf=A'*ovn;
 f=zf';
 Aeq=ov';
 beq=0;
-    try 
-      options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
-      options.barrier.convergetol=1e-12;
-      options.simplex.tolerances.feasibility=1e-9;
-      options.simplex.tolerances.optimality=1e-9;
-      options.emphasis.numerical=1;
-      options.barrier.display=0;
-      options.feasopt.tolerance=1e-12;
-      options.Param.lpmethod=2;
+mtv=verLessThan('matlab','9.1.0');
+    try
+      if mtv==1
+         options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
+         options.barrier.convergetol=1e-12;
+         options.simplex.tolerances.feasibility=1e-9;
+         options.simplex.tolerances.optimality=1e-9;
+         options.emphasis.numerical=1;
+         options.barrier.display=0;
+         options.feasopt.tolerance=1e-12;
+         options.Param.lpmethod=2;
+      else
+         options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+         options.barrier.convergetol=1e-12;
+         options.simplex.tolerances.feasibility=1e-9;
+         options.simplex.tolerances.optimality=1e-9;
+         options.emphasis.numerical=1;
+         options.barrier.display=0;
+         options.feasopt.tolerance=1e-12;
+         options.Param.lpmethod=2;
+      end
       [sol,fval,exitflag,~,lambda] = cplexlp(f,A,b,Aeq,beq,[],[],[],options);
     catch
       opts.Display='off';

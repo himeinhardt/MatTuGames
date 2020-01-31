@@ -32,6 +32,7 @@ function [core_vert crst]=AntiCoreVertices(clv,method,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   05/15/2019        1.1             hme
 %                
 
 v=clv.tuvalues;
@@ -53,6 +54,7 @@ else
     error('Anti-Core is empty!');
   else
   end
+  v=v+tol;
 end
 
 if strcmp(method,'gmp')
@@ -115,7 +117,7 @@ fprintf(fid,format,crst');
 fprintf(fid,'%s\n','end');
 fclose(fid);
  else
-   disp('Output file open failed');
+   disp('Failed to open Output file');
 end
 
 % Calling the external library cdd.
@@ -136,8 +138,14 @@ if fid>0
       jj=1;
       while 1
          tline = fgetl(fid);
-         if ~ischar(tline)
-              break
+         tchQ=ischar(tline);
+         if  tchQ==0
+              if tline==-1 && jj>1
+                 break
+              else
+                 core_vert=[];
+                 break
+              end
          else
             core_vert(jj,:)=str2num(tline);
             jj=jj+1;
@@ -152,22 +160,22 @@ if fid>0
    end
   fclose(fid);
  else
-  error('Output file open failed');
+  error('Failed to open Output file');
 end
 
 % Reformating the output
 if strcmp(method,'gmp')
   if isempty(core_vert)
-   core_vert=tline;
-   core_vert=str2num(core_vert);
+%   core_vert=tline;
+%   core_vert=str2num(core_vert);
   else
    core_vert(:,1)=[]; % deleting the first column vector of ones.
-  end
 % Converting string into real numbers in order to reformat output. 
 %  core_vert=str2num(core_vert);
 % Converting real numbers into a rational number approximation represented 
 % as a string.
-  core_vert=rats(core_vert); 
+  core_vert=rats(core_vert);
+  end 
 else
   core_vert=core_vert';
   core_vert(:,1)=[]; % deleting the first column vector of ones.

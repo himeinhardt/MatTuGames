@@ -1,4 +1,4 @@
-function sS=clToMatlab(clm)
+function [sS,sidx]=clToMatlab(clm)
 % CLTOMATLAB computes from a cell or matrix, which contains the coalition
 % representation in generic power set representation (e.g. Mathematica), 
 % into the corresponding unique integer representation of coalitions 
@@ -9,6 +9,7 @@ function sS=clToMatlab(clm)
 % Define variables:
 %  output:
 %  sS       -- The list of coalitions in unique integer representation.
+%  sidx     -- Inital position of coalitions. 
 %  input:
 %  clm      -- The cell or matrix, which contains the coalition information
 %              in generic power set representation (e.g. Mathematica format).   
@@ -35,7 +36,7 @@ function sS=clToMatlab(clm)
 %
 % in Matlab's coalition representation.
 %
-% Even a vector of players can be input, e.g. clv=[1   2   5   6]; 
+% Even a vector of players can be inputed, e.g. clv=[1   2   5   6]; 
 %
 % sS3=clToMatlab(clv);
 % which returns sS3 = 
@@ -56,6 +57,7 @@ function sS=clToMatlab(clm)
 %   Date              Version         Programmer
 %   ====================================================
 %   05/30/2012        0.2 beta        hme
+%   01/30/2017        0.9             hme
 %                    
     
 if iscell(clm)
@@ -64,12 +66,12 @@ if iscell(clm)
    for k=1:csz
        sS(k)=sum(2.^(clm{k}-1));
    end
-   sS=sort(sS);
+   [sS,sidx]=sort(sS);
  elseif ismatrix(clm) 
   clm=clm-1;
   clm=2.^clm;
   cl=sum(clm,2)';
-  sS=sort(cl);
+  [sS,sidx]=sort(cl);
 else
   error('The input format must either be a cell or matrix!')
 end

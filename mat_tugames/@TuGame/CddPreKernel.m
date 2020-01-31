@@ -26,6 +26,7 @@ function [x, Lerr, smat, xarr]=CddPreKernel(clv,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/28/2012        0.3 beta        hme
+%   05/03/2019        1.1             hme
 %                
 
 
@@ -237,8 +238,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
@@ -253,65 +254,40 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
-
-
-
 % Computing the set of most effective coalitions.
 A=eye(n);
-a=false(lcl,n);
-c=cell(n);
-slcCel=cell(n);
-binCel=cell(n);
-abest=cell(n);
-
+% Constructing the set of coalitions containing player i
+% without player j.
+% Selecting the set of most effective coalitions
+% having smallest/largest cardinality.
 for i=1:n
-   a(:,i)=bitget(tS,i)==1;
-end
-b=a==0;
-
-% Due to floating point computation the set of most effective
-% coalitions might be too small. We set a tolerance value
-% hopefully high enough to select a larger set. In case
-% that the set of most effective coalitions is not 
-% selected correctly, pathological cycles may appear.
-
-for i=1:n-1
-   for j=i+1:n
-       c{i,j}=tS(a(:,i) & b(:,j));
-       c{j,i}=tS(a(:,j) & b(:,i));
-       ex_ij=te(a(:,i) & b(:,j));
-       ex_ji=te(a(:,j) & b(:,i));
-       abest{i,j}=abs(smat(i,j)-ex_ij)<tol;
-       abest{j,i}=abs(smat(j,i)-ex_ji)<tol;
-       slcCell{i,j}=c{i,j}(abest{i,j});
-       slcCell{j,i}=c{j,i}(abest{j,i});
-   end
-end
-
-
-for i=1:n
-  for j=1:n
-   if A(i,j)== 0
-     lCi=length(slcCell{i,j});
-     if lCi==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell{i,j}=SortSets(slcCell{i,j},n,lCi,smc);
-      if smc==1
-           A(i,j)=binCell{i,j}(1);  % Selecting smallest cardinality
-       elseif smc==0
-           A(i,j)=binCell{i,j}(end); % Selecting largest cardinality
-       else 
-           A(i,j)=binCell{i,j}(1);             % Selecting default
-      end
+   a=bitget(tS,i)==1;
+   for j=1:n
+    if i~=j
+       b=bitget(tS,j)==0;
+       lij=a & b;
+       cij=tS(lij);
+       ex_ij=te(lij);
+       abest=abs(smat(i,j)-ex_ij)<tol;
+       slc_cij=cij(abest);
+       lC=numel(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
      end
     end
-  end
 end
-
 
 %-------------------------------
 function Seff=SortSets(effij,n,bd,smc);

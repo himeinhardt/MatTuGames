@@ -1,8 +1,8 @@
 function RepSol=replicate_prk(clv,x,scl,smc)
-% REPLICATE_PRK replicates the pre-kernel solution x as a pre-kernel of
+% REPLICATE_PRK replicates the pre-kernel solution x of game v as a pre-kernel of
 % the game space v_sp.
 %
-% Usage: RepSol=replicate_prk(clv,x,scl,smc)
+% Usage: RepSol=clv.replicate_prk(x,scl,smc)
 %
 % Define variables:
 % output:
@@ -43,10 +43,10 @@ if nargin==1
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=PreKernel(clv);
+      x=clv.PreKernel();
    end
    if isempty(x)
-     x=PreKernel(clv);
+     x=clv.PreKernel();
    end
    scl=1;
    smc=1;
@@ -67,9 +67,9 @@ else
 end
 
 if isempty(x)
-     x=PreKernel(clv);
+     x=clv.PreKernel();
 else
-     prkQ=PrekernelQ(clv,x);
+     prkQ=clv.PrekernelQ(x);
    if prkQ==0 
        warning('Input vector is not a pre-kernel element!')
        warning('Input vector must be a pre-kernel element!')
@@ -79,16 +79,16 @@ else
    end
 end
     
-[v_spc mat_uc mat_W mat_V A_v mat_vz]=game_space(clv,x,scl,smc);
+[v_spc, mat_uc, mat_W, ~, A_v, mat_vz]=clv.game_space(x,scl,smc);
 mat_hd=mat_uc';
 sz_v=size(v_spc);
 lgsp=sz_v(1);
 cA=cell(lgsp,1);
-v_spc_prkQ=zeros(1,lgsp);
-sbcQ=zeros(1,lgsp);
+v_spc_prkQ=false(1,lgsp);
+sbcQ=false(1,lgsp);
 
 for k=1:lgsp
-   [e cA{k,1} smat]=BestCoalitions(v_spc(k,:),x,smc);
+   [~, cA{k,1} smat]=BestCoalitions(v_spc(k,:),x,smc);
    lms=abs(smat-smat')<tol;
    v_spc_prkQ(k)=all(all(lms));
    sbcQ(k)=all(all(cA{k,1}==A_v));

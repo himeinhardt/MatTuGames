@@ -1,5 +1,5 @@
 function sS=p_SubSets(S,n)
-% SUBSETS computes the power set (subsets) of set S. Must be a number not a
+% P_SUBSETS computes the power set (subsets) of set S. Must be a number not a
 % vector!
 %
 % Example: 
@@ -48,10 +48,9 @@ end
 
 
 it=0:-1:1-n;
-vecS=rem(floor(S(:)*pow2(it)),2)==1;
+slcP=rem(floor(S(:)*pow2(it)),2)==0;
 
 J=1:n;
-slcP=vecS==0;
 sP=J(slcP);
 
 S1=1:S; 

@@ -49,18 +49,18 @@ sS=S;
 nNk=Nk;
 vi=v(S);
 s_vi=vi*ones(n,1);
-if s_vi<=v(N)
-  error('Game is inessential!');
-end
+%if s_vi<=v(N)
+%  error('Game is anti inessential!');
+%end
 Nk(end+1)=N;
 it=0:-1:1-n;
 PlyMat=rem(floor(Nk(:)*pow2(it)),2);
 %
 % Defining imputation set.
 %
-A1=PlyMat(end,:);
+A1=-PlyMat(end,:);
 A2=PlyMat(1:n,:);
-B1=v(N);
+B1=-v(N);
 B2=v(nNk)';
 % Defining the H polyhedron
 H=struct('A',[A1;A2],'B',[B1;B2],'lin',(1:size(B1,1))');
@@ -69,7 +69,7 @@ H=struct('A',[A1;A2],'B',[B1;B2],'lin',(1:size(B1,1))');
 %V=cddmex('extreme',H);
 %imp_vert=fliplr(V.V);
 % Trying to find the right position for plotting purpose.
-if n<6
+if n<5
    P1 = Polyhedron( 'A', A2, 'b', B2, 'Ae', A1, 'be', B1);
    imp_vert=P1.V;
 else

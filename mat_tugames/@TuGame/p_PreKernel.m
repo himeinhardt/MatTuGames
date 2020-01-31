@@ -24,6 +24,9 @@ function [x, Lerr, smat, xarr]=p_PreKernel(clv,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   11/11/2014        0.6             hme
+%   09/18/2017        0.9             hme
+%   05/04/2019        1.1             hme
 %                
 
 if nargin<2
@@ -31,6 +34,7 @@ if nargin<2
   N=clv.tusize;
   n=clv.tuplayers;
   gt=clv.tutype;
+  mnQ=clv.tumnQ;
   stx=clv.tustpt;
   if isempty(stx)
     Si=clv.tuSi;
@@ -60,16 +64,17 @@ if nargin<2
 else
   v=clv.tuvalues;
   gt=clv.tutype;
+  mnQ=clv.tumnQ;
   smc=1;
 end
 
-[x, Lerr, smat, xarr]=computePrk(v,x,smc,0,gt);
+[x, Lerr, smat, xarr]=computePrk(v,x',smc,0,gt,mnQ);
 smat=tril(smat,-1)+triu(smat,1);
 
 % Main function to compute a
 % pre-kernel element.
 %-----------------------------
-function [x, Lerr, smat, xarr]=computePrk(v,x,smc,slv,gt)
+function [x, Lerr, smat, xarr]=computePrk(v,x,smc,slv,gt,mnQ)
 % 
 %  output:  -- as above.
 %
@@ -83,7 +88,6 @@ function [x, Lerr, smat, xarr]=computePrk(v,x,smc,slv,gt)
 
 n=length(x);
 N=2^n-1;
-x=x';
 cnt=0;
 if 15<=n 
  CNT=n+2;
@@ -121,7 +125,7 @@ while cnt<CNT
   if n< 18 || islogical(v)
     if slv==0
        if cond(Q)>10^4
-           x1=pinv(Q)*b; %x=pinv(E)*a (SVD-decomposition)
+           x1=qrginv(Q)*b; %x=pinv(E)*a (SVD-decomposition)
            x2=svd_dec(Q,b);
            hx1=norm(E*x1-a)^2;
            hx2=norm(E*x2-a)^2;
@@ -139,7 +143,11 @@ while cnt<CNT
                 if cond(Q)>10^3
                  x=qr_dec(Q,b); % (QR-decomposition)
                 else 
-	         x=chol_dec(Q,b); % (Cholesky factorization)               
+                 if mnQ==0
+                   x=svd_dec(Q,b); % (SVD-decomposition)
+                 else
+                   x=pinv(Q)*b;
+                 end
                 end
               elseif smc==1 
                 if cond(Q)>10^3
@@ -154,10 +162,22 @@ while cnt<CNT
 	         x=chol_dec(Q,b); % (Cholesky factorization)               
                 end   
              end
-    else x=pinv(Q)*b; % (SVD-decomposition)
+    else 
+       x=qrginv(Q)*b; % (QR-decomposition)
     end
    else
-     x=pinv(E)*a;
+    if mnQ==1
+       rcQ=rcond(Q);
+       if rcQ > 1e-8
+          x=svd_dec(Q,b);
+       else
+          Q=10^5*Q;
+          b=10^5*b;
+          x=qrginv(Q)*b;
+       end
+    else
+     x=qrginv(Q)*b;
+    end
    end
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
@@ -171,24 +191,27 @@ while cnt<CNT
     xarr(cnt,:)=x'; % intermediate results
 end
 
+if err<eps
+  x=x';
+else
 if cnt==CNT, % should trigger errors ....
   if slv==0 && smc==1
        msg01='No Pre-Kernel Element found. Changing Cardinality.';
        warning('PrK:ChangCard',msg01);
-       [x, Lerr, smat, xarr]=computePrk(v,x',0,slv,gt);
+       [x, Lerr, smat, xarr]=computePrk(v,x,0,slv,gt,mnQ);
   elseif slv==0 && smc==0 
        msg02='No Pre-Kernel Element found. Changing the Solver.';
        warning('PrK:ChangSolv',msg02);
-       [x, Lerr, smat, xarr]=computePrk(v,x',smc,1,gt);
+       [x, Lerr, smat, xarr]=computePrk(v,x,smc,1,gt,mnQ);
   elseif slv==1 && smc==0 
        msg01='No Pre-Kernel Element found. Changing Cardinality to Default Value.';
        warning('PrK:Default',msg01);
-       [x, Lerr, smat, xarr]=computePrk(v,x',1,1,gt);
+       [x, Lerr, smat, xarr]=computePrk(v,x,1,1,gt,mnQ);
   elseif slv==1 && smc==1
-       x=(v(N)/n)*ones(1,n);
+       x=(v(N)/n)*ones(n,1);
        msg01='No Pre-Kernel Element found. Changing to Start Value.';
        warning('PrK:StartVal',msg01);
-       [x, Lerr, smat, xarr]=computePrk(v,x,2,1,gt);
+       [x, Lerr, smat, xarr]=computePrk(v,x,2,1,gt,mnQ);
   else
        x=x';
        msg02='No Pre-Kernel Element found. Change payoff vector and restart!';
@@ -197,7 +220,7 @@ if cnt==CNT, % should trigger errors ....
 else
   x=x';
 end
-
+end
 %--------------------------
 function x=chol_dec(Q,b)
 % Cholesky factorization solves the system
@@ -206,26 +229,39 @@ function x=chol_dec(Q,b)
 R=chol(Q);
 y=R'\b;
 x=R\y;
-
 %-----------------------------
 function x=qr_dec(Q,b)
 % QR-decomposition in order to solve the system 
 % Q x = b 
 % 
 %
-[Q1,R1,P1]=qr(Q);
-y=R1'\b;
-x=Q1*y;
-
-
+mf=factorize(Q);
+if mf.A_condest > 10^16
+    [Q1,R1]=qr(Q,0);
+    y=R1'\b;
+    x=Q1*y;
+else
+   x=mf\b;
+end
 %------------------------
 function x=svd_dec(Q,b)
 % SVD-decomposition in order to solve the
 % system Q x = b.
 %
-[U1,S1,V]=svd(Q);
-y=S1\(U1'*b);
-x=V*y;
+n=size(Q);
+if n < 9
+  th=1e-18;
+else
+  th=1e-17;
+end
+if rcond(Q) < th
+  F=linfactor(Q);
+  x=linfactor(F,b);
+else
+  [U1,S1,V]=svd(Q);
+  y=S1\(U1'*b);
+  x=V*y;
+end
 
 %--------------
 function [A, smat]=effCoalitions(v,x,smc,cnt,gt)
@@ -261,15 +297,61 @@ elseif cnt > 10
 else
  tol=100*eps;
 end
-
-% borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end;
+%
+% Inspired by Jean Derks.
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % Computing the excess vector w.r.t. x.
-e=v-Xm;
-v=[];
-Xm=[];
+lv=islogical(v);
+e=v-Xm{1};
+% Truncate excess vector.
+if n>16
+   el = min(e);
+   eh = max(e);
+   if abs(eh+el)<10^7*eps;
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   elseif eh==1 && el==0
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   else
+      if lv==1
+         clear v Xm;
+         if eh > 0.7 && eh < 1
+            eh=1.3*eh;
+            pv=min((eh+el)*0.9,0.7); % 0.6 fine
+         else
+            pv=min((eh+el)*0.3,0.8);
+         end
+      else
+         N=2^n-1;
+         vN=v(N);
+         [mv,idx]=max(v);
+         clear v Xm;
+         if mv<0
+            eh= 0.3*eh;
+            pv=(eh+el)*1.2; % eh 0.3 fine (increase to improve).
+         elseif mv>vN
+            eh = 0.8*eh;
+            pv=(eh+el)*1.2; % 0.9 fine (increase to improve).
+         elseif idx<N
+            eh = 0.8*eh;
+            pv=(eh+el); % 0.9 fine (increase to improve).
+         else
+            eh = 0.8*eh;
+            pv=(eh+el)*0.3; %0.6 fine (decrease to improve)
+         end
+      end
+      lp=e>pv-tol;
+      e=e(lp);
+      fS=find(lp);
+      [e,fC]=sort(e,'descend');
+      sC=fS(fC);
+   end
+else
+   [e,sC]=sort(e,'descend');
+end
+%
 % Truncate data arrays.
-[e, sC]=sort(e,'descend');
 B=eye(n);
 smat=-inf(n);
 q0=n^2-n;
@@ -283,8 +365,8 @@ while q~=q0
   pli=pl(ai);
   plj=pl(bj);
   if isempty(plj)==0
-    for i=1:numel(pli)
-      for j=1:numel(plj)
+    for i=1:length(pli)
+      for j=1:length(plj)
         if B(pli(i),plj(j))==0
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
@@ -300,57 +382,38 @@ e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
 te=e(le);
-e=[];
-sC=[];
-
-slcCell=cell(n);
+clear e sC;
 A=eye(n);
-
-
 % Selecting the set of most effective coalitions 
 % having smallest/largest cardinality.
-
+% Assigning the set of selected coalitions to 
+% matrix A
 parfor i=1:n
    a=bitget(tS,i)==1;
    for j=1:n
-     if i<j
+    if i~=j
        b=bitget(tS,j)==0;
        lij=a & b;
        c_ij=tS(lij);
-       ex_ij=te(lij);
+       ve=te;
+       ex_ij=ve(lij);
        abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
-      elseif i>j
-       b=bitget(tS,j)==0;
-       lij=a & b;
-       c_ij=tS(lij);
-       ex_ij=te(lij);
-       abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
+       slc_cij=c_ij(abest_ij);
+       lC=length(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
     end
    end
-end
-
-% Assigning the set of selected coalitions to 
-% matrix A.
-parfor i=1:n
-  for j=1:n
-   if A(i,j)== 0
-      lC=length(slcCell{i,j});
-     if lC==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell_ij=SortSets(slcCell{i,j},n,lC,smc);
-      if smc==1
-           A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
-       elseif smc==0
-           A(i,j)=binCell_ij(end); % Selecting largest cardinality.
-      else
-           A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
-      end
-     end
-   end
-  end
 end
 
 

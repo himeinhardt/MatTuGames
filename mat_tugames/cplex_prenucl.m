@@ -26,12 +26,13 @@ function [x1, fmin]=cplex_prenucl(v,tol)
 %   12/21/2012        0.3             hme
 %   10/15/2013        0.5             hme
 %   02/24/2018        0.9             hme
+%   03/16/2019        1.0             hme
 %                
 
 
 warning('off','all');
 if nargin<2
- tol=10^8*eps;
+ tol=10^6*eps;
 end
 %tol=-tol;
 
@@ -52,34 +53,76 @@ if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
   options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.LargeScale='on';
+  options.Algorithm='dual-simplex';
+  options.TolFun=1e-10;
+  options.TolX=1e-10;
+  options.TolRLPFun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.Preprocess='none';
+  options.TolCon=1e-6;
+  options.MaxIter=10*(N+n);
 end
 
 S=1:N;
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;
 A1(N:N+1,end)=0;
 A2=sparse(A1);
-B1=[-v';v(N)];
+v1=v+tol;
+B1=[-v1';v(N)];
 C=[zeros(n,1);1];
 bA=find(A1(:,end)==0)';
 it=0:-1:1-n;
 while 1
   [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+%% We try this to overcome numerical issues!!
+%%exitflag
+  if exitflag~=1
+      B1=[-v1';v(N)-tol];
+      [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+  end
+  if exitflag~=1
+      B1=[-v1';v(N)+tol];
+      [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+  end
+  if exitflag~=1
+      ub=[UpperPayoff(v)';inf];
+      [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+  end
+  if exitflag~=1
+      %ub=[UpperPayoff(v)';inf];
+      lb=[smallest_amount(v)';-inf];
+      B1=[-v1';v(N)+tol];
+      [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+  end
+  if exitflag~=1
+      %ub=[UpperPayoff(v)';inf];
+      %lb=[smallest_amount(v)';-inf];
+      v1=v-tol;
+      B1=[-v1';v(N)];
+      [xmin,fmin,exitflag,~,lambda]=cplexlp(C,A2,B1,[],[],lb,ub,x0,options);
+  end
   x=xmin;
   x1=x';
   x1(end)=[];
-  bS1=(find(lambda.ineqlin>tol))';
+  y1=lambda.ineqlin;
+  bS1=(find(y1>tol))';
   bS2=setdiff(bS1,bA);
   if isempty(bS2)==1
      warning('on','all');
      break;
   end
   mS2=rem(floor(bA(:)*pow2(it)),2);
+  mS2(1:2,:)=[];
   tmS2=mS2';
   rk=rank(mS2);
   ov=ones(1,n);
-  wgh=pinv(tmS2)*ov';
+%  wgh=pinv(tmS2)*ov';
+  wgh=(y1+1);
   posQ=all(wgh>-tol);
   if exitflag ~=1
      warning('on','all');

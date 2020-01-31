@@ -21,8 +21,16 @@ function [RGP RGPC]=Reduced_game_propertyQ(v,x,str,tol)
 %               in accordance with the pre-nucleolus.
 %              'PRK' that is, the Davis-Maschler reduced game 
 %               in accordance with pre-kernel solution.
+%              'POPK' that is, the Davis-Maschler reduced game 
+%               in accordance with positive pre-kernel solution.
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value.
+%              'MODIC' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the modiclus.
+%              'MPRK' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the modified pre-kernel.
+%              'PMPRK' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the proper modified pre-kernel.
 %              'HMS_PK' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
@@ -42,6 +50,8 @@ function [RGP RGPC]=Reduced_game_propertyQ(v,x,str,tol)
 %   08/19/2010        0.1 beta        hme
 %   06/17/2012        0.2 beta        hme
 %   05/28/2013        0.3             hme
+%   02/06/2018        0.9             hme
+%   04/07/2018        1.0             hme
 %                
 
 
@@ -96,6 +106,12 @@ for k=1:N-1
 % reduced game vS. To speed up computation, we use this code below for both, 
 % the pre-nucleolus and and the pre-kernel. 
    rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'POPK')
+   rgpq(k)=positivePrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'MPRK')
+   rgpq(k)=ModPrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'PMPRK')
+   rgpq(k)=PModPrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'PRN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
@@ -104,6 +120,18 @@ for k=1:N-1
        sol{1,k}=Prenucl(vS{1,k},impVec{1,k}); % using adjusted Derks pre-nucleolus function.
      catch
        sol{1,k}=PreNucl2(vS{1,k},impVec{1,k}); % use a third party solver instead!
+     end
+     rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
+     rgpq(k)=all(rgpq_sol{1,k});
+   end
+  elseif strcmp(str,'MODIC')
+   if length(vS{1,k})==1
+     rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
+   else
+     try
+       sol{1,k}=cplex_modiclus(vS{1,k}); % using cplex pre-nucleolus function. 
+     catch
+       sol{1,k}=Modiclus(vS{1,k}); % use a third party solver instead!
      end
      rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
      rgpq(k)=all(rgpq_sol{1,k});
@@ -121,7 +149,9 @@ for k=1:N-1
      end
      rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
      rgpq(k)=all(rgpq_sol{1,k});
-   end   
+   end  
+  else
+    rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k}); 
   end
 end
 
@@ -131,11 +161,25 @@ if strcmp(str,'SHAP')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'PRK')
   rgpq(N)=PrekernelQ(v,x);
+elseif strcmp(str,'POPK')
+  rgpq(N)=positivePrekernelQ(v,x);
+elseif strcmp(str,'MPRK')
+  rgpq(N)=ModPrekernelQ(v,x);
+elseif strcmp(str,'PMPRK')
+  rgpq(N)=PModPrekernelQ(v,x);
 elseif strcmp(str,'PRN')
    try
      sol{N}=Prenucl(v,x);
    catch
      sol{N}=PreNucl2(v,x); % use a third party solver instead!
+   end
+   rgpq_sol{N}=abs(sol{N}-x)<tol;
+   rgpq(N)=all(rgpq_sol{N});
+elseif strcmp(str,'MODIC')
+   try
+     sol{N}=cplex_modiclus(v);
+   catch
+     sol{N}=Modiclus(v); % use a third party solver instead!
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
@@ -149,6 +193,8 @@ elseif strcmp(str,'HMS_PN')
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
+else 
+  rgpq(N)=PrekernelQ(v,x);
 end
 rgpQ=all(rgpq);
 %Formatting Output

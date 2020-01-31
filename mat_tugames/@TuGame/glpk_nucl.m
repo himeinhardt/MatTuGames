@@ -62,6 +62,7 @@ param.lpsolver=1; % simplex method
 
 
 S=1:N;
+A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=-1;

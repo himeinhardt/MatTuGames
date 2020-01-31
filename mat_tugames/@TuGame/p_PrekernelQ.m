@@ -25,6 +25,7 @@ function [prkQ, smat, e]=p_PrekernelQ(clv,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/30/2012        0.3              hme
+%   04/29/2019        1.1              hme
 %                
 
 if nargin < 2 
@@ -41,8 +42,6 @@ if nargin < 2
    warning('PPKQ:NoPayoffInput','Computing/Using default payoff!');
    tol=10^6*eps;
 elseif nargin<3
-  tol=10^6*eps;
-else
   tol=10^6*eps;
 end
 
@@ -70,7 +69,6 @@ function [e, smat]=p_msrpls(v,x,n)
 %
 %  input:
 %  v      -- A Tu-Game v of length 2^n-1.
-%  x      -- payoff vector of length(1,n)
 
 % Borrowed from J. Derks
 Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end

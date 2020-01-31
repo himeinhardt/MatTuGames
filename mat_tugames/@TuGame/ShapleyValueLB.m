@@ -8,7 +8,7 @@ function [sh, cfc]=ShapleyValueLB(clv)
 % Define variables:
 %  output:
 %  sh       -- The Shapley-value of a TU-game v.
-%  cfc      -- Coeffient of the linear basis of a game v.
+%  cfc      -- Coefficients of the linear basis of a game v.
 %
 %  input:
 %  clv      -- TuGame class object.

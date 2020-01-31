@@ -45,7 +45,6 @@ else
    if (2^n-1)~=N
       error('Game has not the correct size!');
    end
-  tol=10^6*eps;
 end
 smat=-inf;
 e=0;
@@ -73,8 +72,7 @@ function smat=msrpls(v,x,n)
 % Borrowed from J. Derks
 Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
 e=v-Xm;
-v=[];
-Xm=[];
+clear v Xm;
 % Determing min surpluses.
 [se, sC]=sort(e,'ascend');
 smat=-inf(n);

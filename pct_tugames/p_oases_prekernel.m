@@ -1,6 +1,6 @@
 function [x, Lerr, smat, xarr]=p_oases_prekernel(v,x)
 % P_OASES_PREKERNEL computes from (v,x) a pre-kernel element using qpOASESmex
-% and Matlab's PCT.
+% version 3.2.0 and Matlab's PCT.
 % Source: Meinhardt, 2010.
 %
 %  http://www.kuleuven.be/optec/software/qpOASES
@@ -28,6 +28,8 @@ function [x, Lerr, smat, xarr]=p_oases_prekernel(v,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   05/28/2013        0.3             hme
+%   04/04/2016        0.8             hme
+%   05/03/2019        1.1             hme
 %                
 
 if nargin<1
@@ -154,7 +156,8 @@ while cnt<CNT
 %    opts.enableEqualities=true;
     opts.boundTolerance=2.2204e-12;
     opts.terminationTolerance=2.2204e-12;
-    [x,fval,exitflag,output,lambda] = qpOASES(Q,b,A,[],ra,lbA,ubA,x,opts);
+    auxInput = qpOASES_auxInput('hessianType',4,'x0',x);
+    [x,fval,exitflag,output,lambda] = qpOASES(Q,b,A,[],ra,lbA,ubA,opts,auxInput);
     if exitflag ~= 0
        x=x';
        warning('ker:No','Probably no pre-kernel point found!');
@@ -174,8 +177,20 @@ while cnt<CNT
 end
 
 if cnt==CNT, % should trigger errors ....
-  warning('Ker:NoC','Probably no pre-kernel point found!');
-  x=x';
+    if slv==0 && smc==1
+       msg01='No Pre-Kernel Element found. Changing Cardinality.';
+       warning('Ker:ChangCard',msg01);
+       if mnQ==1 && n < 15
+          x=ones(1,n)*v(N)/n;
+       end
+       [x, Lerr, smat, xarr]=computePrk(v,x,0,slv,mnQ);
+    else
+       x=x';
+       msg02='No Pre-Kernel Element found. Change payoff vector and restart!';
+       warning('PrK:NotFound',msg02);
+    end
+else
+%    x=x';
 end
 
 
@@ -246,61 +261,40 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
-
-slcCell=cell(n);
 A=eye(n);
-
 % Selecting the set of most effective coalitions 
 % having smallest/largest cardinality.
-
+% Assigning the set of selected coalitions to 
+% matrix A
 parfor i=1:n
    a=bitget(tS,i)==1;
    for j=1:n
-     if i<j
+    if i~=j
        b=bitget(tS,j)==0;
        lij=a & b;
        c_ij=tS(lij);
-       ex_ij=te(lij);
+       ve=te;
+       ex_ij=ve(lij);
        abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
-      elseif i>j
-       b=bitget(tS,j)==0;
-       lij=a & b;
-       c_ij=tS(lij);
-       ex_ij=te(lij);
-       abest_ij=abs(smat(i,j)-ex_ij)<tol;
-       slcCell{i,j}=c_ij(abest_ij);
+       slc_cij=c_ij(abest_ij);
+       lC=numel(slc_cij);
+       if lC==1
+          A(i,j)=slc_cij;
+       else
+          binCell_ij=SortSets(slc_cij,n,lC,smc);
+          if smc==1
+             A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
+             elseif smc==0
+             A(i,j)=binCell_ij(end); % Selecting largest cardinality.
+          else
+             A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
+          end
+       end
     end
    end
 end
-
-% Assigning the set of selected coalitions to 
-% matrix A.
-% Assigning the set of selected coalitions to 
-% matrix A.
-parfor i=1:n
-  for j=1:n
-   if A(i,j)== 0
-      lC=length(slcCell{i,j});
-     if lC==1
-        A(i,j)=slcCell{i,j}; 
-     else
-         binCell_ij=SortSets(slcCell{i,j},n,lC,smc);
-      if smc==1
-           A(i,j)=binCell_ij(1);  % Selecting smallest cardinality.
-       elseif smc==0
-           A(i,j)=binCell_ij(end); % Selecting largest cardinality.
-      else
-           A(i,j)=binCell_ij(end);   % Selecting largest cardinality.
-      end
-     end
-   end
-  end
-end
-
 
 %-------------------------------
 function Seff=SortSets(effij,n,bd,smc)

@@ -49,7 +49,7 @@ else
  for k=1:lgt-1;
    TorQ{k}=bitor(T(k),Q);
    vS(k)=max(v(TorQ{k})-PayQ');
-   vS(k)=max(v(T(k)),vS(k)); % Considering the empty set of Q.
+   vS(k)=max(v(T(k)),vS(k));% Considering the empty set of Q.
  end
  vS(end)=x*plS';
 end

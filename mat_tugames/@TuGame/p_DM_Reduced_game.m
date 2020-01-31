@@ -3,7 +3,7 @@ function v_t=p_DM_Reduced_game(clv,x)
 % game v. Using Matlab's PCT.
 %
 %
-% Usage: v_t=p_DM_Reduced_game(clv,x) 
+% Usage: v_t=clv.p_DM_Reduced_game(x) 
 %
 % Define variables:
 %  output:
@@ -30,6 +30,11 @@ N=clv.tusize;
 n=clv.tuplayers;
 v1_t=cell(1,N-1);
 v2_t=cell(1,N-1);
+
+spmd
+ codistributed(v1_t);
+ codistributed(v2_t);
+end
 
 parfor S=1:N-1
   [v1_t{1,S} v2_t{1,S}]=red_game(v,x,S,n);

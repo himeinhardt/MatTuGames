@@ -102,15 +102,20 @@ m=1+n*(n-1)/2;
 upe=true(n);
 
 ofval=inf;
-ra = reasonable_outcome(v)';
+ra = smallest_amount(v)';
 k=1:n;
-vi=v(bitset(0,k))';
+Nk=N-2.^(k-1);
+vi=v(Nk)';
+%vi=v(bitset(0,k))';
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
    ra(fi)=Inf;
 end
-
+if sum(vi)<v(N)
+   error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.');
+   return;
+end
 % Cycling may occur, so that we need an artificial halt
 while cnt<CNT  
     cnt=cnt+1;
@@ -139,22 +144,22 @@ while cnt<CNT
       effQ=abs(v(end)-sum(x))<tol;
       krQ=all(kriQ) && effQ;
     else
-      krQ=0;
+      krQ=false;
     end
     if krQ == 1; x=x'; break; end
 
     Q=2*E'*E;
     b=-2*E'*a;
-
+    ra=[];
 % Calling quadratic programming solver.
 % Uncomment these lines if you don't have Mosek
-%    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-14);
+    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
 % Comment the two lines about out if you don't have Mosek.
-    opts = optimset;
-    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-11,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-11);
+%    opts = optimset;
+%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-11,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-11);
 %    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
 
-    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
+    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),ra,vi,x,opts);
     if exitflag ~= 1
        x=x';
        warning('Aker:No','Probably no anti-kernel point found!');
@@ -167,7 +172,7 @@ while cnt<CNT
           kriQ=all((krm.*irm)<=tol);
           krQ=all(kriQ);
        else
-          krQ=0;
+          krQ=false;
        end
        x=x';
        if krQ==0
@@ -201,7 +206,7 @@ if cnt==CNT, % should trigger errors ....
           kriQ=all((krm.*irm)<=tol);
           krQ=all(kriQ);
        else
-          krQ=0;
+          krQ=false;
        end
        x=x';
        if krQ==0
@@ -249,8 +254,7 @@ end
 Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
 % Computing the excess vector w.r.t. x.
 e=v-Xm;
-v=[];
-Xm=[];
+clear v Xm;
 % Truncate data arrays.
 [e, sC]=sort(e,'ascend');
 B=eye(n);
@@ -284,8 +288,7 @@ le=e<=e1;
 tS=sC(le);
 lcl=length(tS);
 te=e(le);
-e=[];
-sC=[];
+clear e sC;
 
 % Computing the set of most effective coalitions.
 A=eye(n);

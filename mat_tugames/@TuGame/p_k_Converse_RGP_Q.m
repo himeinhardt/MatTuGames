@@ -3,7 +3,7 @@ function [kCRGP kCRGPC]=p_k_Converse_RGP_Q(clv,x,K,str,tol)
 % that is, the k-converse reduced game property (k-converse consistency).
 % Using Matlab's PCT.
 %
-% Usage: [kCRGP kCRGPC]=p_k_Converse_RGP_Q(clv,x,K,str,tol)
+% Usage: [kCRGP kCRGPC]=clv.p_k_Converse_RGP_Q(x,K,str,tol)
 %
 % Define variables:
 %  output: Fields
@@ -56,10 +56,10 @@ if nargin<2
    elseif isa(clv,'p_TuSol')
       x=clv.tu_prk;
    else
-      x=p_PreKernel(clv);
+      x=clv.p_PreKernel();
    end
    if isempty(x)
-     x=p_PreKernel(clv);
+     x=clv.p_PreKernel();
    end
   tol=10^6*eps;
   str='PRK';
@@ -99,7 +99,7 @@ sV_x=cell(1,siPM2);
 parfor k=1:siPM2
 sV_x{1,k}=x;
  if strcmp(str,'SHAP')
-   vS{1,k}=HMS_RedGame(clv,x,cl2(k)); %Hart-MasColell reduced game.
+   vS{1,k}=clv.HMS_RedGame(x,cl2(k)); %Hart-MasColell reduced game.
    stdsol{1,k}=ShapleyValue(vS{1,k}); % solution x restricted to S.
    rSk=PlyMat2(k,:);
    sV_x{1,k}(rSk)=stdsol{1,k}; % extension to (x,x_N\S).
@@ -107,13 +107,13 @@ sV_x{1,k}=x;
    crgpQ(k)=all(crgpq{k});
  elseif strcmp(str,'PRK')
    rSk=PlyMat2(k,:);
-   vS{1,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{1,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    stdsol{1,k}=PreKernel(vS{1,k},x(rSk)); % solution x restricted to S.
    sV_x{1,k}(rSk)=stdsol{1,k}; % extension to (x,x_N\S).
-   crgpQ(k)=PrekernelQ(clv,sV_x{1,k});
+   crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
  elseif strcmp(str,'PRN')
    rSk=PlyMat2(k,:);
-   vS{1,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{1,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    try
       stdsol{1,k}=Prenucl(vS{1,k},x(rSk)); % solution x restricted to S.
    catch
@@ -124,10 +124,10 @@ sV_x{1,k}=x;
    crgpQ(k)=all(crgpq{k});
  else
    rSk=PlyMat2(k,:);
-   vS{1,k}=RedGame(clv,x,cl2(k)); % Davis-Maschler reduced game.
+   vS{1,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    stdsol{1,k}=PreKernel(vS{1,k},x(rSk)); % solution x restricted to S.
    sV_x{1,k}(rSk)=stdsol{1,k}; % extension to (x,x_N\S).
-   crgpQ(k)=PrekernelQ(clv,sV_x{1,k});
+   crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
   end
 end
 CrgpQ=all(crgpQ);

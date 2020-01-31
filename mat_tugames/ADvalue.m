@@ -32,6 +32,9 @@ elseif nargin==2
     if (2^n-1)~=N
       error('Game has not the correct size!');
     end
+    if iscell(cs)
+       cs=clToMatlab(cs);
+    end
 end    
     
 J=1:n;

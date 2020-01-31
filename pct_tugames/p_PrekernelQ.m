@@ -89,7 +89,7 @@ e=v.Value-cXm.Value;
 [se1, sC1]=sort(e,'descend');
 Smat=-inf(n);
 end
-sC=gather(sC1);
+sC=gather(sC1)
 se=gather(se1);
 clear sC1 se1;
 sC=parallel.pool.Constant(sC);
