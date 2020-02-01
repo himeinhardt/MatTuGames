@@ -1,9 +1,8 @@
-function [x1, fmin]=PreNucl2(clv,x1,tol)
-% PRENUCL2 computes the pre-nucleolus of game v using the optimization toolbox.
-% Use with care, produces large round-off errors if simplex method is off.
-% Otherwise, very slow.
+function [x1, fmin]=PreNucl_llp(clv,tol)
+% PRENUCL_LLP computes the pre-nucleolus of game v using the optimization toolbox.
+% Uses now Dual-Simplex (Matlab R2015a).
 %
-% Usage: [x, fmin]=PreNucl2(clv,x1,tol)
+% Usage: [x, fmin]=PreNucl_llp(clv,tol)
 % Define variables:
 %  output:
 %  x1        -- The pre-nucleolus of game clv.
@@ -11,7 +10,6 @@ function [x1, fmin]=PreNucl2(clv,x1,tol)
 %
 %  input:
 %  clv      -- TuGame class object.
-%  x1       -- starting point
 %  tol      -- Tolerance value. Its default value is set to 10^8*eps.
 
 
@@ -22,25 +20,24 @@ function [x1, fmin]=PreNucl2(clv,x1,tol)
 %  Record of revisions:
 %   Date              Version         Programmer
 %   ====================================================
-%   05/27/2013        0.3             hme
+%   12/21/2014        0.6             hme
+%   03/29/2015        0.7             hme
 %                
 
 
+if nargin<2
+ tol=10^6*eps;
+end
 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 gt=clv.tutype;
 vi=clv.tuvi;
-
-if nargin<3
- tol=10^6*eps; % Change this value if the solution is not correct.
- x1=v(N)*ones(1,n)/n;
-elseif nargin<2
- tol=10^6*eps;
+if N==3
+  x1=StandardSolution(v);
+  return
 end
-
-
 
 S=1:N;
 for k=1:n, A1(:,k) = -bitget(S,k);end
@@ -53,19 +50,18 @@ bS2=[];
 C=[zeros(1,n),1];
 
 ra = reasonable_outcome(v);
-ub=[ra,Inf];
+ub=[ra,inf];
 
 if strcmp(gt,'cv')
- lb=[vi,-Inf];
+% lb=[vi,-Inf];
+  lb=[];
 else
  lb=[];
 end
 % produces large round-off errors.
 %opts=optimset('TolFun',1e-10,'TolX',1e-10,'MaxIter',128);
 %opts=optimset('Simplex','off','LargeScale','on','MaxIter',128);
-
 opts.Display='off';
-%opts.Diagnostics='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
@@ -73,15 +69,16 @@ opts.Algorithm='dual-simplex';
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
-%% for dual-simplex
+%warning('on','Prn:Exit0');
+%warning('on','Prn:Exit1');
 opts.MaxTime=9000;
 opts.Preprocess='none';
 opts.TolCon=1e-6;
 opts.MaxIter=10*(N+n);
-
-
+it=0:-1:1-n;
+bA=find(A1(:,end)==0)';
 while 1
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,x1,opts);
+  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
   x=xmin;
   x1=x';
   if isempty(x1) == 1
@@ -90,29 +87,20 @@ while 1
      break;
   end
   x1(end)=[];
-  lambda.ineqlin;
   bS1=find(lambda.ineqlin'>tol);
-  bS1(end)=[];
-  bA=find(A1(:,end)==0)';
   bS2=setdiff(bS1,bA);
   if isempty(bS2)==1
      break;
   end
-  it=0:-1:1-n;
+  bA=[bA,bS2];
   mS2=rem(floor(bA(:)*pow2(it)),2);
-  tmS2=mS2';
   rk=rank(mS2);
-  ov=ones(1,n);
-  wgh=pinv(tmS2)*ov';
-  posQ=all(wgh>-tol);
-  if exitflag ~= 1
-     warning('Prn:Exit1','Probably no pre-nucleolus found!')
-     break; 
-  elseif rk==n && posQ == 1
+  B1(bS2)=B1(bS2)+fmin;
+  if rk==n 
+     x=(-mS2\B1(bA))';
      break;
   end
   A1(bS2,end)=0;
   A2=sparse(A1);
-  B1(bS2)=B1(bS2)+fmin;
   y=x1;
 end

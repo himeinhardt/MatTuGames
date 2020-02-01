@@ -469,6 +469,12 @@ For citation consult the URL:
 * [Cite As:](https://de.mathworks.com/matlabcentral/fileexchange/35933-mattugames)
 
 
+## 8. MATLAB File Exchange
+
+For additional information consult 
+
+[![View MatTuGames on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://de.mathworks.com/matlabcentral/fileexchange/35933-mattugames)
+
 ## Author
 
 *Holger I. Meinhardt*

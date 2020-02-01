@@ -92,7 +92,7 @@ for k=1:lgt
    if length(subg{k})==1
       subg_sh{k}=subg{k};
    else
-      subg_sh{k}=Prenucl(subg{k});
+      subg_sh{k}=PreNucl(subg{k});
    end
  elseif strcmp(str,'MODIC')
    if length(subg{k})==1

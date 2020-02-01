@@ -95,9 +95,9 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=Prenucl(subg{k});
+        subg_sh{k}=PreNucl(subg{k});
       catch
-        subg_sh{k}=PreNucl(subg{k}); % use a thrid party solver instead! 
+        subg_sh{k}=cplex_prenucl(subg{k}); % use a thrid party solver instead! 
       end
    end
 elseif strcmp(str,'MODIC')

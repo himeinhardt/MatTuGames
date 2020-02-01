@@ -393,7 +393,7 @@ classdef TuPrk < TuSol
                try 
                  sol = ipopt_prekernel(obj);
                  tol = obj.tu_tol;
-                 pkQ = p_PrekernelQ(obj,sol,tol);
+                 pkQ = PrekernelQ(obj,sol,tol);
                  obj.tu_pk_ipopt = sol;
                  obj.ipopt_pk_valid = pkQ;
                catch
@@ -404,7 +404,7 @@ classdef TuPrk < TuSol
             else
                obj.tu_pk_ipopt = pt;
                tol=obj.tu_tol;
-               obj.ipopt_pk_valid = p_PrekernelQ(obj,pt,tol);
+               obj.ipopt_pk_valid = PrekernelQ(obj,pt,tol);
             end
          end                  
 
@@ -479,7 +479,7 @@ classdef TuPrk < TuSol
                try 
                  sol = msk_prekernel(obj);
                  tol = obj.tu_tol;
-                 pkQ = p_PrekernelQ(obj,sol,tol);
+                 pkQ = PrekernelQ(obj,sol,tol);
                  obj.tu_pk_msk = sol;
                  obj.msk_pk_valid = pkQ;
                catch
@@ -490,7 +490,7 @@ classdef TuPrk < TuSol
             else
                obj.tu_pk_msk = pt;
                tol = obj.tu_tol;
-               obj.msk_pk_valid = p_PrekernelQ(obj,pt,tol);
+               obj.msk_pk_valid = PrekernelQ(obj,pt,tol);
             end
          end                           
          
@@ -694,7 +694,7 @@ classdef TuPrk < TuSol
                     solpk = ipopt_prekernel(obj);
                     obj.tu_pk_ipopt = solpk;
                     tol = obj.tu_tol;
-                    pkQ = p_PrekernelQ(obj,solpk,tol);
+                    pkQ = PrekernelQ(obj,solpk,tol);
                     obj.ipopt_pk_valid = pkQ;
                   catch
                     n=obj.tuplayers;
@@ -720,7 +720,7 @@ classdef TuPrk < TuSol
                     solpk = msk_prekernel(obj);
                     obj.tu_pk_msk = solpk;
                     tol = obj.tu_tol;
-                    pkQ = p_PrekernelQ(obj,solpk,tol);
+                    pkQ = PrekernelQ(obj,solpk,tol);
                     obj.msk_pk_valid = pkQ;
                   catch
                     n=obj.tuplayers;
