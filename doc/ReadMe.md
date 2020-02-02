@@ -95,13 +95,18 @@ to get full functionality in serial as well as in parallel.
  
 
 ## 3. INSTALLATION
-## 3.0 Custom Installation
+### 3.0 Custom Installation
 
-Follow a custom installation given by the instruction as given by
+To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d8.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
+
+Additional instructions can be found at the URL: 
 
 * [mltbx](https://mathworks.com/matlabcentral/answers/242430-how-do-i-install-a-mltbx-file-from-the-filesharing-site-into-r2015a)
 
-A mltbx file is provided in the Release section. 
+The mltbx file `mat_tugV1d8.mltbx` is provided at
+
+* [mltbx-file](https://github.com/himeinhardt/MatTuGames/releases)
+
 
 ### 3.1 UNIX/Linux (Manual Installation)
 #### 3.1.1 INSTALLING FILES
@@ -136,10 +141,12 @@ new directories known to your Matlab session. For instance, insert
 at the end of your startup.m file the following lines
 
 ```
-addpath('~/matlab/mat_tug/mat_tugames');
-addpath('~/matlab/mat_tug/mat_tugames/doc');
 addpath('~/matlab/mat_tug/mama');
+addpath('~/matlab/mat_tug/mat_tugames/doc');
+addpath('~/matlab/mat_tug/mat_tugames');
+addpath('~/matlab/mat_tug/matlink');
 addpath('~/matlab/mat_tug/pct_tugames');
+addpath('~/matlab/mat_tug/mattug_aux');
 ```
 
 or add the paths by selecting the appropriate menu of Matlab Command Window.

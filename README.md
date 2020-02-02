@@ -375,11 +375,15 @@ or much more. For a deeper discussion of the function set provided by the toolbo
  
 ## 3. Custom Installation
 
-To install the toolbox, we recommend a custom installation while following the instructions that are given at the URL: 
+To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d8.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
+
+Additional instructions can be found at the URL: 
 
 * [mltbx](https://mathworks.com/matlabcentral/answers/242430-how-do-i-install-a-mltbx-file-from-the-filesharing-site-into-r2015a)
 
-A mltbx file is provided in the *Release* section. 
+The mltbx file `mat_tugV1d8.mltbx` is provided at
+
+* [mltbx-file](https://github.com/himeinhardt/MatTuGames/releases)
 
 
 ## 4. Requirements
