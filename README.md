@@ -435,7 +435,7 @@ Moreover, the toolbox works also with the game theory toolbox written by *Jean D
 
 * [Derks](https://www.maastrichtuniversity.nl/jean.derks/research)
 
-We added some adjusted files that fixes a problems with closed loops under certain game classes. 
+We added some adjusted files that fixe a problems with closed loops under certain game classes. 
 
 This toolbox can be used to compute the pre-nucleolus up to 10-persons, if one has no license of Matlab's optimization toolbox. 
 
