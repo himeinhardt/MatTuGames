@@ -409,10 +409,10 @@ our toolbox.
 For the computation of the pre-kernel and related solutions the *SuiteSparse* for *Matlab* is 
 recommend that can be got from the URL
 
-* [SuitSpare](https://github.com/DrTimothyAldenDavis/SuiteSparse)
+* [SuiteSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse)
 
 If you do not want to use *SuiteSparse*, then replace the function `qr_dec` by `pinv` in all functions
-for the pre-kernel and related solution. The same argument applies for the function `qrginv`.
+for the pre-kernel and related solution. The same argument applies for the function `qrginv`. It should be noted that this may cause accuracy issues with the consequence that the result is incorrect. 
 
 To run the toolbox even in parallel mode, *Matlab's Parallel Computing Toolbox* is needed.
 
@@ -484,5 +484,5 @@ For additional information consult
 *Holger I. Meinhardt*
 Institute of Operations Research
 University of Karlsruhe (KIT) 
-E-mail: Holger.Meinhardt@wiwi.uni-karlsruhe.de
-        holger.meinhardt@partner.kit.edu 
+E-mail: Holger.Meinhardt ät wiwi.uni-karlsruhe.de
+        holger.meinhardt ät partner.kit.edu 
