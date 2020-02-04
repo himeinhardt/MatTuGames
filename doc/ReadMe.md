@@ -52,10 +52,10 @@ our toolbox.
 For the computation of the pre-kernel and related solutions the *SuiteSparse* for *Matlab* is 
 recommend that can be got from the URL
 
-* [SuitSpare](https://github.com/DrTimothyAldenDavis/SuiteSparse)
+* [SuiteSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse)
 
 If you do not want to use *SuiteSparse*, then replace the function `qr_dec` by `pinv` in all functions
-for the pre-kernel and related solution. The same argument applies for the function `qrginv`.
+for the pre-kernel and related solution. The same argument applies for the function `qrginv`. It should be noted that this may cause accuracy issues with the consequence that the result is incorrect. 
 
 To run the toolbox even in parallel mode, *Matlab's Parallel Computing Toolbox* is needed.
 
@@ -77,6 +77,8 @@ The *MatTuGames* toolbox should work with all platforms.
 Moreover, the toolbox works also with the game theory toolbox written by *Jean Derks*, which can be requested from:
 
 * [Derks](https://www.maastrichtuniversity.nl/jean.derks/research)
+
+We added some adjusted files that fixe a problems with closed loops under certain game classes. 
 
 This toolbox can be used to compute the pre-nucleolus up to 10-persons, if one has no license of Matlab's optimization toolbox. 
 
@@ -298,4 +300,4 @@ Institute of Operations Research
 Karlsruhe Institute of Technology (KIT)
 Englerstr. 11, Building: 11.40 
 D-76128 Karlsruhe 
-E-mail: Holger.Meinhardt@wiwi.uni-karlsruhe.de
+E-mail: Holger.Meinhardt ät wiwi.uni-karlsruhe.de
