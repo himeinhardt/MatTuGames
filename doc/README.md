@@ -1,5 +1,18 @@
 # *Matlab* Toolbox *MatTuGames* Version 1.8.0
 
+```
+Contents:
+ 1.  Introduction
+ 2.  Getting Started
+ 3.  Custom Installation
+ 4.  Requirements
+ 5.  Acknowledgment
+ 6.  License
+ 7.  Citation
+ 8.  MATLAB File Exchange
+```
+
+
 ## 1. Introduction
 
 The game theoretical *Matlab* toolbox *MatTuGames* provides about 400 functions
@@ -295,7 +308,7 @@ DRP_mnc_v =
         x: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
 ```
 
-By this example, we observed that the axiomatization of the modiclus was satisfied, form we which can conclude that the modiclus of the game was found by this evaluation. Of course, the toolbox offers in addition routines to examine the axiomatization of the pre-nucleolus, pre-kernel, anti pre-nucleolus, anti pre-kernel, modified as well as proper modified pre-kernel, and Shapley value.  
+By this example, we observed that the axiomatization of the modiclus was satisfied, from we which can conclude that the modiclus of the game was found by this evaluation. Of course, the toolbox offers in addition routines to examine the axiomatization of the pre-nucleolus, pre-kernel, anti pre-nucleolus, anti pre-kernel, modified as well as proper modified pre-kernel, and Shapley value.  
 
 Moreover, the toolbox offers to the user the possibility to create several game class objects to perform several computations for retrieving and modifying game data with the intention to ensure a consistent computation environment. Hence, these classes should avoid that some data from a different game are used or that game data are unintentionally changed, which allow the user to concentrate on the crucial aspects of analyzing the game instead of dealing with the issue of supplying the correct game data. Such a class is, for instance `TuSol`, which executes several computations in serial for retrieving and storing game solutions. A class object, let us call it `sclv`, is created by calling `TuSol` with at least one argument, that is, the values of the characteristic function. The other two input arguments can be left out. However, if they are supplied, then the second specifies the game type, for instance `cv` for the class of convex games. Whereas the last argument specifies the game format, which is for the discussed example `mattug` to indicate that the coalitions are ordered in accordance with their unique integer representation to carry out some computation under MatTuGames. 
   
@@ -412,7 +425,7 @@ recommend that can be got from the URL
 * [SuiteSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse)
 
 If you do not want to use *SuiteSparse*, then replace the function `qr_dec` by `pinv` in all functions
-for the pre-kernel and related solution. The same argument applies for the function `qrginv`. It should be noted that this may cause accuracy issues with the consequence that the result is incorrect. 
+for the pre-kernel and related solutions. The same argument applies for the function `qrginv`. It should be noted that this may cause accuracy issues with the consequence that the result is incorrect. 
 
 To run the toolbox even in parallel mode, *Matlab's Parallel Computing Toolbox* is needed.
 
@@ -435,11 +448,11 @@ Moreover, the toolbox works also with the game theory toolbox written by *Jean D
 
 * [Derks](https://www.maastrichtuniversity.nl/jean.derks/research)
 
-We added some adjusted files that fixe a problems with closed loops under certain game classes. 
+We added some adjusted files that fixe a problem with closed loops under certain game classes. 
 
 This toolbox can be used to compute the pre-nucleolus up to 10-persons, if one has no license of Matlab's optimization toolbox. 
 
-Finally, the toolbox offers interfaces to access the solvers of CVX, CPLEX, GLPK, GUROBI, HSL, IPOPT, MOSEK, and OASES. 
+Finally, the toolbox `MatTuGames` offers interfaces to access the solvers of CVX, CPLEX, GLPK, GUROBI, HSL, IPOPT, MOSEK, and OASES. 
 
 To summarize, apart of the mentioned software, the toolbox requires the following *MATLAB* toolboxes:  
 
