@@ -1,17 +1,18 @@
-function v_t=HMS_Reduced_game(clv,x,str)
+function v_t=HMS_Reduced_game(v,x,str)
 % HMS_REDUCED_GAME computes from (v,x) all Hart/Mas-Colell reduced 
 % games on S at x of game v.
 %
-% Usage: v_t=HMS_Reduced_game(clv,x,str)
+% Usage: v_t=HMS_Reduced_game(v,x,str)
 %
 % Define variables:
+%
 %  output:
 %  v_t{1,:} -- All Hart-MasColell reduced games w.r.t. x.
 %  v_t{2,:} -- The corresponding Shapley values of all reduced games.
 %  v_t{3,:} -- The corresponding sub-coalitions which define a reduced game.
 %
 %  input:
-%  clv      -- TuGame class object.
+%  v        -- A Tu-Game v of length 2^n-1. 
 %  x        -- payoff vector of size(1,n). Must be efficient.
 %  str      -- A string that defines different Methods. 
 %              Permissible methods are: 
@@ -33,26 +34,28 @@ function v_t=HMS_Reduced_game(clv,x,str)
 %  Record of revisions:
 %   Date              Version         Programmer
 %   ====================================================
-%   10/29/2012        0.3             hme
+%   08/19/2010        0.1 beta        hme
+%   06/17/2012        0.2 beta        hme
+%   05/27/2013        0.3             hme
 %   02/10/2018        0.9             hme
+%   04/01/2020        1.9             hme
 %                
 
-v=clv.tuvalues;
-N=clv.tusize;
-
 if nargin<2
-  x=clv.ShapleyValue;
-  n=clv.tuplayers;
+  x=ShapleyValue(v);
+  n=length(x);
   str='SHAP';
 elseif nargin<3
+  n=length(x);
   str='SHAP';
-  n=clv.tuplayers;
 elseif nargin<4
-  n=clv.tuplayers;
+  n=length(x);
 else
-  n=clv.tuplayers;
+  n=length(x);
 end
 
+
+N=length(v);  
 v_t=cell(3,N-1);
 
 for S=1:N-1
@@ -92,13 +95,21 @@ for k=1:lgt
    if length(subg{k})==1
       subg_sh{k}=subg{k};
    else
-      subg_sh{k}=PreNucl(subg{k});
+      try
+        subg_sh{k}=cplex_prenucl_mod4(subg{k}); % use a thrid party solver instead! 
+      catch
+        subg_sh{k}=PreNucl(subg{k});
+      end
    end
- elseif strcmp(str,'MODIC')
+elseif strcmp(str,'MODIC')
    if length(subg{k})==1
       subg_sh{k}=subg{k};
    else
-      subg_sh{k}=Modiclus(subg{k});
+      try
+        subg_sh{k}=cplex_modiclus(subg{k});
+      catch
+        subg_sh{k}=Modiclus(subg{k}); % use a thrid party solver instead! 
+      end
    end
  elseif strcmp(str,'PRK')
    subg_sh{k}=PreKernel(subg{k});

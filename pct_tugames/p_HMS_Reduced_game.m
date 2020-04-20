@@ -36,6 +36,7 @@ function v_t=p_HMS_Reduced_game(v,x,str)
 %   10/27/2012        0.3              hme
 %   05/16/2014        0.5              hme
 %   02/10/2018        0.9              hme
+%   04/01/2020        1.9              hme
 %                
 
 if nargin<2
@@ -98,7 +99,7 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=Prenucl(subg{k});
+        subg_sh{k}=cplex_prenucl_mod4(subg{k});
       catch
         subg_sh{k}=PreNucl(subg{k});
       end

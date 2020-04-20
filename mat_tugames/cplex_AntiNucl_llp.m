@@ -2,7 +2,7 @@ function [x1, fmin]=cplex_AntiNucl_llp(v,tol)
 % CPLEX_ANTINUCL_LLP computes the anti nucleolus of game v using glpkmex.
 %
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.8.0 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 % 
 %
 % Usage: [x, fmin]=cplex_AntiNucl_llp(v,tol)
@@ -24,6 +24,7 @@ function [x1, fmin]=cplex_AntiNucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   04/04/2020        1.9             hme
 %                
 
 
@@ -59,7 +60,19 @@ mtv=verLessThan('matlab','9.1.0');
 if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else
-  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+%  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.largescale='on';
+  options.algorithm='dual-simplex';
+  options.tolfun=1e-10;
+  options.tolx=1e-10;
+  options.tolrlpfun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.preprocess='none';
+  options.tolcon=1e-6;
+  options.maxiter=128;
+  options.display='off';
+  options.threads=3;
 end
 warning('on','all');
 S=1:N;

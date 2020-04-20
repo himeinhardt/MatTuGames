@@ -34,6 +34,7 @@ function v_t=p_HMS_Reduced_game(clv,x,str)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/27/2012        0.3              hme
+%   04/01/2020        1.9              hme
 %                
 v=clv.tuvalues;
 N=clv.tusize;
@@ -95,7 +96,7 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-         subg_sh{k}=Prenucl(subg{k});
+         subg_sh{k}=cplex_prenucl_mod4(subg{k});
       catch
          subg_sh{k}=PreNucl(subg{k});
       end
