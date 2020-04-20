@@ -38,6 +38,7 @@ function v_t=HMS_Reduced_game(v,x,str)
 %   06/17/2012        0.2 beta        hme
 %   05/27/2013        0.3             hme
 %   02/10/2018        0.9             hme
+%   04/01/2020        1.9             hme
 %                
 
 if nargin<2
@@ -95,9 +96,9 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=PreNucl(subg{k});
+        subg_sh{k}=cplex_prenucl_mod4(subg{k}); % use a thrid party solver instead! 
       catch
-        subg_sh{k}=cplex_prenucl(subg{k}); % use a thrid party solver instead! 
+        subg_sh{k}=PreNucl(subg{k});
       end
    end
 elseif strcmp(str,'MODIC')

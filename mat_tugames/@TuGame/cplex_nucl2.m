@@ -2,7 +2,7 @@ function [x1, fmin]=cplex_nucl2(clv,x1,tol)
 % CPLEX_NUCL computes the nucleolus of game v from a starting point using glpkmex.
 %
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.5.1 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 % 
 %
 % Usage: [x, fmin]=cplex_nucl(v,tol)
@@ -25,6 +25,8 @@ function [x1, fmin]=cplex_nucl2(clv,x1,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/13/2015        0.7             hme
+%   02/24/2018        0.9             hme
+%   04/04/2020        1.9             hme
 %                
 
 v=clv.tuvalues;
@@ -65,7 +67,24 @@ lb=[vi,-Inf]';
 ub=[ra,Inf]';
 
 warning('off','all');
-options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
+mtv=verLessThan('matlab','9.1.0');
+if mtv==1
+  options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
+else 
+%  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.largescale='on';
+  options.algorithm='dual-simplex';
+  options.tolfun=1e-10;
+  options.tolx=1e-10;
+  options.tolrlpfun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.preprocess='none';
+  options.tolcon=1e-6;
+  options.maxiter=10*(N+n);
+  options.display='off';
+  options.threads=3;
+end
 warning('on','all');
 S=1:N;
 for k=1:n, A1(:,k) = -bitget(S,k);end

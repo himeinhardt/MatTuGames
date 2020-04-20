@@ -2,7 +2,7 @@ function [x1, fmin]=cplex_modiclus(clv,tol)
 % CPLEX_MODICLUS computes the modiclus of game v using cplexmex.
 %
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.8.0 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 % 
 % Source:  H. I. Meinhardt. The Modiclus Reconsidered. Technical report, Karlsruhe Institute of Technology (KIT), Karlsruhe, Germany,
 %          2018. URL http://dx.doi.org/10.13140/RG.2.2.32651.75043.
@@ -28,8 +28,8 @@ function [x1, fmin]=cplex_modiclus(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   12/19/2017        0.9             hme
-%                
-
+%   04/04/2020        1.9             hme
+%
 
 warning('off','all');
 if nargin<2
@@ -49,7 +49,19 @@ mtv=verLessThan('matlab','9.1.0');
 if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
-  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+%  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.largescale='on';
+  options.algorithm='dual-simplex';
+  options.tolfun=1e-10;
+  options.tolx=1e-10;
+  options.tolrlpfun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.preprocess='none';
+  options.tolcon=1e-6;
+  options.maxiter=10*(N+n);
+  options.display='off';
+  options.threads=3;
 end
 ra = clv.reasonable_outcome();
 ub=[ra,inf];

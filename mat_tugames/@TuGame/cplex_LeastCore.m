@@ -2,7 +2,7 @@ function [fmin,x,A1,B1,exitflag]=cplex_LeastCore(clv,tol)
 % CPLEX_LEASTCORE computes the least core of game using cplexmex.
 %
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.8.0 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 %
 %
 % Usage: [epsv, x]=cplex_LeastCore(v,tol)
@@ -28,6 +28,7 @@ function [fmin,x,A1,B1,exitflag]=cplex_LeastCore(clv,tol)
 %   ====================================================
 %   06/03/2015        0.7             hme
 %   02/24/2018        0.9             hme
+%   04/04/2020        1.9             hme
 %                
 
 
@@ -54,7 +55,19 @@ mtv=verLessThan('matlab','9.1.0');
 if mtv==1
   opts = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
-  opts = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+%  opts = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  opts.largescale='on';
+  opts.algorithm='dual-simplex';
+  opts.tolfun=1e-10;
+  opts.tolx=1e-10;
+  opts.tolrlpfun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  opts.preprocess='none';
+  opts.tolcon=1e-6;
+  opts.maxiter=128;
+  opts.display='off';
+  opts.threads=3;
 end
 warning('on','all');
 [xmin,fmin,exitflag,output,lambda]=cplexlp(C,A2,B1,[],[],[],ub,[],opts);

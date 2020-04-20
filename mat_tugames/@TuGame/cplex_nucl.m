@@ -2,7 +2,7 @@ function [x1, fmin]=cplex_nucl(clv,tol)
 % CPLEX_NUCL computes the nucleolus of game v using cplexmex.
 % 
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.8.0 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 %
 %
 % Usage: [x, alp]=cplex_nucl(clv,tol)
@@ -27,6 +27,7 @@ function [x1, fmin]=cplex_nucl(clv,tol)
 %   10/15/2013        0.5             hme
 %   02/24/2018        0.9             hme
 %   04/01/2019        1.0             hme
+%   04/04/2020        1.9             hme
 %                
 
 
@@ -65,17 +66,19 @@ mtv=verLessThan('matlab','9.1.0');
 if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
-  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
-  options.LargeScale='on';
-  options.Algorithm='dual-simplex';
-  options.TolFun=1e-10;
-  options.TolX=1e-10;
-  options.TolRLPFun=1e-10;
+%  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.largescale='on';
+  options.algorithm='dual-simplex';
+  options.tolfun=1e-10;
+  options.tolx=1e-10;
+  options.tolrlpfun=1e-10;
   %%%% for dual-simplex
   % opts.MaxTime=9000;
-  options.Preprocess='none';
-  options.TolCon=1e-6;
-  options.MaxIter=10*(N+n);
+  options.preprocess='none';
+  options.tolcon=1e-6;
+  options.maxiter=10*(N+n);
+  options.display='off';
+  options.threads=3;
 end
 warning('on','all');
 S=1:N;

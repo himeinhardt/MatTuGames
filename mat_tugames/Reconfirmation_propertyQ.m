@@ -44,6 +44,7 @@ function [RCP RCPC]=Reconfirmation_propertyQ(v,x,str,tol)
 %   08/21/2010        0.1 beta        hme
 %   06/17/2012        0.2 beta        hme
 %   05/27/2013        0.3 beta        hme
+%   04/01/2020        1.9             hme
 %                
 
 
@@ -98,7 +99,7 @@ for k=1:N-1
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     else
       try
-        vS_sol{1,k}=Prenucl(vS{1,k}); % solution y restricted to S.
+        vS_sol{1,k}=cplex_prenucl_mod4(vS{1,k}); % solution y restricted to S.
       catch
         vS_sol{1,k}=PreNucl(vS{1,k}); % use a third party solver instead!
       end
@@ -119,7 +120,7 @@ for k=1:N-1
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     else
       try
-         vS_sol{1,k}=Prenucl(vS{1,k}); % solution y restricted to S.
+         vS_sol{1,k}=cplex_prenucl_mod4(vS{1,k}); % solution y restricted to S.
       catch
          vS_sol{1,k}=PreNucl(vS{1,k}); % use a third party solver instead!
       end
@@ -142,7 +143,7 @@ if strcmp(str,'PRK')
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'PRN')
   try
-     vS_sol{1,N}=Prenucl(v);
+     vS_sol{1,N}=cplex_prenucl_mod4(v);
   catch
      vS_sol{1,N}=PreNucl(v);
   end

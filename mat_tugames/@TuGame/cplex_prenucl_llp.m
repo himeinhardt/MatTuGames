@@ -2,7 +2,7 @@ function [x1, fmin]=cplex_prenucl_llp(clv,tol)
 % CPLEX_GLPKPRENUCL_LLP computes the pre-nucleolus of game v using cplexmex.
 % 
 % http://www-01.ibm.com/software/websphere/ilog/
-% (compatible with CPLEX Version 12.8.0 and higher)
+% (compatible with CPLEX Version 12.10.0 and higher)
 %
 %
 % Usage: [x, alp]=cplex_prenucl_llp(clv,tol)
@@ -25,6 +25,7 @@ function [x1, fmin]=cplex_prenucl_llp(clv,tol)
 %   ====================================================
 %   12/21/2014        0.6             hme
 %   02/24/2018        0.9             hme
+%   04/04/2020        1.9             hme
 %                
 
 
@@ -52,14 +53,26 @@ mtv=verLessThan('matlab','9.1.0');
 if mtv==1
   options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
 else 
-  options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  %options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+  options.largescale='on';
+  options.algorithm='dual-simplex';
+  options.tolfun=1e-10;
+  options.tolx=1e-10;
+  options.tolrlpfun=1e-10;
+  %%%% for dual-simplex
+  % opts.MaxTime=9000;
+  options.preprocess='none';
+  options.tolcon=1e-6;
+  options.maxiter=10*(N+n);
+  options.display='off';
+  options.threads=3;
 end
 %    options = cplexoptimset('cplex');
 options.barrier.convergetol=1e-12;
 options.simplex.tolerances.feasibility=1e-9;
 options.simplex.tolerances.optimality=1e-9;
 options.emphasis.numerical=1;
-options.threads=8;
+%options.threads=8;
 options.barrier.display=0;
 options.feasopt.tolerance=1e-12;
 warning('on','all');
