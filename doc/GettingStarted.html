@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB R2020a"><title>Getting Started with MatTuGames</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 3px 10px 5px 4px; padding: 0px; line-height: 28.8px; min-height: 0px; white-space: pre-wrap; color: rgb(213, 80, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: normal; text-align: left;  }
+.S1 { margin: 20px 10px 5px 4px; padding: 0px; line-height: 20px; min-height: 0px; white-space: pre-wrap; color: rgb(60, 60, 60); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: bold; text-align: left;  }
+.S2 { margin: 2px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }
+.CodeBlock { background-color: #F7F7F7; margin: 10px 0 10px 0;}
+.S3 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 4px; padding: 6px 45px 4px 13px; line-height: 17.234px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S4 { margin: 10px 10px 9px 4px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre-wrap; color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: normal; text-align: left;  }
+.S5 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 4px 4px 0px 0px; padding: 6px 45px 4px 13px; line-height: 17.234px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S6 { color: rgb(64, 64, 64); padding: 10px 0px 6px 17px; background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px; overflow-x: hidden; line-height: 17.234px;  }
+.variableValue { width: 100% !important; }
+.embeddedOutputsMatrixElement,.eoOutputWrapper .matrixElement {min-height: 18px; box-sizing: border-box;}
+.embeddedOutputsMatrixElement .matrixElement,.eoOutputWrapper .matrixElement,.rtcDataTipElement .matrixElement {position: relative;}
+.matrixElement .variableValue,.rtcDataTipElement .matrixElement .variableValue {white-space: pre; display: inline-block; vertical-align: top; overflow: hidden;}
+.embeddedOutputsMatrixElement.inlineElement {}
+.embeddedOutputsMatrixElement.inlineElement .topHeaderWrapper {display: none;}
+.embeddedOutputsMatrixElement.inlineElement .veTable .body {padding-top: 0 !important; max-height: 100px;}
+.inlineElement .matrixElement {max-height: 300px;}
+.embeddedOutputsMatrixElement.rightPaneElement {}
+.rightPaneElement .matrixElement,.rtcDataTipElement .matrixElement {overflow: hidden; padding-left: 9px;}
+.rightPaneElement .matrixElement {margin-bottom: -1px;}
+.embeddedOutputsMatrixElement .matrixElement .valueContainer,.eoOutputWrapper .matrixElement .valueContainer,.rtcDataTipElement .matrixElement .valueContainer {white-space: nowrap; margin-bottom: 3px;}
+.embeddedOutputsMatrixElement .matrixElement .valueContainer .horizontalEllipsis.hide,.embeddedOutputsMatrixElement .matrixElement .verticalEllipsis.hide,.eoOutputWrapper .matrixElement .valueContainer .horizontalEllipsis.hide,.eoOutputWrapper .matrixElement .verticalEllipsis.hide,.rtcDataTipElement .matrixElement .valueContainer .horizontalEllipsis.hide,.rtcDataTipElement .matrixElement .verticalEllipsis.hide {display: none;}
+.embeddedOutputsVariableMatrixElement .matrixElement .valueContainer.hideEllipses .verticalEllipsis, .embeddedOutputsVariableMatrixElement .matrixElement .valueContainer.hideEllipses .horizontalEllipsis {display:none;}
+.embeddedOutputsMatrixElement .matrixElement .valueContainer .horizontalEllipsis,.eoOutputWrapper .matrixElement .valueContainer .horizontalEllipsis {margin-bottom: -3px;}
+.eoOutputWrapper .embeddedOutputsVariableMatrixElement .matrixElement .valueContainer {cursor: default !important;}
+.embeddedOutputsVariableElement {white-space: pre-wrap; word-wrap: break-word; min-height: 18px; max-height: 250px; overflow: auto;}
+.variableElement {}
+.embeddedOutputsVariableElement.inlineElement {}
+.inlineElement .variableElement {}
+.embeddedOutputsVariableElement.rightPaneElement {min-height: 16px;}
+.rightPaneElement .variableElement {padding-top: 2px; padding-left: 9px;}
+.variableNameElement {margin-bottom: 3px; display: inline-block;}
+.matrixElement .horizontalEllipsis,.rtcDataTipElement .matrixElement .horizontalEllipsis {display: inline-block; margin-top: 3px; width: 30px; height: 12px; background-repeat: no-repeat; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAJCAYAAADO1CeCAAAAJUlEQVR42mP4//8/A70xw0i29BUDFPxnAEtTW37wWDqakIa4pQDvOOG89lHX2gAAAABJRU5ErkJggg==");}
+.matrixElement .verticalEllipsis,.textElement .verticalEllipsis,.rtcDataTipElement .matrixElement .verticalEllipsis,.rtcDataTipElement .textElement .verticalEllipsis {margin-left: 35px; width: 12px; height: 30px; background-repeat: no-repeat; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAZCAYAAAAIcL+IAAAALklEQVR42mP4//8/AzGYgWyFMECMwv8QddRS+P//KyimlmcGUOFoOI6GI/UVAgDnd8Dd4+NCwgAAAABJRU5ErkJggg==");}
+.embeddedOutputsErrorElement {min-height: 18px; max-height: 250px; overflow: auto;}
+.embeddedOutputsErrorElement.inlineElement {}
+.embeddedOutputsErrorElement.rightPaneElement {}
+.embeddedOutputsWarningElement{min-height: 18px; max-height: 250px; overflow: auto;}
+.embeddedOutputsWarningElement.inlineElement {}
+.embeddedOutputsWarningElement.rightPaneElement {}
+.diagnosticMessage-wrapper {font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 12px;}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType {color: rgb(255,100,0);}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType a {color: rgb(255,100,0); text-decoration: underline;}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType {color: rgb(230,0,0);}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType a {color: rgb(230,0,0); text-decoration: underline;}
+.diagnosticMessage-wrapper .diagnosticMessage-messagePart,.diagnosticMessage-wrapper .diagnosticMessage-causePart {white-space: pre-wrap;}
+.diagnosticMessage-wrapper .diagnosticMessage-stackPart {white-space: pre;}
+.embeddedOutputsTextElement,.embeddedOutputsVariableStringElement {white-space: pre; word-wrap: initial; min-height: 18px; max-height: 250px; overflow: auto;}
+.textElement,.rtcDataTipElement .textElement {padding-top: 3px;}
+.embeddedOutputsTextElement.inlineElement,.embeddedOutputsVariableStringElement.inlineElement {}
+.inlineElement .textElement {}
+.embeddedOutputsTextElement.rightPaneElement,.embeddedOutputsVariableStringElement.rightPaneElement {min-height: 16px;}
+.rightPaneElement .textElement {padding-top: 2px; padding-left: 9px;}
+.S7 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 0px none rgb(0, 0, 0); border-radius: 0px; padding: 6px 45px 0px 13px; line-height: 17.234px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S8 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 0px none rgb(0, 0, 0); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 0px; padding: 0px 45px 4px 13px; line-height: 17.234px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.S9 { border-left: 1px solid rgb(233, 233, 233); border-right: 1px solid rgb(233, 233, 233); border-top: 1px solid rgb(233, 233, 233); border-bottom: 1px solid rgb(233, 233, 233); border-radius: 0px 0px 4px 4px; padding: 6px 45px 4px 13px; line-height: 17.234px; min-height: 18px; white-space: nowrap; color: rgb(0, 0, 0); font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px;  }
+.embeddedOutputsVariableTableElement .ClientViewDiv table tr {height: 22px; white-space: nowrap;}
+.embeddedOutputsVariableTableElement .ClientViewDiv table tr td,.embeddedOutputsVariableTableElement .ClientViewDiv table tr th {background-color:white; text-overflow: ellipsis; font-family: 'Arial', sans-serif; font-size: 12px; overflow : hidden;}
+.embeddedOutputsVariableTableElement .ClientViewDiv table tr span {text-overflow: ellipsis; padding: 3px;}
+.embeddedOutputsVariableTableElement .ClientViewDiv table tr th {color: rgba(0,0,0,0.5); padding: 3px; font-size: 9px;}</style></head><body><div class = rtcContent><h1  class = 'S0'><span>Getting Started with MatTuGames</span></h1><h2  class = 'S1'><span>Description</span></h2><div  class = 'S2'><span></span></div><div  class = 'S2'><span>The game theoretical </span><span style=' font-weight: bold;'>MATLAB</span><span> toolbox </span><span style=' font-weight: bold;'>MatTuGames</span><span> provides about 400 functions</span></div><div  class = 'S2'><span>for modeling, and calculating some solutions as well as properties of cooperative</span></div><div  class = 'S2'><span>games with transferable utilities. In contrast to existing Matlab toolboxes to</span></div><div  class = 'S2'><span>investigate TU-games, which are written in a C/C++ programming style with the consequence</span></div><div  class = 'S2'><span>that these functions are executed relatively slowly, we heavily relied on vectorized</span></div><div  class = 'S2'><span>constructs in order to write more efficient Matlab functions. In particular, the toolbox</span></div><div  class = 'S2'><span>provides functions to compute the </span><span style=' font-style: italic;'>(pre-)kernel, (pre-)nucleolus, anti (pre-)kernel, and</span></div><div  class = 'S2'><span style=' font-style: italic;'>modiclus</span><span> as well as game values like the </span><span style=' font-style: italic;'>Banzhaf, Myerson, Owen, position, Shapley, solidarity,</span></div><div  class = 'S2'><span style=' font-style: italic;'>and coalition solidarity value</span><span> and much more. In addition, we will discuss how one can</span></div><div  class = 'S2'><span>use Matlab's </span><span style=' font-weight: bold;'>Parallel Computing Toolbox </span><span>in connection with this toolbox to benefit</span></div><div  class = 'S2'><span>from a gain in performance by launching supplementary Matlab workers. Some information</span></div><div  class = 'S2'><span>are provided how to call our </span><span style=' font-weight: bold;'>Mathematica</span><span> package </span><span style=' font-weight: bold;'>TuGames</span><span> within a running Matlab session.</span></div><div  class = 'S2'><span></span></div><h2  class = 'S1'><span>System Requirements</span></h2><div  class = 'S2'><span>This release of </span><span style=' font-weight: bold;'>MatTuGames</span><span> was developed and tested using </span><span style=' font-weight: bold;'>Matlab</span></div><div  class = 'S2'><span style=' font-weight: bold;'>R2020a</span><span> and earlier releases. A set of functions use the </span><span style=' font-weight: bold;'>Optimization Toolbox</span></div><div  class = 'S2'><span>and the </span><span style=' font-weight: bold;'>cdd-library</span><span> by </span><span style=' font-style: italic;'>Komei Fukuda</span><span>, which can be found at the URL:</span></div><div  class = 'S2'><a href = "http://www.inf.ethz.ch/personal/fukudak/cdd_home/"><span>CDD</span></a></div><div  class = 'S2'><span>as well as the </span><span style=' font-weight: bold;'>Matlab</span><span> interface to the cdd solver </span><span style=' font-style: italic;'>CDDMEX</span><span>: </span></div><div  class = 'S2'><a href = "http://people.ee.ethz.ch/~cohysys/cdd.html"><span>CDDMEX</span></a></div><div  class = 'S2'><span>Alternatively, in order to get even full scope of operation of the graphical features, one can also install the </span><span style=' font-weight: bold;'>MPT3</span><span> toolbox that can be downloaded from </span></div><div  class = 'S2'><a href = "https://www.mpt3.org/Main/Installation"><span>MPT3</span></a></div><div  class = 'S2'><span>which ships with </span><span style=' font-style: italic;'>CDDMEX</span><span>.  We strongly recommend the user to apply the </span><span style=' font-weight: bold;'>MPT3</span><span> toolbox, in particular of using the graphical features of our toolbox.</span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>For the computation of the pre-kernel and related solutions the </span><span style=' font-weight: bold;'>SuiteSparse</span><span> for Matlab is  recommend that can be got from the URL</span></div><div  class = 'S2'><a href = "https://github.com/DrTimothyAldenDavis/SuiteSparse"><span>SuiteSparse</span></a></div><div  class = 'S2'><span>If you do not want to use </span><span style=' font-weight: bold;'>SuiteSparse</span><span>, then replace the function </span><span style=' font-style: italic;'>qr_dec</span><span> by </span><span style=' font-style: italic;'>pinv</span><span> in all functions for the pre-kernel and related solutions. The same argument applies for the function </span><span style=' font-style: italic;'>qrginv</span><span>. It should be noted that this may cause accuracy issues with the consequence that the result is incorrect. </span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>To run the toolbox even in parallel mode, Matlab's </span><span style=' font-weight: bold;'>Parallel Computing Toolbox</span><span> is needed.</span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>For connecting the </span><span style=' font-weight: bold;'>Mathematica</span><span> Package </span><span style=' font-weight: bold;'>TuGames</span><span>, the </span><span style=' font-weight: bold;'>Mathematica Symbolic Toolbox</span><span> is required, which can be found under</span></div><div  class = 'S2'><span>the URL:</span></div><div  class = 'S2'><a href = "http://www.mathworks.com/matlabcentral/fileexchange/6044-mathematica-symbolic-toolbox-for-matlab-version-2-0"><span>Mathematica Symbolic Toolbox</span></a></div><div  class = 'S2'><span>whereas </span><span style=' font-weight: bold;'>TuGames</span><span> Version 2.5.4 can be downloaded from the URL:</span></div><div  class = 'S2'><a href = "https://github.com/himeinhardt/TuGames"><span>TuGames</span></a></div><div  class = 'S2'><span>https://github.com/himeinhardt/TuGames</span></div><div  class = 'S2'><span>We recommend a custom installation with </span><span style=' font-style: italic;'>paclet</span><span>, which can be found at</span></div><div  class = 'S2'><a href = "https://github.com/himeinhardt/TuGames/releases"><span>Paclet</span></a></div><div  class = 'S2'><span>The </span><span style=' font-weight: bold;'>MatTuGames</span><span> toolbox should work with all platforms.</span></div><div  class = 'S2'><span>Moreover, the toolbox works also with the game theory toolbox written by </span><span style=' font-style: italic;'>Jean Derks</span><span>, which can be requested from:</span></div><div  class = 'S2'><a href = "https://www.maastrichtuniversity.nl/jean.derks/research"><span>Derks</span></a></div><div  class = 'S2'><span>We added some adjusted files that fix a problem with closed loops under certain game classes. </span></div><div  class = 'S2'><span>This toolbox can be used to compute the pre-nucleolus up to 10-persons, if one has no license of Matlab's optimization toolbox.</span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>Finally, the toolbox </span><span style=' font-weight: bold;'>MatTuGames</span><span> offers interfaces to access the solvers of </span><span style=' font-weight: bold;'>CVX, CPLEX, GLPK, GUROBI, HSL, IPOPT, MOSEK,</span><span> and</span><span style=' font-weight: bold;'> OASES</span><span>. The </span><span style=' font-weight: bold;'>CPLEX</span><span> interfaces are compatible with version 12.10.  </span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>To summarize, apart of the mentioned software, the toolbox requires the following </span><span style=' font-weight: bold;'>MATLAB</span><span> toolboxes:  </span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span style=' font-weight: bold;'>MATLAB Parallel Server,</span></div><div  class = 'S2'><span style=' font-weight: bold;'>Optimization Toolbox,</span></div><div  class = 'S2'><span style=' font-weight: bold;'>Parallel Computing Toolbox,</span></div><div  class = 'S2'><span style=' font-weight: bold;'>Signal Processing Toolbox,</span></div><div  class = 'S2'><span style=' font-weight: bold;'>Statistics and Machine Learning Toolbox,</span></div><div  class = 'S2'><span style=' font-weight: bold;'>Symbolic Math Toolbox</span></div><div  class = 'S2'><span>to get full functionality in serial as well as in parallel.</span></div><h2  class = 'S1'><span>Features</span></h2><div  class = 'S2'><span>Computing solution concepts from cooperative game theory.</span></div><div  class = 'S2'><span>Checking game properties.</span></div><div  class = 'S2'><span>Checking the axiomatization of cooperative solution concepts.</span></div><div  class = 'S2'><span>Computation can be performed in serial as well as in parallel.</span></div><div  class = 'S2'><span>Creation of game class objects to perform computations for retrieving and modifying game data within a consistent computation environment. </span></div><h2  class = 'S1'><span>Examples</span></h2><div  class = 'S2'><span>In order to get some insight how to analyze a cooperative game,</span></div><div  class = 'S2'><span>a so-called transferable utility game, with the Game Theory Toolbox</span></div><div  class = 'S2'><span style=' font-weight: bold;'>MatTuGames </span><span>we discuss a small example to demonstrate of how one can</span></div><div  class = 'S2'><span>compute some game properties or solution concepts, like </span><span style=' font-style: italic;'>convexity,</span></div><div  class = 'S2'><span style=' font-style: italic;'>the Shapley value, the (pre-)nucleolus</span><span> or a </span><span style=' font-style: italic;'>pre-kernel </span><span>element.</span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>For this purpose, consider a situation where an estate is insufficient</span></div><div  class = 'S2'><span>to meet simultaneously all of the debts/claims of a set of claimants,</span></div><div  class = 'S2'><span>such a situation is known in game theory as a </span><span style=' font-style: italic;'>bankruptcy problem</span><span>.</span></div><div  class = 'S2'><span>The problem is now to find a fair/stable distribution in the sense that</span></div><div  class = 'S2'><span>no claimant/creditor can find an argument to obstruct the proposed division</span></div><div  class = 'S2'><span>to satisfy at least partly the mutual inconsistent claims of the creditors.</span></div><div  class = 'S2'><span>In a first step, we define a bankruptcy situation while specifying</span></div><div  class = 'S2'><span>the debts vector and the estate that can be distributed to the</span></div><div  class = 'S2'><span>creditors. We restrict our example to a six-person bankruptcy problem</span></div><div  class = 'S2'><span>with a debts vector given by</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre;"><span>d = [40.0000 32.0000 11.0000 73.3000 54.9500 81.1000];</span></span></div></div></div><div  class = 'S4'><span>and an estate value which is equal to</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre;"><span>E = 176;</span></span></div></div></div><div  class = 'S4'><span>We immediately observe that the estate E is insufficient to meet all</span></div><div  class = 'S2'><span>of the claims simultaneously. It should be obvious that with these values</span></div><div  class = 'S2'><span>we do not have defined a cooperative game, however, these information</span></div><div  class = 'S2'><span>are enough to compute a proposal how to divide the estate between the</span></div><div  class = 'S2'><span>creditors. A fair division rule which is proposed by the </span><span style=' font-style: italic;'>Babylonian Talmud</span><span>,</span></div><div  class = 'S2'><span>is given by</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>tlm_rl=Talmudic_Rule(E,d)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="FD103ECA" contenteditable="false" data-testid="output_0" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">tlm_rl = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span>However, this distribution rule does not incorporate the coalition formation</span></div><div  class = 'S2'><span>process. Thus, we might get a different outcome when we consider the</span></div><div  class = 'S2'><span>possibility that agents can form coalitions to better enforce their claims.</span></div><div  class = 'S2'><span>This means, we have to study the corresponding cooperative game. This can</span></div><div  class = 'S2'><span>be constructed while calling the following function</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre;"><span>bv=bankruptcy_game(E,d);</span></span></div></div></div><div  class = 'S4'><span>Having generated a game, we can check some game properties like convexity</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>cvQ=convex_gameQ(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="BE157BF8" contenteditable="false" data-testid="output_1" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">cvQ = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>The returned logical value indicates that this game is indeed convex. This must</span></div><div  class = 'S2'><span>be the case for bankruptcy games. In addition, we can also verify if the</span></div><div  class = 'S2'><span>core of the game is non-empty or empty. To see this one needs just to invoke</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>crQ=coreQ(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="0D8B8371" contenteditable="false" data-testid="output_2" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">crQ = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>which is answered by affirmation. This result confirms our expectation, since each</span></div><div  class = 'S2'><span>convex game has a non-empty core.</span></div><div  class = 'S2'><span>After this short introduction of game properties, we turn our attention now</span></div><div  class = 'S2'><span>to some well known solution concepts from game theory. We start with the</span></div><div  class = 'S2'><span>Shapley value, which can be computed by</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>sh_v=ShapleyValue(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="6E961244" contenteditable="false" data-testid="output_3" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">sh_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   23.5175   18.7483    6.4950   44.3008   33.3317   49.6067
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span></span></div><div  class = 'S2'><span>A pre-kernel element can be computed with the function</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>prk_v=PreKernel(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="EB432BAF" contenteditable="false" data-testid="output_4" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">prk_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span>which must be identical to the distributional law of justice proposed by the Talmudic</span></div><div  class = 'S2'><span>rule. Moreover, it must also coincides with the nucleolus due to the convexity</span></div><div  class = 'S2'><span>of the game. To see this, let us compute first the nucleolus and in the next</span></div><div  class = 'S2'><span>step the pre-nucleolus</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>nc_bv=nucl(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="05A7900A" contenteditable="false" data-testid="output_5" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">nc_bv = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div><div class="inlineWrapper"><div  class = 'S7'></div></div><div class="inlineWrapper outputs"><div  class = 'S8'><span style="white-space: pre;"><span>pn_bv=PreNucl(bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="137255C0" contenteditable="false" data-testid="output_6" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">pn_bv = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div><div class="inlineWrapper"><div  class = 'S9'></div></div></div><div  class = 'S4'><span>We observe that both solutions coincide, which must be the case for zero-monotonic games.</span></div><div  class = 'S2'><span>To check that these solutions are indeed the pre-nucleolus can be verified by Kohlberg's</span></div><div  class = 'S2'><span>criterion</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>balancedCollectionQ(bv,pn_bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="AEE39F46" contenteditable="false" data-testid="output_7" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ans = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div><div class="inlineWrapper"><div  class = 'S7'></div></div><div class="inlineWrapper outputs"><div  class = 'S8'><span style="white-space: pre;"><span>balancedCollectionQ(bv,nc_bv)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="48BC51B0" contenteditable="false" data-testid="output_8" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ans = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div><div class="inlineWrapper"><div  class = 'S9'></div></div></div><div  class = 'S4'><span>In order to verify that the solution found is really a pre-kernel element can be done while typing </span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>prkQ=PrekernelQ(bv,prk_v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="8AB6D0A9" contenteditable="false" data-testid="output_9" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">prkQ = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>Furthermore, with the toolbox we can also compute the modiclus of the game, which</span></div><div  class = 'S2'><span>takes apart from the primal power also the preventive power of coalitions into account.</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>mnc_v=Modiclus(v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsWarningElement" uid="224F31AD" contenteditable="false" data-testid="output_10" data-width="1025" data-height="18" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="diagnosticMessage-wrapper diagnosticMessage-warningType"><div class="diagnosticMessage-messagePart">Warning: Probably no modiclus found!</div><div class="diagnosticMessage-stackPart"></div></div></div><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="67A178B6" contenteditable="false" data-testid="output_11" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">mnc_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   22.5067   17.7567    7.4533   41.8600   37.1100   49.3133
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span>Checking this solution can be established while invoking a modified </span><span style=' font-style: italic;'>Kohlberg criterion</span><span>.</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>modiclusQ(v,mnc_v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="2242D214" contenteditable="false" data-testid="output_12" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ans = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div><div class="inlineWrapper"><div  class = 'S9'></div></div></div><div  class = 'S4'><span>The return value is a logical one, hence the solution is the modiclus. For bankruptcy game we</span></div><div  class = 'S2'><span>can rely on the computation of the anti pre-nucleolus as a simple cross-check to figure out</span></div><div  class = 'S2'><span>that the solution is correct (cf. Meinhardt 2018c).</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>apn_v=Anti_PreNucl(v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="EEDC803D" contenteditable="false" data-testid="output_13" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">apn_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   22.5067   17.7567    7.4533   41.8600   37.1100   49.3133
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span>We observe that both solutions coincide, hence this gives additional evidence that the computation</span></div><div  class = 'S2'><span>of the modiclus was correct. Moreover, for the class of convex games the modiclus must belong to</span></div><div  class = 'S2'><span>the core, which can be examined through </span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>belongToCoreQ(v,mnc_v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="3FAFC17D" contenteditable="false" data-testid="output_14" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ans = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>However, if this should still not be enough evidence, then we can</span></div><div  class = 'S2'><span>referring to the axiomatization of the modiclus, which is characterized by SIVA, COV, EC, LEDCONS,</span></div><div  class = 'S2'><span>and DCP, whereas DCP can also be replaced by DRP (cf. Meinhardt 2018c).</span></div><div  class = 'S2'><span></span></div><div  class = 'S2'><span>Apart of SIVA (Single Valuedness), the toolbox can examine COV</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>COV_mnc_v=COV_propertyQ(v,mnc_v,</span><span style="color: rgb(160, 32, 240);">''</span><span>,</span><span style="color: rgb(160, 32, 240);">''</span><span>,</span><span style="color: rgb(160, 32, 240);">'MODIC'</span><span>)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="695D7BD7" contenteditable="false" data-testid="output_15" data-width="1025" data-height="90" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">COV_mnc_v = <span class="headerElement">struct with fields:</span></span></div><div>      covQ: 1
+    sol_v2: [23.5067 18.7567 8.4533 42.8600 38.1100 50.3133]
+       sgm: [23.5067 18.7567 8.4533 42.8600 38.1100 50.3133]
+        v2: [1×63 double]
+         x: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+</div></div></div></div></div></div><div  class = 'S4'><span>as well as EC</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>ECQ_mnc_v=EC_propertyQ(v,mnc_v,</span><span style="color: rgb(160, 32, 240);">'MODIC'</span><span>)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="E9EBA25C" contenteditable="false" data-testid="output_16" data-width="1025" data-height="62" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ECQ_mnc_v = <span class="headerElement">struct with fields:</span></span></div><div>    propQ: 1
+        y: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+        x: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+</div></div></div></div></div></div><div  class = 'S4'><span>and LEDCONS</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>[LEDC_mnc_v, LEDCGPQ_mnc_v]=Ledcons_propertyQ(v,mnc_v,</span><span style="color: rgb(160, 32, 240);">'MODIC'</span><span>)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="49CB77B3" contenteditable="false" data-testid="output_17" data-width="1025" data-height="62" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">LEDC_mnc_v = <span class="headerElement">struct with fields:</span></span></div><div>    ledconsQ: 1
+        rgpq: [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+    ledpropQ: [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
+</div></div></div><div class="inlineElement eoOutputWrapper embeddedOutputsVariableTableElement" uid="AE75569D" contenteditable="false" data-testid="output_18" style="width: 1055px;"><div class="ClientDocument veSpecifier table DataFitToViewport" id="variableeditor_client_Document_0" widgetid="variableeditor_client_Document_0"><div class="summaryBar" style="font-size: 12px; font-family: Consolas, Inconsolata, Menlo, monospace;"><span>LEDCGPQ_mnc_v = </span><span style="color: rgb(179, 179, 179); font-style: normal;">1×4 cell </span></div><div id="variableeditor_TableViewModel_0" widgetid="variableeditor_TableViewModel_0" class="cell ClientViewDiv hasSummaryBar" data-viewid="__1"><table cellspacing="0" style="border-spacing: 0px; border-width: 0px 1px 0px 0px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial;"><thead><tr><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 34px; text-align: left; border-width: 1px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>&nbsp;</span></th><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: center; border-width: 1px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>1</span></th><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: center; border-width: 1px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>2</span></th><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: center; border-width: 1px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>3</span></th><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: center; border-width: 1px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>4</span></th></tr></thead><tbody><tr><th style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 9px; overflow: hidden; width: 34px; text-align: left; border-width: 0px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial; background: rgb(245, 245, 245); color: rgb(128, 128, 128); padding: 3px;"><span>1</span></th><td style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 12px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: left; border-width: 0px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial;"><span>'vS'</span></td><td style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 12px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: left; border-width: 0px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial;"><span>2×62&nbsp;cell</span></td><td style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 12px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: left; border-width: 0px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial;"><span>'impVec'</span></td><td style="text-overflow: ellipsis; font-family: Arial, sans-serif; font-size: 12px; overflow: hidden; width: 75px; min-width: 75px; max-width: 75px; text-align: left; border-width: 0px 0px 1px 1px; border-style: solid; border-color: rgb(191, 191, 191); border-image: initial;"><span>1×63&nbsp;cell</span></td></tr></tbody></table></div></div></div></div></div></div><div  class = 'S4'><span>to finally check DCP</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>DCP_mnc_v=DCP_propertyQ(v,mnc_v,</span><span style="color: rgb(160, 32, 240);">'MODIC'</span><span>)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="74DB0234" contenteditable="false" data-testid="output_19" data-width="1025" data-height="76" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">DCP_mnc_v = <span class="headerElement">struct with fields:</span></span></div><div>    propQ: 1
+       xQ: 1
+        y: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133 22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+        x: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+</div></div></div></div></div></div><div  class = 'S4'><span>and DRP</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>DRP_mnc_v=DRP_propertyQ(v,mnc_v,</span><span style="color: rgb(160, 32, 240);">'MODIC'</span><span>)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="B6BEAB83" contenteditable="false" data-testid="output_20" data-width="1025" data-height="76" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">DRP_mnc_v = <span class="headerElement">struct with fields:</span></span></div><div>    propQ: 1
+       xQ: 1
+        y: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133 22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+        x: [22.5067 17.7567 7.4533 41.8600 37.1100 49.3133]
+</div></div></div></div></div></div><div  class = 'S4'><span>By this example, we observed that the axiomatization of the modiclus was satisfied, from we which can conclude that the modiclus of the game was found by this evaluation. Of course, the toolbox offers in addition routines to examine the axiomatization of the pre-nucleolus, pre-kernel, anti pre-nucleolus, anti pre-kernel, modified as well as proper modified pre-kernel, and Shapley value.  </span></div><div  class = 'S2'><span>        Moreover, the toolbox offers to the user the possibility to create several game class objects to perform several computations for retrieving and modifying game data with the intention to ensure a consistent computation environment. Hence, these classes should avoid that some data from a different game are used or that game data are unintentionally changed, which allow the user to concentrate on the crucial aspects of analyzing the game instead of dealing with the issue of supplying the correct game data. Such a class is, for instance </span><span style=' font-style: italic;'>TuSol</span><span>, which executes several computations in serial for retrieving and storing game solutions. A class object, let us call it </span><span style=' font-style: italic;'>sclv</span><span>, is created by calling </span><span style=' font-style: italic;'>TuSol</span><span> with at least one argument, that is, the values of the characteristic function. The other two input arguments can be left out. However, if they are supplied, then the second specifies the game type, for instance </span><span style=' font-style: italic;'>cv</span><span> for the class of convex games. Whereas the last argument specifies the game format, which is for the discussed example </span><span style=' font-style: italic;'>mattug</span><span> to indicate that the coalitions are ordered in accordance with their unique integer representation to carry out some computation under MatTuGames. </span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre;"><span>sclv=TuSol(v,</span><span style="color: rgb(160, 32, 240);">'cv'</span><span>,</span><span style="color: rgb(160, 32, 240);">'mattug'</span><span>);</span></span></div></div></div><div  class = 'S4'><span>Having created the class object </span><span style=' font-style: italic;'>sclv</span><span>, one can invoke a computation of getting results for some selected solution concepts while executing  </span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>sclv.setAllSolutions</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="ADF297B4" contenteditable="false" data-testid="output_21" data-width="1025" data-height="356" data-hashorizontaloverflow="false" style="max-height: 367px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">ans = </span></div><div>  TuSol with properties:
+
+        tu_prk: [20.0000 16.0000 5.5000 48.3500 30.0000 56.1500]
+        tu_prn: [20.0000 16.0000 5.5000 48.3500 30.0000 56.1500]
+       tu_prk2: []
+         tu_sh: [23.5175 18.7483 6.4950 44.3008 33.3317 49.6067]
+       tu_tauv: [24.0807 19.2646 6.6222 44.1279 33.0809 48.8237]
+        tu_bzf: []
+       tu_aprk: [22.6550 17.9050 7.3050 41.8600 37.1100 49.1650]
+     prk_valid: 1
+     prn_valid: 1
+    prk2_valid: 0
+    aprk_valid: 1
+      tuvalues: [1×63 double]
+        tusize: 63
+     tuplayers: 6
+        tutype: 'cv'
+        tuessQ: 1
+      tuformat: 'mattug'
+          tumv: 176.0000
+         tumnQ: 0
+          tuSi: [62 61 59 55 47 31]
+          tuvi: [0 0 0 0 0 0]
+        tustpt: []
+</div></div></div></div></div></div><div  class = 'S4'><span>which stores apart of the solution concepts also some important data of the game. This class object can then be used, for instance, to determine the modified pre-kernel of the underlying game </span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>mpk_v=sclv.ModPreKernel</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="7453A8E1" contenteditable="false" data-testid="output_22" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">mpk_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   22.6550   17.9050    7.3050   41.8600   37.1100   49.1650
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span></span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>mpkQ_v=sclv.ModPrekernelQ(mpk_v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="70E8F88A" contenteditable="false" data-testid="output_23" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">mpkQ_v = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>or the proper modified pre-kernel through</span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>pmpk_v=sclv.PModPreKernel</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableMatrixElement" uid="6FF7CE7D" contenteditable="false" data-testid="output_24" data-width="1025" style="width: 1055px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="matrixElement veSpecifier saveLoad" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="veVariableName variableNameElement double" style="width: 1025px; white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="headerElementClickToInteract" style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><span style="white-space: normal; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">pmpk_v = </span><span class="veVariableValueSummary veMetaSummary" style="white-space: normal; font-style: normal; color: rgb(179, 179, 179); font-size: 12px;">1×6</span></div></div><div class="valueContainer" data-layout="{&quot;columnWidth&quot;:72,&quot;totalColumns&quot;:&quot;6&quot;,&quot;totalRows&quot;:&quot;1&quot;,&quot;charsPerColumn&quot;:10}" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"><div class="variableValue" style="width: 434px; white-space: pre; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;">   22.2100   17.4600    7.7500   41.8600   37.1100   49.6100
+</div><div class="horizontalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div><div class="verticalEllipsis hide" style="white-space: nowrap; font-style: normal; color: rgb(64, 64, 64); font-size: 12px;"></div></div></div></div></div></div></div><div  class = 'S4'><span></span></div><div class="CodeBlock"><div class="inlineWrapper outputs"><div  class = 'S5'><span style="white-space: pre;"><span>pmpkQ_v=sclv.PModPrekernelQ(pmpk_v)</span></span></div><div  class = 'S6'><div class="inlineElement eoOutputWrapper embeddedOutputsVariableStringElement" uid="B68403F8" contenteditable="false" data-testid="output_25" data-width="1025" data-height="34" data-hashorizontaloverflow="false" style="max-height: 261px; width: 1055px;"><div class="textElement"><div><span class="variableNameElement">pmpkQ_v = <span class="headerElement">logical</span></span></div><div>   1
+</div></div></div></div></div></div><div  class = 'S4'><span>or much more. For a deeper discussion of the function set provided by the toolbox consult the </span><span style=' font-style: italic;'>Manual</span><span> or type </span><span style=' font-style: italic;'>help mat_tug</span><span> to get a short overview. </span></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Getting Started with MatTuGames
+%% Description
+% 
+% 
+% The game theoretical *MATLAB* toolbox *MatTuGames* provides about 400 functions
+% 
+% for modeling, and calculating some solutions as well as properties of cooperative
+% 
+% games with transferable utilities. In contrast to existing Matlab toolboxes 
+% to
+% 
+% investigate TU-games, which are written in a C/C++ programming style with 
+% the consequence
+% 
+% that these functions are executed relatively slowly, we heavily relied on 
+% vectorized
+% 
+% constructs in order to write more efficient Matlab functions. In particular, 
+% the toolbox
+% 
+% provides functions to compute the _(pre-)kernel, (pre-)nucleolus, anti (pre-)kernel, 
+% and_
+% 
+% _modiclus_ as well as game values like the _Banzhaf, Myerson, Owen, position, 
+% Shapley, solidarity,_
+% 
+% _and coalition solidarity value_ and much more. In addition, we will discuss 
+% how one can
+% 
+% use Matlab's *Parallel Computing Toolbox* in connection with this toolbox 
+% to benefit
+% 
+% from a gain in performance by launching supplementary Matlab workers. Some 
+% information
+% 
+% are provided how to call our *Mathematica* package *TuGames* within a running 
+% Matlab session.
+% 
+% 
+%% System Requirements
+% This release of *MatTuGames* was developed and tested using *Matlab*
+% 
+% *R2020a* and earlier releases. A set of functions use the *Optimization Toolbox*
+% 
+% and the *cdd-library* by _Komei Fukuda_, which can be found at the URL:
+% 
+% <http://www.inf.ethz.ch/personal/fukudak/cdd_home/ CDD>
+% 
+% as well as the *Matlab* interface to the cdd solver _CDDMEX_: 
+% 
+% <http://people.ee.ethz.ch/~cohysys/cdd.html CDDMEX>
+% 
+% Alternatively, in order to get even full scope of operation of the graphical 
+% features, one can also install the *MPT3* toolbox that can be downloaded from 
+% 
+% <https://www.mpt3.org/Main/Installation MPT3>
+% 
+% which ships with _CDDMEX_.  We strongly recommend the user to apply the *MPT3* 
+% toolbox, in particular of using the graphical features of our toolbox.
+% 
+% 
+% 
+% For the computation of the pre-kernel and related solutions the *SuiteSparse* 
+% for Matlab is  recommend that can be got from the URL
+% 
+% <https://github.com/DrTimothyAldenDavis/SuiteSparse SuiteSparse>
+% 
+% If you do not want to use *SuiteSparse*, then replace the function _qr_dec_ 
+% by _pinv_ in all functions for the pre-kernel and related solutions. The same 
+% argument applies for the function _qrginv_. It should be noted that this may 
+% cause accuracy issues with the consequence that the result is incorrect. 
+% 
+% 
+% 
+% To run the toolbox even in parallel mode, Matlab's *Parallel Computing Toolbox* 
+% is needed.
+% 
+% 
+% 
+% For connecting the *Mathematica* Package *TuGames*, the *Mathematica Symbolic 
+% Toolbox* is required, which can be found under
+% 
+% the URL:
+% 
+% <http://www.mathworks.com/matlabcentral/fileexchange/6044-mathematica-symbolic-toolbox-for-matlab-version-2-0 
+% Mathematica Symbolic Toolbox>
+% 
+% whereas *TuGames* Version 2.5.4 can be downloaded from the URL:
+% 
+% <https://github.com/himeinhardt/TuGames TuGames>
+% 
+% https://github.com/himeinhardt/TuGames
+% 
+% We recommend a custom installation with _paclet_, which can be found at
+% 
+% <https://github.com/himeinhardt/TuGames/releases Paclet>
+% 
+% The *MatTuGames* toolbox should work with all platforms.
+% 
+% Moreover, the toolbox works also with the game theory toolbox written by _Jean 
+% Derks_, which can be requested from:
+% 
+% <https://www.maastrichtuniversity.nl/jean.derks/research Derks>
+% 
+% We added some adjusted files that fix a problem with closed loops under certain 
+% game classes. 
+% 
+% This toolbox can be used to compute the pre-nucleolus up to 10-persons, if 
+% one has no license of Matlab's optimization toolbox.
+% 
+% 
+% 
+% Finally, the toolbox *MatTuGames* offers interfaces to access the solvers 
+% of *CVX, CPLEX, GLPK, GUROBI, HSL, IPOPT, MOSEK,* and *OASES*. The *CPLEX* interfaces 
+% are compatible with version 12.10.  
+% 
+% 
+% 
+% To summarize, apart of the mentioned software, the toolbox requires the following 
+% *MATLAB* toolboxes:  
+% 
+% 
+% 
+% *MATLAB Parallel Server,*
+% 
+% *Optimization Toolbox,*
+% 
+% *Parallel Computing Toolbox,*
+% 
+% *Signal Processing Toolbox,*
+% 
+% *Statistics and Machine Learning Toolbox,*
+% 
+% *Symbolic Math Toolbox*
+% 
+% to get full functionality in serial as well as in parallel.
+%% Features
+% Computing solution concepts from cooperative game theory.
+% 
+% Checking game properties.
+% 
+% Checking the axiomatization of cooperative solution concepts.
+% 
+% Computation can be performed in serial as well as in parallel.
+% 
+% Creation of game class objects to perform computations for retrieving and 
+% modifying game data within a consistent computation environment. 
+%% Examples
+% In order to get some insight how to analyze a cooperative game,
+% 
+% a so-called transferable utility game, with the Game Theory Toolbox
+% 
+% *MatTuGames* we discuss a small example to demonstrate of how one can
+% 
+% compute some game properties or solution concepts, like _convexity,_
+% 
+% _the Shapley value, the (pre-)nucleolus_ or a _pre-kernel_ element.
+% 
+% 
+% 
+% For this purpose, consider a situation where an estate is insufficient
+% 
+% to meet simultaneously all of the debts/claims of a set of claimants,
+% 
+% such a situation is known in game theory as a _bankruptcy problem_.
+% 
+% The problem is now to find a fair/stable distribution in the sense that
+% 
+% no claimant/creditor can find an argument to obstruct the proposed division
+% 
+% to satisfy at least partly the mutual inconsistent claims of the creditors.
+% 
+% In a first step, we define a bankruptcy situation while specifying
+% 
+% the debts vector and the estate that can be distributed to the
+% 
+% creditors. We restrict our example to a six-person bankruptcy problem
+% 
+% with a debts vector given by
+
+d = [40.0000 32.0000 11.0000 73.3000 54.9500 81.1000];
+%% 
+% and an estate value which is equal to
+
+E = 176;
+%% 
+% We immediately observe that the estate E is insufficient to meet all
+% 
+% of the claims simultaneously. It should be obvious that with these values
+% 
+% we do not have defined a cooperative game, however, these information
+% 
+% are enough to compute a proposal how to divide the estate between the
+% 
+% creditors. A fair division rule which is proposed by the _Babylonian Talmud_,
+% 
+% is given by
+
+tlm_rl=Talmudic_Rule(E,d)
+%% 
+% However, this distribution rule does not incorporate the coalition formation
+% 
+% process. Thus, we might get a different outcome when we consider the
+% 
+% possibility that agents can form coalitions to better enforce their claims.
+% 
+% This means, we have to study the corresponding cooperative game. This can
+% 
+% be constructed while calling the following function
+
+bv=bankruptcy_game(E,d);
+%% 
+% Having generated a game, we can check some game properties like convexity
+
+cvQ=convex_gameQ(bv)
+%% 
+% The returned logical value indicates that this game is indeed convex. This 
+% must
+% 
+% be the case for bankruptcy games. In addition, we can also verify if the
+% 
+% core of the game is non-empty or empty. To see this one needs just to invoke
+
+crQ=coreQ(bv)
+%% 
+% which is answered by affirmation. This result confirms our expectation, since 
+% each
+% 
+% convex game has a non-empty core.
+% 
+% After this short introduction of game properties, we turn our attention now
+% 
+% to some well known solution concepts from game theory. We start with the
+% 
+% Shapley value, which can be computed by
+
+sh_v=ShapleyValue(bv)
+%% 
+% 
+% 
+% A pre-kernel element can be computed with the function
+
+prk_v=PreKernel(bv)
+%% 
+% which must be identical to the distributional law of justice proposed by the 
+% Talmudic
+% 
+% rule. Moreover, it must also coincides with the nucleolus due to the convexity
+% 
+% of the game. To see this, let us compute first the nucleolus and in the next
+% 
+% step the pre-nucleolus
+
+nc_bv=nucl(bv)
+
+pn_bv=PreNucl(bv)
+
+%% 
+% We observe that both solutions coincide, which must be the case for zero-monotonic 
+% games.
+% 
+% To check that these solutions are indeed the pre-nucleolus can be verified 
+% by Kohlberg's
+% 
+% criterion
+
+balancedCollectionQ(bv,pn_bv)
+
+balancedCollectionQ(bv,nc_bv)
+
+%% 
+% In order to verify that the solution found is really a pre-kernel element 
+% can be done while typing 
+
+prkQ=PrekernelQ(bv,prk_v)
+%% 
+% Furthermore, with the toolbox we can also compute the modiclus of the game, 
+% which
+% 
+% takes apart from the primal power also the preventive power of coalitions 
+% into account.
+
+mnc_v=Modiclus(v)
+%% 
+% Checking this solution can be established while invoking a modified _Kohlberg 
+% criterion_.
+
+modiclusQ(v,mnc_v)
+
+%% 
+% The return value is a logical one, hence the solution is the modiclus. For 
+% bankruptcy game we
+% 
+% can rely on the computation of the anti pre-nucleolus as a simple cross-check 
+% to figure out
+% 
+% that the solution is correct (cf. Meinhardt 2018c).
+
+apn_v=Anti_PreNucl(v)
+%% 
+% We observe that both solutions coincide, hence this gives additional evidence 
+% that the computation
+% 
+% of the modiclus was correct. Moreover, for the class of convex games the modiclus 
+% must belong to
+% 
+% the core, which can be examined through 
+
+belongToCoreQ(v,mnc_v)
+%% 
+% However, if this should still not be enough evidence, then we can
+% 
+% referring to the axiomatization of the modiclus, which is characterized by 
+% SIVA, COV, EC, LEDCONS,
+% 
+% and DCP, whereas DCP can also be replaced by DRP (cf. Meinhardt 2018c).
+% 
+% 
+% 
+% Apart of SIVA (Single Valuedness), the toolbox can examine COV
+
+COV_mnc_v=COV_propertyQ(v,mnc_v,'','','MODIC')
+%% 
+% as well as EC
+
+ECQ_mnc_v=EC_propertyQ(v,mnc_v,'MODIC')
+%% 
+% and LEDCONS
+
+[LEDC_mnc_v, LEDCGPQ_mnc_v]=Ledcons_propertyQ(v,mnc_v,'MODIC')
+%% 
+% to finally check DCP
+
+DCP_mnc_v=DCP_propertyQ(v,mnc_v,'MODIC')
+%% 
+% and DRP
+
+DRP_mnc_v=DRP_propertyQ(v,mnc_v,'MODIC')
+%% 
+% By this example, we observed that the axiomatization of the modiclus was satisfied, 
+% from we which can conclude that the modiclus of the game was found by this evaluation. 
+% Of course, the toolbox offers in addition routines to examine the axiomatization 
+% of the pre-nucleolus, pre-kernel, anti pre-nucleolus, anti pre-kernel, modified 
+% as well as proper modified pre-kernel, and Shapley value.  
+% 
+% Moreover, the toolbox offers to the user the possibility to create several 
+% game class objects to perform several computations for retrieving and modifying 
+% game data with the intention to ensure a consistent computation environment. 
+% Hence, these classes should avoid that some data from a different game are used 
+% or that game data are unintentionally changed, which allow the user to concentrate 
+% on the crucial aspects of analyzing the game instead of dealing with the issue 
+% of supplying the correct game data. Such a class is, for instance _TuSol_, which 
+% executes several computations in serial for retrieving and storing game solutions. 
+% A class object, let us call it _sclv_, is created by calling _TuSol_ with at 
+% least one argument, that is, the values of the characteristic function. The 
+% other two input arguments can be left out. However, if they are supplied, then 
+% the second specifies the game type, for instance _cv_ for the class of convex 
+% games. Whereas the last argument specifies the game format, which is for the 
+% discussed example _mattug_ to indicate that the coalitions are ordered in accordance 
+% with their unique integer representation to carry out some computation under 
+% MatTuGames. 
+
+sclv=TuSol(v,'cv','mattug');
+%% 
+% Having created the class object _sclv_, one can invoke a computation of getting 
+% results for some selected solution concepts while executing  
+
+sclv.setAllSolutions
+%% 
+% which stores apart of the solution concepts also some important data of the 
+% game. This class object can then be used, for instance, to determine the modified 
+% pre-kernel of the underlying game 
+
+mpk_v=sclv.ModPreKernel
+%% 
+% 
+
+mpkQ_v=sclv.ModPrekernelQ(mpk_v)
+%% 
+% or the proper modified pre-kernel through
+
+pmpk_v=sclv.PModPreKernel
+%% 
+% 
+
+pmpkQ_v=sclv.PModPrekernelQ(pmpk_v)
+%% 
+% or much more. For a deeper discussion of the function set provided by the 
+% toolbox consult the _Manual_ or type _help mat_tug_ to get a short overview.
+##### SOURCE END #####
+--></body></html>

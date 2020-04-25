@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding="utf-8"?>
+<toc version="2.0">
+
+    <tocitem target="doc/html/mattug_start_page.html">Overview of MatTuGames
+        <tocitem target="doc/html/mattug_Contents.html">Functions Reference 
+            <tocitem target="doc/html/mattug_getting_started.html">Basic Example</tocitem>
+            <tocitem target="doc/html/testcase_graphics.html">Graphical Features</tocitem>
+            <tocitem target="thirdfx.html">third</tocitem>
+        </tocitem>
+        <tocitem target="doc/html/GettingStarted.html">Getting Started with MatTuGames
+        </tocitem>
+    </tocitem>
+
+</toc>

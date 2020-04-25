@@ -1,0 +1,225 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="3080011166" file="/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug/MatTuGames.prj" location="/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>MatTuGames</param.appname>
+    <param.authnamewatermark>Holger I. Meinhardt</param.authnamewatermark>
+    <param.email>Holger.Meinhardt@wiwi.uni-karlsruhe.de</param.email>
+    <param.company>Karlsruhe Institute of Technology (KIT)</param.company>
+    <param.summary>A Matlab Toolbox for Cooperative Game Theory</param.summary>
+    <param.description>The game theoretical Matlab toolbox MatTuGames provides about 400 functions
+for modeling, and calculating some solutions as well as properties of cooperative
+games with transferable utilities. In contrast to existing Matlab toolboxes to
+investigate TU-games, which are written in a C/C++ programming style with the consequence
+that these functions are executed relatively slowly, we heavily relied on vectorized
+constructs in order to write more efficient Matlab functions.</param.description>
+    <param.screenshot>${PROJECT_ROOT}/MatTUG.png</param.screenshot>
+    <param.version>1.8.0.12</param.version>
+    <param.output>${PROJECT_ROOT}/MatTuGames.mltbx</param.output>
+    <param.products.name>
+      <item>MATLAB Parallel Server</item>
+      <item>Optimization Toolbox</item>
+      <item>Parallel Computing Toolbox</item>
+      <item>Signal Processing Toolbox</item>
+      <item>Statistics and Machine Learning Toolbox</item>
+      <item>Symbolic Math Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>94</item>
+      <item>6</item>
+      <item>80</item>
+      <item>8</item>
+      <item>19</item>
+      <item>15</item>
+    </param.products.id>
+    <param.products.version>
+      <item>7.1</item>
+      <item>8.5</item>
+      <item>7.2</item>
+      <item>8.4</item>
+      <item>11.7</item>
+      <item>8.5</item>
+    </param.products.version>
+    <param.platforms />
+    <param.guid>f56e53ae-70d0-447c-9f62-36f30cfcc5b5</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
+    <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
+    <param.examples />
+    <param.demosxml />
+    <param.apps />
+    <param.registered.apps />
+    <param.docs>${PROJECT_ROOT}/info.xml</param.docs>
+    <param.getting.started.guide>${PROJECT_ROOT}/doc/mattug_start_page.mlx</param.getting.started.guide>
+    <param.matlabpath.excludes>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/plot</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/gr_alg</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/glpkmex</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/cddmex</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/qpOASES</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/quadprogBB</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/ipopt</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/clpmex</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/qpc</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/local/SDPT3-4.0/Solver</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/local/SDPT3-4.0/Solver/Mexfun</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/ma57</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/ma86</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/ma87</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/local/mosek/9.1/toolbox/r2015aom</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/SeDuMi_1_3</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/vtk</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/dynopt</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/matrixcomp</item>
+      <item>/pfs/data5/home/kit/xxxx/xxxx/local/ILOG/CPLEX_Studio1210/cplex/matlab/x86-64_linux</item>
+    </param.matlabpath.excludes>
+    <param.javaclasspath.excludes />
+    <param.exported.on.package>false</param.exported.on.package>
+    <param.required.addons>
+      <requiredaddons />
+    </param.required.addons>
+    <param.matlab.project.id />
+    <param.matlab.project.name />
+    <param.release.start>R2014b</param.release.start>
+    <param.release.end>latest</param.release.end>
+    <param.release.current.only>false</param.release.current.only>
+    <param.compatiblity.windows>true</param.compatiblity.windows>
+    <param.compatiblity.macos>true</param.compatiblity.macos>
+    <param.compatiblity.linux>true</param.compatiblity.linux>
+    <param.compatiblity.matlabonline>true</param.compatiblity.matlabonline>
+    <param.installation.map />
+    <param.additional.sw.names />
+    <param.additional.sw.licenses />
+    <param.additional.sw.win.url />
+    <param.additional.sw.mac.url />
+    <param.additional.sw.linux.url />
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.output />
+      <param.platforms />
+      <param.exclude.pcodedmfiles />
+      <param.examples />
+      <param.demosxml />
+      <param.apps />
+      <param.registered.apps />
+      <param.javaclasspath.excludes />
+      <param.exported.on.package />
+      <param.matlab.project.id />
+      <param.matlab.project.name />
+      <param.release.current.only />
+      <param.compatiblity.windows />
+      <param.compatiblity.macos />
+      <param.compatiblity.linux />
+      <param.compatiblity.matlabonline />
+      <param.additional.sw.names />
+      <param.additional.sw.licenses />
+      <param.additional.sw.win.url />
+      <param.additional.sw.mac.url />
+      <param.additional.sw.linux.url />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/Contents.m</file>
+      <file>${PROJECT_ROOT}/LICENSE.md</file>
+      <file>${PROJECT_ROOT}/MatTUG.png</file>
+      <file>${PROJECT_ROOT}/MatTuGames_Overview.mlx</file>
+      <file>${PROJECT_ROOT}/README.md</file>
+      <file>${PROJECT_ROOT}/README.pdf</file>
+      <file>${PROJECT_ROOT}/bin</file>
+      <file>${PROJECT_ROOT}/demos.xml</file>
+      <file>${PROJECT_ROOT}/doc</file>
+      <file>${PROJECT_ROOT}/graphics</file>
+      <file>${PROJECT_ROOT}/helptoc.xml</file>
+      <file>${PROJECT_ROOT}/info.xml</file>
+      <file>${PROJECT_ROOT}/jderks</file>
+      <file>${PROJECT_ROOT}/mama</file>
+      <file>${PROJECT_ROOT}/mat_tugames</file>
+      <file>${PROJECT_ROOT}/matlink</file>
+      <file>${PROJECT_ROOT}/mattug_aux</file>
+      <file>${PROJECT_ROOT}/pct_tugames</file>
+      <file>${PROJECT_ROOT}/tools</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug/MatTuGames.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/pfs/data5/software_uc2/bwhpc/common/math/matlab/R2020a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="gpucoder" />
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>false</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>true</linux>
+      <solaris>false</solaris>
+      <osver>3.10.0-1062.12.1.el7.x86_64</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>glnxa64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

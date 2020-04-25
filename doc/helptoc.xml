@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding="utf-8"?>
+<toc version="2.0">
+
+    <tocitem target="mattug_start_page.html">MatTuGames Toolbox
+            <tocitem target="mattug_release_note.html">Release Notes</tocitem>
+            <tocitem target="MatTuGames_Overview.html"> MatTuGames Overview
+            <tocitem target="mattug_features.html">Features</tocitem>
+            <tocitem target="mattug_quick_tour.html">Quick Guide to MatTuGames</tocitem>
+            <tocitem target="mattug_testcase_graphics.html">Guide to Graphical Feature</tocitem>
+            <tocitem target="mattug_Contents.html">Function Reference</tocitem>
+        </tocitem>
+        <tocitem target="GettingStarted.html">Getting Started
+        </tocitem>
+    </tocitem>
+
+</toc>

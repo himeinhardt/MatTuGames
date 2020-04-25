@@ -358,9 +358,9 @@ mpk_v =
 
    22.6550   17.9050    7.3050   41.8600   37.1100   49.1650
 
->> mpk_v=sclv.ModPrekernelQ(mpk_v)
+>> mpkQ_v=sclv.ModPrekernelQ(mpk_v)
 
-mpk_v =
+mpkQ_v =
 
   logical
 
@@ -375,9 +375,9 @@ pmpk_v =
 
    22.2100   17.4600    7.7500   41.8600   37.1100   49.6100
 
->> mpk_v=sclv.PModPrekernelQ(pmpk_v)
+>> pmpkQ_v=sclv.PModPrekernelQ(pmpk_v)
 
-mpk_v =
+pmpkQ_v =
 
   logical
 
