@@ -1,18 +1,18 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3080011166" file="/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug/MatTuGames.prj" location="/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3080011166" file="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9/MatTuGames.prj" location="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>MatTuGames</param.appname>
     <param.authnamewatermark>Holger I. Meinhardt</param.authnamewatermark>
     <param.email>Holger.Meinhardt@wiwi.uni-karlsruhe.de</param.email>
     <param.company>Karlsruhe Institute of Technology (KIT)</param.company>
     <param.summary>A Matlab Toolbox for Cooperative Game Theory</param.summary>
-    <param.description>The game theoretical Matlab toolbox MatTuGames provides about 400 functions
+    <param.description>The game theoretical Matlab toolbox MatTuGames provides about 500 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
 that these functions are executed relatively slowly, we heavily relied on vectorized
 constructs in order to write more efficient Matlab functions.</param.description>
     <param.screenshot>${PROJECT_ROOT}/MatTUG.png</param.screenshot>
-    <param.version>1.8.0.12</param.version>
+    <param.version>1.9.0.0</param.version>
     <param.output>${PROJECT_ROOT}/MatTuGames.mltbx</param.output>
     <param.products.name>
       <item>MATLAB Parallel Server</item>
@@ -32,14 +32,14 @@ constructs in order to write more efficient Matlab functions.</param.description
     </param.products.id>
     <param.products.version>
       <item>7.1</item>
-      <item>8.5</item>
-      <item>7.2</item>
-      <item>8.4</item>
-      <item>11.7</item>
-      <item>8.5</item>
+      <item>9.1</item>
+      <item>7.4</item>
+      <item>8.6</item>
+      <item>12.1</item>
+      <item>8.7</item>
     </param.products.version>
     <param.platforms />
-    <param.guid>f56e53ae-70d0-447c-9f62-36f30cfcc5b5</param.guid>
+    <param.guid>f64b66ec-abff-48df-880a-b8c86e5e374f</param.guid>
     <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
 % from packaging.  Excludes should be listed relative to the toolbox folder.
 % Some examples of how to specify excludes are provided below:
@@ -60,7 +60,26 @@ constructs in order to write more efficient Matlab functions.</param.description
 % **/*.bak
 %</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
-    <param.examples />
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="doc"&gt;
+      &lt;example name="testcase_graphics" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/testcase_graphics.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/testcase_graphics.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="GettingStarted" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/GettingStarted.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/GettingStarted.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="mattug_features" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/mattug_features.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/mattug_features.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
     <param.demosxml />
     <param.apps />
     <param.registered.apps />
@@ -87,6 +106,7 @@ constructs in order to write more efficient Matlab functions.</param.description
       <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/dynopt</item>
       <item>/pfs/data5/home/kit/xxxx/xxxx/matlab/matrixcomp</item>
       <item>/pfs/data5/home/kit/xxxx/xxxx/local/ILOG/CPLEX_Studio1210/cplex/matlab/x86-64_linux</item>
+      <item>/</item>
     </param.matlabpath.excludes>
     <param.javaclasspath.excludes />
     <param.exported.on.package>false</param.exported.on.package>
@@ -115,7 +135,6 @@ constructs in order to write more efficient Matlab functions.</param.description
       <param.output />
       <param.platforms />
       <param.exclude.pcodedmfiles />
-      <param.examples />
       <param.demosxml />
       <param.apps />
       <param.registered.apps />
@@ -139,9 +158,10 @@ constructs in order to write more efficient Matlab functions.</param.description
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}/Contents.m</file>
+      <file>${PROJECT_ROOT}/Contents.md</file>
+      <file>${PROJECT_ROOT}/Contents.pdf</file>
       <file>${PROJECT_ROOT}/LICENSE.md</file>
       <file>${PROJECT_ROOT}/MatTUG.png</file>
-      <file>${PROJECT_ROOT}/MatTuGames_Overview.mlx</file>
       <file>${PROJECT_ROOT}/README.md</file>
       <file>${PROJECT_ROOT}/README.pdf</file>
       <file>${PROJECT_ROOT}/bin</file>
@@ -162,11 +182,11 @@ constructs in order to write more efficient Matlab functions.</param.description
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/xxxx/xxxx/matlab/mat_tug/MatTuGames.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9/MatTuGames.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/pfs/data5/software_uc2/bwhpc/common/math/matlab/R2020a</root>
+      <root>/pfs/data5/software_uc2/bwhpc/common/math/matlab/R2021a</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
@@ -215,7 +235,7 @@ constructs in order to write more efficient Matlab functions.</param.description
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>3.10.0-1062.12.1.el7.x86_64</osver>
+      <osver>4.18.0-193.28.1.el8_2.x86_64</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

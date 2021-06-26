@@ -214,18 +214,18 @@ if err<eps
 else
 if cnt==CNT, % should trigger errors ....
   if slv==0 && smc==1
-       msg01='No Pre-Kernel Element found. Changing Cardinality.';
-       warning('PrK:ChangCard',msg01);
+       msg01='No Proper Modified Pre-Kernel Element found. Changing Cardinality.';
+       warning('PModPrK:ChangCard',msg01);
        if mnQ==1 && n < 15;x=4*x;end 
        [x, Lerr, smat, xarr]=computePrk(v,x,0,slv,mnQ);
   elseif slv==0 && smc==0 
-       msg02='No Pre-Kernel Element found. Changing the Solver.';
-       warning('PrK:ChangSolv',msg02);
+       msg02='No Proper Modified Pre-Kernel Element found. Changing the Solver.';
+       warning('PModPrK:ChangSolv',msg02);
        if mnQ==1; x=2*x; else x=LS_PreNucl(v)'; end
        [x, Lerr, smat, xarr]=computePrk(v,x,smc,1,mnQ);
   elseif slv==1 && smc==0 
-       msg01='No Pre-Kernel Element found. Changing Cardinality to Default Value.';
-       warning('PrK:Default',msg01);
+       msg01='No Proper Modified Pre-Kernel Element found. Changing Cardinality to Default Value.';
+       warning('PModPrK:Default',msg01);
        if mnQ==1 && n < 7 || n>=11;x=(v(N)/n)*ones(n,1); end 
        [x, Lerr, smat, xarr]=computePrk(v,x,1,1,mnQ);
   elseif slv==1 && smc==1
@@ -240,13 +240,13 @@ if cnt==CNT, % should trigger errors ....
        else 
           x=(v(N)/n)*ones(n,1); 
        end
-       msg01='No Pre-Kernel Element found. Changing to Start Value.';
-       warning('PrK:StartVal',msg01);
+       msg01='No Proper Modified Pre-Kernel Element found. Changing to Start Value.';
+       warning('PModPrK:StartVal',msg01);
        [x, Lerr, smat, xarr]=computePrk(v,x,2,1,mnQ);
   else
        x=x';
-       msg02='No Pre-Kernel Element found. Change payoff vector and restart!';
-       warning('PrK:NotFound',msg02);
+       msg02='No Proper Modified Pre-Kernel Element found. Change payoff vector and restart!';
+       warning('PModPrK:NotFound',msg02);
   end
 else
   x=x';

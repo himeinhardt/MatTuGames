@@ -28,6 +28,7 @@ function [krQ, kriQ, smat]=Anti_kernelQ(clv,x,tol)
 %   ====================================================
 %   01/17/2013        0.3             hme
 %   05/11/2019        1.1             hme
+%   05/20/2021        1.9             hme
 %                
 
 if nargin < 2
@@ -58,10 +59,14 @@ if effQ==0, return; end
 
 smat=msrpls(v,x,n);
 l=1:n;
-%ir=x-v(bitset(0,l));
-%vi=v(bitset(0,k))';
 Nk=N-2.^(l-1);
 vi=v(Nk);
+sxwi=zeros(1,n);
+for kk=1:n
+    x2=x;
+    x2(kk)=[];
+    sxwi(kk)=sum(x2);
+end
 ir=vi-x;
 irQ=all(ir>-tol);
 if irQ

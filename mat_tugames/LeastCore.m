@@ -37,6 +37,12 @@ end
 
 N=length(v);
 [~, n]=log2(N);
+if N==1
+   fmin=v;
+   x=v;
+   return
+end
+
 S=1:N;
 A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end

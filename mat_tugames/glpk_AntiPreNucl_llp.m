@@ -23,6 +23,7 @@ function [x1, fmin]=glpk_AntiPreNucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/05/2016        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -34,7 +35,10 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 % solver parameter
 ra = reasonable_outcome(v);
 ub=[ra,Inf];

@@ -25,6 +25,7 @@ function [x, Lerr, smat, xarr]=Anti_Kernel(v,x)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/19/2013        0.3             hme
+%   05/20/2021        1.9             hme
 %                
 
 if nargin<1
@@ -134,7 +135,13 @@ while cnt<CNT
     if n==2, a=a'; end;
     err=norm(E*x-a)^2; if err<eps, x=x';break; end
 % checking anti-kernel property
-    ir=(x-vi)';
+    sxwi=zeros(1,n);
+    for kk=1:n
+	x2=x;
+        x2(kk)=[];	
+	sxwi(kk)=sum(x2);
+    end	
+    ir=(vi-sxwi)';
     irQ=all(ir>-tol);
     if irQ
       smat=tril(smat,-1)+triu(smat,1);

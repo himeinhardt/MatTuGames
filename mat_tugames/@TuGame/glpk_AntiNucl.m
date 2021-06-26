@@ -23,6 +23,7 @@ function [x1, fmin]=glpk_AnitNucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -40,7 +41,10 @@ vi=clv.tuvi;
 if essQ==1
    error('Game is not anti essential!');
 end
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 
 % solver parameter
 ra = clv.smallest_amount();
@@ -49,7 +53,7 @@ vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 
 lb=[ra,-Inf];

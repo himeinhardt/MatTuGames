@@ -153,6 +153,7 @@ params.method= 2; % Use barrier method.
 % params.FeasibilityTol = 1e-08;
 % params.OptimalityTol = 1e-08;
 params.BarConvTol = 1e-11;
+params.Threads=8;
 params.TimeLimit = 1000;
 
 

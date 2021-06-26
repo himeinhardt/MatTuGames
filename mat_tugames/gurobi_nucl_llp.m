@@ -71,6 +71,7 @@ params.method= 2; % Use barrier method.
 % params.method= 3; % Use concurrent.
 % params.method= 4; % Use deterministic concurrent.
 params.TimeLimit = 1000;
+params.Threads=8;
 bA=find(A1(:,end)==0);
 it=0:-1:1-n;
 while 1

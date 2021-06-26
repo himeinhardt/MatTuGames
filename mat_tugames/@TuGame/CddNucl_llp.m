@@ -60,7 +60,7 @@ A1(:,end+1)=-1;
 A1(N:end,end)=0;
 B1=[-v';v(N);-vi;ra];
 objective=[zeros(1,n),1];
-bA=find(A1(:,end)==0)';
+bA=find(A1(1:N+1,end)==0)';
 it=0:-1:1-n;
 while 1
   IN=struct('obj',objective,'A',A1,'B',B1);

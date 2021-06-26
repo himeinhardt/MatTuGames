@@ -29,6 +29,7 @@ function [x, Lerr, smat, xarr]=hsl_prekernel(v,x)
 %   ====================================================
 %   01/10/2012        0.3             hme
 %   05/03/2019        1.1             hme
+%   11/01/2020        1.9             hme
 %                
 
 if nargin<1
@@ -141,7 +142,8 @@ while cnt<CNT
 
 %
 % Calling linear solver.
-     try 
+   if slv==0
+     try
         struct = hsl_ma87_factor(Q1);
         x = hsl_ma87_solve(struct,b);
      catch
@@ -153,6 +155,33 @@ while cnt<CNT
          x = hsl_ma86_solve(struct,b);
        end
      end
+   elseif slv==1
+     try
+        struct = hsl_ma86_factor(Q1);
+        x = hsl_ma86_solve(struct,b);
+     catch
+       if rank(Q) < n
+         struct = ma57_factor(Q1);
+         x = ma57_solve(Q1,b,struct);
+       else
+         struct = hsl_ma87_factor(Q1);
+         x = hsl_ma87_solve(struct,b);
+       end
+     end
+   else
+     try
+         struct = hsl_ma97_factor(Q1);
+         x = hsl_ma97_solve(struct,b);
+     catch
+       if rank(Q) < n
+         struct = ma57_factor(Q1);
+         x = ma57_solve(Q1,b,struct);
+       else
+         struct = hsl_ma86_factor(Q1);
+         x = hsl_ma86_solve(struct,b);
+       end
+     end       
+   end
 
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
@@ -206,13 +235,13 @@ function [A, smat]=effCoalitions(v,x,smc,cnt)
 % output:
 % A     -- matrix of most effective coalitions of smallest/largest cardinality.
 % smat  -- as above.
-% cnt   -- loop counter.
 %
 % input:
 % cnt   -- loop counter.
 %       -- otherwise, as above.
 %
 n=length(x);
+N=2^n-1;
 % The set of effective coalitions might be too
 % large or too small due to floating point arithmetic.
 % Adjusting the tolerance value might help to find the
@@ -228,13 +257,60 @@ else
  tol=100*eps;
 end
 
-% Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
+% Inspired by Jean Derks.
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % Computing the excess vector w.r.t. x.
-e=v-Xm;
-clear v Xm;
+lv=islogical(v);
+e=v-Xm{1};
+% Truncate excess vector.
+if n>16
+   el = min(e);
+   eh = max(e);
+   if abs(eh+el)<10^7*eps
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   elseif eh==1 && el==0
+      clear v Xm; 
+      [e,sC]=sort(e,'descend');
+   else
+      if lv==1
+         clear v Xm; 
+         if eh > 0.7 && eh < 1 
+            eh=1.3*eh;
+            pv=min((eh+el)*0.9,0.7); % 0.6 fine
+         else
+            pv=min((eh+el)*0.3,0.8);
+         end
+      else
+         vN=v(N);
+         [mv,idx]=max(v);
+         k=1:n;
+         ki=2.^(k-1);
+         me=(vN-sum(v(ki)))/n;
+         clear v Xm; 
+         if mv<0
+            eh= 0.3*eh;
+            pv=(eh+el)*1.2; % eh 0.3 fine (increase to improve).     
+         elseif mv>vN
+            eh = 0.8*eh;
+            pv=(eh+el)*1.2; % 0.9 fine (increase to improve).
+         elseif idx<N
+            eh = 0.8*eh;
+            pv=(eh+el); % 0.9 fine (increase to improve).
+         else
+            pv=(me+el)/2;
+         end
+      end
+      lp=e>pv-tol;
+      e=e(lp);
+      fS=find(lp);
+      [e,fC]=sort(e,'descend');
+      sC=fS(fC);
+   end
+else
+   [e,sC]=sort(e,'descend');
+end
 % Truncate data arrays.
-[e, sC]=sort(e,'descend');
 B=eye(n);
 smat=-inf(n);
 q0=n^2-n;
@@ -243,14 +319,14 @@ k=1;
 pl=1:n;
 while q~=q0
   kS=sC(k);
-  ai=bitget(kS,pl)==1;
-  bj=ai==0;
-  pli=pl(ai);
-  plj=pl(bj);
-  if isempty(plj)==0
-    for i=1:length(pli)
-      for j=1:length(plj)
-        if B(pli(i),plj(j))==0 
+  if kS<N
+    ai=bitget(kS,pl)==1;
+    bj=ai==0;
+    pli=pl(ai);
+    plj=pl(bj);
+    for i=1:numel(pli)
+      for j=1:numel(plj)
+        if B(pli(i),plj(j))==0
            B(pli(i),plj(j))=k;
            smat(pli(i),plj(j))=e(k); % max surplus of i against j.
            q=q+1;
@@ -264,7 +340,6 @@ m=max(B(:));
 e1=e(m)-tol;
 le=e>=e1;
 tS=sC(le);
-lcl=length(tS);
 te=e(le);
 clear e sC;
 % Computing the set of most effective coalitions.

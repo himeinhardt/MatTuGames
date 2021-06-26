@@ -37,7 +37,10 @@ vi=clv.tuvi';
 if essQ==1
    error('Game is not anti essential!')
 end
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 S=1:N;
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
@@ -51,7 +54,7 @@ ra = smallest_amount(clv)';
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 lb=[ra;-Inf];
 ub=[vi;Inf];

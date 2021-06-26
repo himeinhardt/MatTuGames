@@ -29,6 +29,8 @@ function [RCP RCPC]=p_Reconfirmation_propertyQ(clv,x,str,tol)
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleolus.
+%              'CORE' that is, the Davis-Maschler reduced game 
+%               in accordance with the core.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -108,6 +110,11 @@ parfor k=1:N-1
     rSk=PlyMat(k,:);
     vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
     rcpq{k}=clv.PrekernelQ(vS_y{1,k});
+  elseif strcmp(str,'CORE')
+    [~,vS_sol{1,k}]=LeastCore(vS{k}); % solution y restricted to S.
+    rSk=PlyMat(k,:);
+    vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+    rcpq{k}=belongToCoreQ(v,vS_y{1,k});
   elseif strcmp(str,'PRN')
     if length(vS{k})==1
       vS_sol{1,k}=PreKernel(vS{k}); % solution y restricted to S.
@@ -159,6 +166,10 @@ end
 if strcmp(str,'PRK')
   vS_sol{1,N}=clv.p_PreKernel(x);
   rcpq{N}=clv.p_PrekernelQ(x);
+  vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'CORE')
+  vS_sol{1,N}=clv.LeastCore();
+  rcpq{N}=clv.belongToCoreQ(x);
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'PRN')
   try

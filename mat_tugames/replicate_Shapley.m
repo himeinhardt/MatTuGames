@@ -45,6 +45,7 @@ N=length(v);
 [~, n]=log2(N);
 
 slb=linear_basis(n,'sparse');
+lb=slb;
 k=1:n;
 sC=2.^(k-1);
 slb(sC,:)=[];

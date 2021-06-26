@@ -1,5 +1,5 @@
 function RERGP=RE_RGP(v,x,str)
-%RE_ RGP checks whether an imputation x is reasonable from both sides for all
+%RE_RGP checks whether an imputation x is reasonable from both sides for all
 % reduced games. 
 %
 % Usage: RERGP=RE_RGP(v,x,str)

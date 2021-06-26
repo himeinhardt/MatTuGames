@@ -23,6 +23,8 @@ function [RGP RGPC]=Reduced_game_propertyQ(clv,x,str,tol)
 %               in accordance with the pre-nucleolus.
 %              'PRK' that is, the Davis-Maschler reduced game 
 %               in accordance with pre-kernel solution.
+%              'POPK' that is, the Davis-Maschler reduced game 
+%               in accordance with positive pre-kernel solution.
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value.
 %              'HMS_PK' that is, Hart-MasColell reduced game 
@@ -35,6 +37,8 @@ function [RGP RGPC]=Reduced_game_propertyQ(clv,x,str,tol)
 %               equivalence in accordance with the modified pre-kernel.
 %              'PMPRK' that is, the Davis-Maschler reduced game 
 %               equivalence in accordance with the proper modified pre-kernel.
+%              'CORE' that is, the Davis-Maschler reduced game
+%               in accordance with the core.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -49,6 +53,7 @@ function [RGP RGPC]=Reduced_game_propertyQ(clv,x,str,tol)
 %   ====================================================
 %   05/29/2013        0.3             hme
 %   03/09/2018        1.0             hme
+%   06/18/2020        1.9             hme
 %                
 
 N=clv.tusize;
@@ -110,10 +115,14 @@ for k=1:N-1
 % reduced game vS. To speed up computation, we use this code below for both,
 % the pre-nucleolus and and the pre-kernel.
    rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'POPK')
+   rgpq(k)=positivePrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'MPRK')
    rgpq(k)=ModPrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'PMPRK')
    rgpq(k)=PModPrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'CORE')
+   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'PRN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
@@ -162,10 +171,14 @@ if strcmp(str,'SHAP')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'PRK')
   rgpq(N)=clv.PrekernelQ(x);
+elseif strcmp(str,'POPK')
+  rgpq(N)=clv.positivePrekernelQ(x);
 elseif strcmp(str,'MPRK')
   rgpq(N)=clv.ModPrekernelQ(x);
 elseif strcmp(str,'PMPRK')
   rgpq(N)=clv.PModPrekernelQ(x);
+elseif strcmp(str,'CORE')
+  rgpq(N)=clv.belongToCoreQ(x);
 elseif strcmp(str,'PRN')
    try
      sol{N}=clv.Prenucl(x); % using adjusted Derks pre-nucleolus function.

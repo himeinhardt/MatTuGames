@@ -22,6 +22,7 @@ function [x1, alp]=gurobi_AntiNucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -33,7 +34,10 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
 
 % solver parameter
@@ -43,7 +47,7 @@ vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')

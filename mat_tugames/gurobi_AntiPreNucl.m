@@ -22,6 +22,7 @@ function [x1, alp]=gurobi_AntiPreNucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/29/2014        0.5             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -33,8 +34,11 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
-
 ra = reasonable_outcome(v);
 ub=[ra,Inf];
 lb=[-inf(1,n),-Inf];
@@ -56,6 +60,7 @@ params.method= 3; % Use concurrent.
 params.FeasibilityTol = 1e-9;
 params.OptimalityTol = 1e-9;
 params.BarConvTol = 1e-10;
+params.Threads=8;
 %params.TimeLimit = 3000;
 
 

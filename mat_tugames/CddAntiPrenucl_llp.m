@@ -25,6 +25,7 @@ function [x1, alp]=CddAntiPrenucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/05/2016        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -36,6 +37,10 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);

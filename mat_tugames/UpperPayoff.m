@@ -1,5 +1,5 @@
 function [uv,mv]=UpperPayoff(v)
-% UPPERPAYOFF computes the upper payoff and minimum claim vector of game v.
+% UTOPIAPAYOFF computes the utopia and minimum claim vector of game v.
 %
 % Usage: [uv mv]=UpperPayoff(v)
 % Define variables:

@@ -24,7 +24,7 @@ function [x1, fmin]=cplex_AnitNucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
-%   04/04/2020        1.9             hme
+%   03/29/2021        1.9             hme
 %                
 
 
@@ -36,23 +36,23 @@ end
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 % solver parameter
 ra = smallest_amount(v);
 k=1:n;
-Nk=N-2.^(k-1);
-vi=v(Nk);
-%vi=v(bitset(0,k));
+vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
 end
-%lb=[ra,-Inf]';
-lb=[];
+lb=[ra,-Inf]';
 ub=[vi,Inf]';
 
 x0=[];

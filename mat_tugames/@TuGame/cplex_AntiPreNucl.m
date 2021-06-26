@@ -25,7 +25,7 @@ function [x1, fmin]=cplex_AntiPreNucl(clv,tol)
 %   ====================================================
 %   08/29/2014        0.5             hme
 %   02/24/2018        0.9             hme
-%   04/04/2020        1.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -38,7 +38,10 @@ end
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 % solver parameter
 ra = clv.reasonable_outcome;
 ub=[ra,inf];

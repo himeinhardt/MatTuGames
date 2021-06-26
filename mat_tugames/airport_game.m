@@ -23,6 +23,7 @@ function [v,gC]=airport_game(C)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/26/2015        0.6             hme
+%   05/27/2021        1.9             hme
 %
 n=length(C);
 N=2^n-1;
@@ -34,5 +35,5 @@ for ss=1:N
     gC1(ss)=max(C(A(ss,:)));
 end
 v=savings_game(gC1);
-gC=-gC1;
-    
+%gC=-gC1;
+gC=gC1;    

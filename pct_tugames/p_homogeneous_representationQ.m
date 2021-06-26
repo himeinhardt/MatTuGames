@@ -3,7 +3,7 @@ function [hrQ hr wmg]=p_homogeneous_representationQ(th,w_vec)
 % derived from (th,w_vec) possesses a homogeneous representation 
 % while using Matlab's PCT.
 % Th. (Sudhoelter 1996): The pre-kernel of every homogeneous weighted
-% majority game is star-shaped. 
+% majority game without veto-players is star-shaped. 
 %
 %
 % Usage: [hrQ hr wmg]=p_homogeneous_representationQ(th,w_vec);

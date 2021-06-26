@@ -1,5 +1,5 @@
 function gb=game_basis(n)
-% GAMES_BASIS computes the game basis for n-players.
+% GAMES_BASIS computes a game basis for n-players.
 % For n>14 this function needs some time to complete.
 %
 % Usage: gb=game_basis(n)

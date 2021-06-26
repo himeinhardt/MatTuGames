@@ -29,6 +29,7 @@ function [x, Lerr, smat, xarr]=hsl_prekernel(clv,x)
 %   ====================================================
 %   01/10/2012        0.3             hme
 %   05/03/2019        1.1             hme
+%   11/01/2020        1.9             hme
 %                
 
 if nargin<2
@@ -78,16 +79,17 @@ else
   gt=clv.tutype;
   mnQ=clv.tumnQ;
   smc=1;
+  mnQ=clv.tumnQ;
+  smc=1;
 end
-
-
-[x, Lerr, smat, xarr]=computePrk(v,x,smc,0,mnQ);
+gdata=struct('v',v,'x',x','smc',smc,'slv',0,'gt',gt,'mnQ',mnQ,'n',n,'N',N);
+[x, Lerr, smat, xarr]=computePrk(gdata);
 smat=tril(smat,-1)+triu(smat,1);
 
 % Main function to compute a
 % pre-kernel element.
 %-----------------------------
-function [x, Lerr, smat, xarr]=computePrk(v,x,smc,slv,mnQ)
+function [x, Lerr, smat, xarr]=computePrk(gdata)
 % 
 %  output:  -- as above.
 %
@@ -99,9 +101,12 @@ function [x, Lerr, smat, xarr]=computePrk(v,x,smc,slv,mnQ)
 %  slv      -- selecting a different linear solver (QR/SVD-decomposition). 
 %              Value must be set to 0 or 1.
 
-n=length(x);
-N=2^n-1;
-x=x';
+n=gdata.n;
+N=gdata.N;
+smc=gdata.smc;
+mnQ=gdata.mnQ;
+slv=gdata.slv;
+
 cnt=0;
 if 15<=n 
  CNT=n+2;
@@ -116,7 +121,7 @@ upe=true(n);
 % Cycling may occur, so that we need an artificial halt
 while cnt<CNT  
     cnt=cnt+1;
-    [A, smat]=effCoalitions(v,x,smc,cnt);
+    [A, smat]=effCoalitions(gdata,cnt);
     upe=tril(upe,-1);
     etr12=A';
     ec12=etr12(upe)';
@@ -126,10 +131,10 @@ while cnt<CNT
     e21=rem(floor(ec21(:)*pow2(it)),2);
     E=e21-e12;
     E(m,:)=ones(1,n);
-    a=(v(ec21)-v(ec12))';
-    a(m)=v(N);
+    a=(gdata.v(ec21)-gdata.v(ec12))';
+    a(m)=gdata.v(N);
     if n==2, a=a'; end;
-    err=norm(E*x-a)^2; if err<eps, break; end
+    err=norm(E*gdata.x-a)^2; if err<eps, break; end
     Q=E'*E;
     b=E'*a;
     Q1=sparse(Q);
@@ -137,64 +142,101 @@ while cnt<CNT
 
 %
 % Calling linear solver.
+   if slv==0
      try
         struct = hsl_ma87_factor(Q1);
-        x = hsl_ma87_solve(struct,b);
+        gdata.x = hsl_ma87_solve(struct,b);
      catch
        if rank(Q) < n
          struct = ma57_factor(Q1);
-         x = ma57_solve(Q1,b,struct);
+         gdata.x = ma57_solve(Q1,b,struct);
        else
          struct = hsl_ma86_factor(Q1);
-         x = hsl_ma86_solve(struct,b);
+         gdata.x = hsl_ma86_solve(struct,b);
        end
      end
+   elseif slv==1
+     try
+        struct = hsl_ma86_factor(Q1);
+        gdata.x = hsl_ma86_solve(struct,b);
+     catch
+       if rank(Q) < n
+         struct = ma57_factor(Q1);
+         gdata.x = ma57_solve(Q1,b,struct);
+       else
+         struct = hsl_ma87_factor(Q1);
+         gdata.x = hsl_ma87_solve(struct,b);
+       end
+     end
+   else
+     try
+        struct = hsl_ma97_factor(Q1);
+        x = hsl_ma97_solve(struct,b);
+     catch
+      if rank(Q) < n
+        struct = ma57_factor(Q1);
+        x = ma57_solve(Q1,b,struct);
+      else
+        struct = hsl_ma86_factor(Q1);
+        x = hsl_ma86_solve(struct,b);
+      end
+     end       
+   end	   
 
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
-    z1=any(isinf(x));
-    z2=any(isnan(x));
+    z1=any(isinf(gdata.x));
+    z2=any(isnan(gdata.x));
     if z1==1 || z2==1 
-       x=eye(n,1); 
+       gdata.x=eye(n,1); 
     else 
     end
-    Lerr(cnt,:)=[err, norm(E*x-a)^2]; % checking purpose
-    xarr(cnt,:)=x'; % intermediate results
+    Lerr(cnt,:)=[err, norm(E*gdata.x-a)^2]; % checking purpose
+    xarr(cnt,:)=gdata.x'; % intermediate results
 end
 
+
+if err<eps
+  x=gdata.x';
+else
 if cnt==CNT, % should trigger errors ....
   if slv==0 && smc==1
        msg01='No Pre-Kernel Element found. Changing Cardinality.';
        warning('PrK:ChangCard',msg01);
-       if mnQ==1 && n < 15;x=4*x;end 
-       [x, Lerr, smat, xarr]=computePrk(v,x',0,slv,mnQ);
+       if mnQ==1 && n < 15;gdata.x=4*gdata.x;end 
+       gdata.smc=0;
+       [x, Lerr, smat, xarr]=computePrk(gdata);
   elseif slv==0 && smc==0 
        msg02='No Pre-Kernel Element found. Changing the Solver.';
        warning('PrK:ChangSolv',msg02);
-       if mnQ==1; x=2*x; end  
-       [x, Lerr, smat, xarr]=computePrk(v,x',smc,1,mnQ);
+       if mnQ==1; gdata.x=2*gdata.x; else x=LS_PreNucl(gdata.v); end
+       gdata.slv=1;  
+       [x, Lerr, smat, xarr]=computePrk(gdata);
   elseif slv==1 && smc==0 
        msg01='No Pre-Kernel Element found. Changing Cardinality to Default Value.';
        warning('PrK:Default',msg01);
-       if mnQ==1 && n < 7 || n>=11;x=(v(N)/n)*ones(n,1); end 
-       [x, Lerr, smat, xarr]=computePrk(v,x',1,1,mnQ);
+       if mnQ==1 && n < 7 || n>=11;gdata.x=(gdata.v(N)/n)*ones(n,1); end 
+       gdata.slv=1;
+       gdata.smc=1;
+       [x, Lerr, smat, xarr]=computePrk(gdata);
   elseif slv==1 && smc==1
-       x=(v(N)/n)*ones(1,n);
+       gdata.x=(gdata.v(N)/n)*ones(n,1);
        msg01='No Pre-Kernel Element found. Changing to Start Value.';
        warning('PrK:StartVal',msg01);
-       [x, Lerr, smat, xarr]=computePrk(v,x,2,1,mnQ);
+       gdata.slv=1;
+       gdata.smc=2;
+       [x, Lerr, smat, xarr]=computePrk(gdata);
   else
-       x=x';
+       x=gdata.x';
        msg02='No Pre-Kernel Element found. Change payoff vector and restart!';
        warning('PrK:NotFound',msg02);
   end
 else
-  x=x';
+  x=gdata.x';
 end
-
-
+end
 %--------------
-function [A, smat]=effCoalitions(v,x,smc,cnt)
+function [A, smat]=effCoalitions(gdata,cnt)
 % Computes the set of most effective coalitions
 % of smallest/largest cardinality.
 %
@@ -206,9 +248,13 @@ function [A, smat]=effCoalitions(v,x,smc,cnt)
 %
 % input:
 % cnt   -- loop counter.
+% gt    -- game type.
 %       -- otherwise, as above.
 %
-n=length(x);
+n=gdata.n;
+smc=gdata.smc;
+mnQ=gdata.mnQ;
+N=gdata.N;
 % The set of effective coalitions might be too
 % large or too small due to floating point arithmetic.
 % Adjusting the tolerance value might help to find the
@@ -217,20 +263,72 @@ n=length(x);
 % cycles may appear.
 
 if cnt<6
- tol=eps;
+ if strcmp(gdata.gt,'cv')
+  tol=5000*eps;
+ else
+  tol=eps;
+ end
 elseif cnt > 10
  tol=1500*eps;
 else
  tol=100*eps;
 end
-
-% Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
+%
+% Inspired by Jean Derks.
+Xm{1}=gdata.x(1); for ii=2:n, Xm{1}=[Xm{1} gdata.x(ii) Xm{1}+gdata.x(ii)]; end
 % Computing the excess vector w.r.t. x.
-e=v-Xm;
-clear v Xm;
+lv=islogical(gdata.v);
+e=gdata.v-Xm{1};
+% Truncate excess vector.
+if n>16
+   el = min(e);
+   eh = max(e);
+   if abs(eh+el)<10^7*eps;
+      clear gdata.v Xm;
+      [e,sC]=sort(e,'descend');
+   elseif eh==1 && el==0
+      clear gdata.v Xm;
+      [e,sC]=sort(e,'descend');
+   else
+      if lv==1
+         clear gdata.v Xm;
+         if eh > 0.7 && eh < 1
+            eh=1.3*eh;
+            pv=min((eh+el)*0.9,0.7); % 0.6 fine
+         else
+            pv=min((eh+el)*0.3,0.8);
+         end
+      else
+         [mv,idx]=max(gdata.v);
+         vN=gdata.v(N);
+         k=1:n;
+         ki=2.^(k-1);
+         me=(vN-sum(gdata.v(ki)))/n;
+         clear gdata.v Xm;
+         if mv<0
+            eh= 0.3*eh;
+            pv=(eh+el)*1.2; % eh 0.3 fine (increase to improve).
+         elseif mv>vN
+            eh = 0.8*eh;
+            pv=(eh+el)*1.2; % 0.9 fine (increase to improve).
+         elseif idx<N
+            eh = 0.8*eh;
+            pv=(eh+el); % 0.9 fine (increase to improve).
+         else
+            pv=(me+el)/2;
+         end
+      end
+      lp=e>pv-tol;
+      e=e(lp);
+      fS=find(lp);
+      [e,fC]=sort(e,'descend');
+      sC=fS(fC);
+   end
+else
+   [e,sC]=sort(e,'descend');
+end
+%
 % Truncate data arrays.
-[e, sC]=sort(e,'descend');
 B=eye(n);
 smat=-inf(n);
 q0=n^2-n;

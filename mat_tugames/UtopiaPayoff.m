@@ -5,7 +5,7 @@ function [uv,mv,utpQ]=UtopiaPayoff(v)
 % Define variables:
 %  output:
 %  uv       -- The upper vector/payoff of game v.
-%  mv       -- The minimum claim (disagreement) vector of game v.
+%  mv       -- The minimum claim (concession) vector of game v.
 %  utpQ     -- Returns a true (1), if the upper payoff is even the
 %              utopia payoff, otherwise false (0).
 %

@@ -22,6 +22,7 @@ function [x1, fmin]=Anti_PreNucl(clv,tol)
 %   ====================================================
 %   08/29/2014        0.5             hme
 %   03/28/2015        0.7             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -34,7 +35,10 @@ N=clv.tusize;
 n=clv.tuplayers;
 gt=clv.tutype;
 vi=clv.tuvi;
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 S=1:N;
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);

@@ -29,7 +29,7 @@ function v_x=ECFloorGame(clv,x)
 %   03/01/2018        1.0             hme
 %                
 
-v=clv.tuvalues:
+v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 

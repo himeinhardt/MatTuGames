@@ -25,6 +25,7 @@ function [x1, alp]=CddNucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -41,7 +42,10 @@ vi=clv.tuvi';
 if essQ==1
    error('Game is not anti essential!')
 end
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 
 ra = clv.smallest_amount()';
 k=1:n;
@@ -49,7 +53,7 @@ vi=v(bitset(0,k))';
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 
 S=1:N;
@@ -58,7 +62,7 @@ A1(N+1,:)=-A1(end,:);
 A1=[A1;-eye(n);eye(n)];
 A1(:,end+1)=1;
 A1(N:end,end)=0;
-B1=[v';-v(N);ra;vi];
+B1=[v';-v(N);-ra;vi];
 objective=[zeros(1,n),-1];
 
 while 1

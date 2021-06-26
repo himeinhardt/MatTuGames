@@ -23,6 +23,7 @@ function [x1, fmin]=glpk_AnitNucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -34,25 +35,27 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 % solver parameter
 ra = smallest_amount(v);
 k=1:n;
-Nk=N-2.^(k-1);
-vi=v(Nk);
-%vi=v(bitset(0,k));
+vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
 end
 
-lb=[-ra,-Inf];
+lb=[ra,-Inf];
 ub=[vi,Inf];
 %lb=[];
+%ub=[];
 ctype=[];
 vartype=[];
 s=1; % minimization problem 
@@ -66,7 +69,7 @@ A1(:,end+1)=1;
 A1(N:N+1,end)=0;
 A2=sparse(A1);
 B1=[v';-v(N)];
-C=[zeros(1,n),-1];
+C=[zeros(1,n),-1]; %max problem
 
 while 1
   [xmin, fmin, status, extra] = glpk(C,A1,B1,lb,ub,ctype,vartype,s,param);

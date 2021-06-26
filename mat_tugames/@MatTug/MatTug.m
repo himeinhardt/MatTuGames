@@ -1,6 +1,6 @@
 classdef MatTug < TuGame
 % MatTuGames: A Matlab Game Theory Toolbox 
-% Version 1.8 (R2019b) 29-Jan-2020
+% Version 1.9 (R2021) 25-Jun-2021
 %
 % mattug_aux: Some auxiliary files
 %--------------------------
@@ -20,7 +20,7 @@ classdef MatTug < TuGame
 %                                        
 % doc: Document Files                    
 %-------------------                     
-% MatTuGames_Version_1.8.m                  - Additions and changes in version 1.8
+% MatTuGames_Version_1.9.m                  - Additions and changes in version 1.9
 % ReadMe.pdf                                - Installation instruction (PDF)
 % ReadMe.md                                 - Installation instruction (Markdown Format)
 % getting_started.m                         - Checks the installation
@@ -156,6 +156,15 @@ classdef MatTug < TuGame
 % mat_tugames: Serial Computing
 %------------------------------
 % ADvalue                                   - Computes the Aumann-Dreze value.
+% AP_DummyPlayer_propertyQ                  - Checks if the solution x satisfies the AP-Dummy player property.
+% AP_DummyPlayers                           - Returns the player who are AP-Dummy players.
+% AP_NullPlayer_propertyQ                   - Checks if the solution x satisfies the AP-Null player property. 
+% AP_NullPlayers                            - Returns the players who are AP-Null players. 
+% A_DummyPlayer_propertyQ                   - Checks if the solution x satisfies the A-Dummy player property. 
+% A_NullPlayer_propertyQ                    - Checks if the solution x satisfies the A-Null player property. 
+% A_NullPlayers                             - Returns the players who are A-Null players. 
+% AlmostConcave_gameQ                       - Returns true whenever the game v is almost concave.
+% AlmostConvex_gameQ                        - Returns true whenever the game v is almost convex.
 % AdditiveQ                                 - Checks if the game v is additive.
 % AllMarginalContributions                  - Computes all marginal contributions of a Tu game.
 % AllSubGames                               - Computes all subgames.
@@ -166,13 +175,16 @@ classdef MatTug < TuGame
 % AntiReduced_game_propertyQ  		    - Checks whether an imputation x satisfies the anti-reduced game property. 
 % AntiUtopiaPayoff                          - Computes the anti-utopia and agreement vector.
 % Anti_B0_balancedCollectionQ               - Checks the reversal of weak Kohlberg's criterion.
-% Anti_BestCoalitions  			    - Computes the set of less effective coalitions.
+% Anti_BestCoalitions                       - Computes the set of less effective coalitions.
+% Anti_ChiValue                             - Computes the anti-chi-value of a TU-game v. 
 % Anti_Converse_DGP_Q  			    - Checks whether an imputation x satisfies the anti-converse derived game property.
 % Anti_DerivedGame  			    - Computes from (v,x,S) a modified Davis-Maschler anti-derived game vS on S at x for game v.
 % Anti_Derived_game_propertyQ  		    - Checks whether an imputation x satisfies a modified anti-derived game property.
+% Anti_GenGap                               - Computes the anti-generalized gap function from game v. 
 % Anti_Kernel                               - Computes an anti-kernel point.
 % Anti_ModPreKernel  			    - Computes from (v,x) an anti-modified pre-kernel element.
 % Anti_ModPrekernelQ  			    - Checks whether the imputation x is a modified anti-pre-kernel element of the TU-game v.
+% Anti_Monotonic_Cover                      - Computes the anti-monotonic cover of game v. 
 % Anti_Nucl                                 - Computes the anti nucleolus of a game.
 % Anti_Nucl_llp                             - Computes the anti nucleolus of a game.
 % Anti_PModPreKernel  			    - Computes from (v,x) an anti-proper-modified pre-kernel element.
@@ -182,10 +194,15 @@ classdef MatTug < TuGame
 % Anti_PreNucl_llp                          - Computes the anti pre-nucleolus of game v.
 % Anti_PrekernelQ                           - Checks if an imputation is an anti prekernel point.
 % Anti_PropModPreKernel  		    - Checks whether the imputation x is a proper modified anti-pre-kernel element of the TU-game v.	    
+% Anti_TauValue                             - Computes the anti-tau-value of a TU-game v. 
+% Anti_Weak_balancedCollectionQ  	    - Verifies whether the set of induced coalitions is a weak_balanced collection.	    
+% Anti_Weak_balancedCollectionQ             - Checking reverse weak Kohlberg's criterion.
+% Anti_balancedCollectionQ  		    - Verifies whether the set of induced coalitions is an anti balanced collection.
 % Anti_balancedCollectionQ                  - Checks the reversal of Kohlberg's criterion.
 % Anti_kernelQ                              - Checks if an imputation is an anti kernel point.
 % B0_balancedCollectionQ                    - Checking weak Kohlberg's criterion.
 % B0_balancedQ                              - Verifies whether the collection of coalitions is weakly balanced.
+% BaryCenter                                - Computes the barycenter of the core.
 % BestCoalitions                            - Computes the set of most effective coalitions.
 % COV_propertyQ                             - Verifies if the payoff x satisfies COV property.
 % CddAntiCoreCoverPlot                      - Plots the anti-core cover set.
@@ -220,13 +237,13 @@ classdef MatTug < TuGame
 % CddImputationVertices                     - Computes the vertices of the imputation set (cddmex).
 % CddKernelCatchers                         - Draws some kernel catchers (cddmex).
 % CddKernelCatchersSimplex                  - Draws some kernel catchers (simplex).
-% CddLeastCore                              - Computes the leastcore (cddmex).
-% CddLeastCoreVertices                      - Computes the leastcore vertices (cddmex). 
+% CddLeastCore                              - Computes the least core (cddmex).
+% CddLeastCoreVertices                      - Computes the least core vertices (cddmex). 
+% CddLinear_Production                      - Computes from a production problem (A,mB,p) a linear production game using cddmex. 
 % CddLowerSetSimplexVertices                - Computes the vertices of the lower set (simplex). 
 % CddLowerSetVertices                       - Computes the vertices of the lower set (cddmex). 
 % CddModiclus                               - Computes the modiclus of game v using cddmex.
 % CddNucl                                   - Computes the nucleolus using the CDD solver (cddmex).
-% CddNucl_llp                               - Computes the nucleolus using the CDD solver (cddmex).
 % CddPreKernel                              - Computes a pre-kernel element (cddmex).
 % CddPrenucl                                - Computes the prenucleolus using the CDD solver (cddmex).
 % CddPrenucl_llp                            - Computes the prenucleolus using the CDD solver (cddmex).
@@ -241,8 +258,13 @@ classdef MatTug < TuGame
 % CddWeberSetPlot                           - Plots the Weber set.
 % CddWeberSetSimplex                        - Computes the vertices of the Weber Set (simplex).
 % CddWeberSetSimplexPlot                    - Plots the Weber set (simplex).
+% ChiValue                                  - Computes the chi-value of a TU-game v. This is a generalized Tau value.
+% CmpConsistencyQ                           - Checks whether an imputation x satisfies the complement consistency.
+% CmpRedGame                                - Computes from (v,x,S) a complement reduced game vS on S at x for game v.
 % CoalitionSolidarity                       - Determines the coalition solidarity value.
+% Complement_Reduced_game                   - Computes from (v,x) all complement reduced games on S at x of game v.
 % ConstantSumQ                              - Checks if the game v has constant-sum.
+% Converse_CmpConsistencyQ                  - Checks whether an imputation x satisfies the converse complement consistency property.
 % Converse_DGP_Q  			    - Checks whether an imputation x satisfies the converse derived game property.
 % Converse_RGP_Q                            - Checks if an imputation satisfies the CRGP.
 % CoreCoverQ                                - Checks if the core cover a TU game v is non-empty.
@@ -257,68 +279,110 @@ classdef MatTug < TuGame
 % DM_TwoPersonGame                          - Computes from (v,x) all reduced two-person games.
 % DM_TwoReduced_game  			    - Computes from (v,x) all single and two-person reduced games on S at x of game v.
 % DRP_propertyQ  			    - Checks whether the solution x satisfies the dual replication property.	    
+% DecomposableQ                             - Checks whether the game v is decomposable w.r.t. the coalition structure cs. 
 % DecomposeGame                             - Computes the unique decomposition of a TU-game.
+% DeeganPackel                              - Computes the Deegan-Packel index from the set of minimal winning coalitions. 
+% DeeganPackel_SV                           - Computes the Deegan-Packel index from a simple game to construct the set of minimal winning coalitions. 
+% DerivedCostMatrix                         - Computes from a cost matrix and a partition of the player set N the corresponding derived cost matrix. 
 % DerivedGame  				    - Computes from (v,x,S) a modified Davis-Maschler derived game vS on S at x for game v.
 % Derived_game_propertyQ  		    - Checks whether an imputation x satisfies a modified derived game property.
 % DiscShapleyValue                          - Computes the discounted Shapley value.
 % DualCover  				    - Computes the maximum characteristic values from the primal or dual game.
 % DualFloor  				    - Computes the minimum characteristic values from the primal or dual game.
-% Dual_Floor_game  			    - Computes from (v,x) a modified Davis-Maschler the anti reduced game vS on S at x for game v.
-% Dual_Floor_propertyQ  		    - Checks whether an imputation x satisfies a modified anti reduced game property	    
 % Dual_Cover_game  			    - Computes from (v,x) a modified Davis-Maschler reduced game vS on S at x for game v.
 % Dual_Cover_propertyQ  		    - Checks whether an imputation x satisfies a modified reduced game property	    
+% Dual_Floor_game			    - Computes from (v,x) a modified Davis-Maschler anti-reduced game vS on S at x for game v.
+% Dual_Floor_propertyQ			    - Checks whether an imputation x satisfies a modified anti-reduced game property.
+% DummyPlayer_propertyQ                     - Checks the dummy player property. 
+% DummyPlayers                              - Returns the list of dummy players of game v. 
 % DuttaRay  				    - Computes the Dutta-Ray solution for convex games.
+% EANSCValue                                - Computes the Equal Allocation of Non-Separable Contribution/Cost Value.
 % ECCoverGame  				    - Computes from (v,x) an excess comparability cover of game v.
 % ECFloorGame  				    - Computes from (v,x) an excess comparability floor of game v.
+% ECGValue                                  - Computes the Equal Collective Gains value of a TU-game v. 
 % EC_DGP_Q  				    - Checks whether the solution x satisfies excess comparability for each derived game.
 % EC_RGP_Q  				    - Checks whether the solution x satisfies excess comparability for each reduced game.
 % EC_propertyQ  			    - Checks whether the solution x satisfies excess comparability.	    
+% EPSDValue                                 - Computes the egalitarian proportional surplus division value of a individually positive TU-game.
 % ESD                                       - Computes the equal surplus division of a TU-game.
+% EssentialConstSumQ                        - Checks if v is an essential constant-sum game.
 % EssentialQ                                - Checks if the game v is essential.
+% ExtShapleyValue                           - Computes the extended Shapley-value.
 % FlatQ                                     - Checks if the game v is flat.
 % Gap                                       - Determines the gap function.
+% GatelyValue				    - Computes the Gately point of an essential game v.
+% GenGap                                    - Computes the generalized gap function from game v.
 % HMS_AntiReduced_game  		    - Computes from (v,x) all Hart/Mas-Colell anti-reduced games on S at x of game v.	    
 % HMS_Anti_Derived_game  		    - Computes from (v,x,S) a modified Hart-Mas-Colell anti-reduced game vS on S at x for game v.	    
 % HMS_Derived_game  			    - Computes from (v,x,S) a modified Hart-Mas-Colell reduced game vS on S at x for game v.
 % HMS_DervGame  			    - Computes from (v,x,S) a modified Hart-Mas-Colell derived game vS on S at x for game v.	    
 % HMS_ImputSavingReducedGame                - Computes from (v,x) all Hart/Mas-Colell ISR games.
-% HMS_RedGame  				    - Computes from (v,x,S) a Hart-MasColell reduced game vS on S at x for game v.
+% HMS_RedGame  				    - Computes from (v,x,S) a Hart-Mas-Colell reduced game vS on S at x for game v.
 % HMS_Reduced_game                          - Creates all Hart/Mas-Colell reduced games. 
 % HMS_TwoReduced_game  			    - Computes from (v,x) all Hart/Mas-Colell singleton and two-person reduced games on S at x of game v.
 % ISRG_propertyQ                            - Checks whether an imputation x satisfies the ISR game property.
 % ImpSetEqsLwsQ                             - Checks if the imputation set coincides with the lower set.
 % ImputSavingReducedGame                    - Computes from (v,x) all imputation saving reduced games.
 % ImputationVertices                        - Computes the vertices of the imputation set.
+% InessGame                                 - Computes the inessential game from a payoff vector.
 % InteractionSets                           - Determines a system of interaction sets.
+% IrredAntiCore                             - Computes from a cost matrix the corresponding extreme points of the irreducible anti-core of the associated m.c.s.t. game. 
+% IrredCostMatrix                           - Computes from a cost matrix and a solution tree the irreducible cost matrix. 
+% Johnston                                  - Computes the Johnston power index from the set of winning coalitions. 
 % Kernel                                    - Computes a kernel point using optimization toolbox.
 % KrEqsPrkQ                                 - Checks if the kernel is equal to the pre-kernel.
-% LED  					    - Computes the large excess difference w.r.t. the payoff x.	    
+% LED  					    - Computes the large excess difference w.r.t. the payoff x.
 % LED_propertyQ  			    - Checks whether the solution x satisfies large excess difference property.	    
 % LS_Nucl                                   - Computes the least square nucleolus of a game.
 % LS_PreNucl                                - Computes the least square pre-nucleolus of a game.
-% LeastCore                                 - Computes the leastcore using optimization toolbox.
-% LeastCoreVertices                         - Computes the leastcore vertices. 
+% LeastCore                                 - Computes the least core using optimization toolbox.
+% LeastCoreVertices                         - Computes the least core vertices. 
 % LedcoconsQ  				    - Checks whether an imputation x satisfies large excess difference converse consistency.
 % Ledcons_propertyQ  			    - Checks whether an imputation x satisfies the ledcons property 
 % LorenzDom                                 - Checks if x Lorenz dominates y in game v.
 % LorenzSet                                 - Determines the Lorenz set of game v.
 % LorenzSol  				    - Determines the Lorenz solution of game v.
+% MIMC                                      - Computes the vector of minimum increase in players marginal contribution when they leave the grand coalition.
 % MLextension                               - Computes the multi-linear extension.
 % MMExcess  				    - Computes the minimal and maximal excess vector of game v and its dual.
+% MTRCostMatrix                             - Computes from a cost matrix and a solution tree the cost matrix of a minimal spanning tree. 
+% MaxConsistencyQ                           - Checks whether an imputation x satisfies maximal consistency.
+% MinimalRep                                - Computes from a simple game v and a threshold th of the minimal representation of an homogeneous weighted majority game. 
+% ModDeeganPackel                           - Computes the modified Deegan-Packel index from the set of winning coalitions. 
+% ModDeeganPackel_SV                        - Computes the Deegan-Packel index from a simple game to construct the set of minimal winning coalitions. 
 % ModHoller  				    - Computes a modified Holler index from the set of winning coalitions.
+% ModPGI                                    - Computes the modified public good index from the set of minimal winning coalitions.
+% ModPGI_SV                                 - Computes the modified public good index from a simple game to determine the set of minimal winning coalitions. 
 % ModPreKernel  			    - Computes from (v,x) a modified pre-kernel element.	    
 % ModPrekernelQ  			    - Checks whether the imputation x is a modified pre-kernel element of the TU-game v.	    
 % Modiclus                                  - Computes the modiclus of a game.
 % MyersonValue                              - Computes the Myerson value of a Tu game.
+% NetworkBanzhaf                            - Computes the network Banzhaf power index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% NetworkDeeganPackel                       - Computes the network Deegan-Packel index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% NetworkJohnston                           - Computes the network Johnston power index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% NetworkMajorityGame                       - Computes a network majority TU game (simple game).
+% NetworkMinimalRep                         - Computes from the set of edges, threshold th and the weights w_vec the minimal homogeneous representation of a homogeneous network weighted majority game. 
+% NetworkModDeeganPackel                    - Computes the network modified Deegan-Packel index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% NetworkModPGI                             - Computes the modified network public good index from the set of minimal winning coalitions of a network.
+% NetworkPGI                                - Computes the network public good index from the set of minimal winning coalitions of a network.
+% NetworkShapleyShubik                      - Computes the network Shapley-Shubik power index from the set of winning coalitions of a network E while imposing a threshold of th. 
 % NullPlayer_propertyQ                      - Verifies if x satisfies the null player property.
+% NullPlayers                               - Returns the list of null players of game v. 
 % One_Normalization                         - Computes from the game v the corresponding one-normalized game.
 % OwenValue                                 - Computes the Owen value.
+% PDValue                                   - Computes the proportional division value of a individually positive TU-game.
+% PGI                                       - Computes the public good index from the set of minimal winning coalitions.
+% PGI_SV                                    - Computes the public good index from a simple game to determine the set of minimal winning coalitions. 
 % PModPreKernel  			    - Computes from (v,x) a proper modified pre-kernel element.	    
 % PModPrekernelQ  			    - Checks whether the imputation x is a proper modified pre-kernel element of the TU-game v.
 % PRP_propertyQ  			    - Checks whether the solution x satisfies the primal replication property.	    
+% PS_GameBasis                              - Computes the basis for the class of PS games.
+% PartitionPlySet                           - Partitions the set of players of the weighted majority game into character Sum, Step, and Null-Player. 
 % PartitionSA                               - Computes a partition of S w.r.t. a hypergraph communication situation.
 % PartitionSL                               - Computes a partition of S w.r.t. a communication situation.
 % PermutationGame                           - Computes from an assignment matrix the permutation game.
+% PlayersCharacter                          - Partitions the set of players of the weighted majority game into the character Sum, Step, and Null-Player.
+% PlotCostGraph                             - Plots from a cost matrix the associated cost spanning graph. 
 % PositionValue                             - Computes the position value.
 % Potential                                 - Determines the potential of a TU game (recursive).
 % PowerSet                                  - Computes all subsets from a set representation.
@@ -332,7 +396,6 @@ classdef MatTug < TuGame
 % PropModPreKernel  			    - Computes from (v,x) a proper modified pre-kernel element from the dual cover game.
 % PropNucl                                  - Computes the proportional nucleolus.
 % PropPreNucl                               - Computes the proportional pre-nucleolus.
-% PRP_PROPERTYQ                             - Checks wheter the solution x satisfies the primal replication property.
 % REAS_LED_DCGame  			    - Verifies that x is a reasonable vector of game v, then the shifted  ducal cover game satisfies LED w.r.t. the replicated vector (x,x).
 % REAS_propertyQ  			    - Checks if the vector x satisfies the reasonableness on both sides
 % REC_propertyQ  			    - Checks whether the solution x satisfies reverse excess comparability.	    
@@ -354,6 +417,7 @@ classdef MatTug < TuGame
 % ShapleyValueM                             - Computes the Shapley value based on all marginal contributions.
 % ShapleyValueML                            - Computes the Shapley value using multi-linear extension. 
 % ShapleyValuePot                           - Computes the Shapley value and potential.
+% SolidarityPGI                             - Computes the solidarity Holler index w.r.t. a priori unions cs. 
 % SolidarityShapleyValue                    - Determines the solidarity Shapley value. 
 % SolidarityValue                           - Determines the solidarity value. 
 % SortMg                                    - Sorts a sub/power set w.r.t. its cardinality.
@@ -362,15 +426,18 @@ classdef MatTug < TuGame
 % StrConverse_RGP_Q                         - Checks the strong RGP.
 % StrLedcoconsQ  			    - Checks whether an imputation x satisfies satisfies strong large excess difference converse consistency.	    
 % StrSedcoconsQ  			    - Checks whether an imputation x satisfies satisfies strong small excess difference converse consistency (SEDCOCONS).	    
+% SubCoalitions                             - Computes the power set (subsets) from an array.
 % SubDual                                   - Determines the dual of a subgame.
 % SubGame                                   - Creates a subgame.
 % SubSets                                   - Creates all subsets of super set.
 % Sum_Marg_Contributions                    - Returns 1 whenever for a coalition the sum of marginal contributions is positive.
+% SuperAddSolQ                              - Checks if the vector x is an element of a super additive solution of the game v.
+% SuperSets                                 - Computes the super-sets of set S. 
 % Talmudic_Rule                             - Computes the Talmudic rule.
 % TauValue                                  - Computes the Tau value.
+% Tk_lin_basis                              - Computes the (T,k) intermediate linear basis of the n-person TU game space.
 % UnionStableBasis                          - Determines a basis of a union stable system.
-% UpperPayoff                               - Computes the upper payoff and minimum claim vector of game v.
-% UtopiaPayoff                              - Computes the utopia and minimum claim vector of game v.
+% UpperPayoff				    - Computes the upper and minimum claim vector of game v.
 % Weak_balancedCollectionQ                  - Checking weak Kohlberg's criterion.
 % ZeroOne_Normalization                     - Creates a zero-one normalized game.
 % additive_game                             - Creates an additive game.
@@ -378,8 +445,12 @@ classdef MatTug < TuGame
 % airport_game                              - Computes from an airport problem the associated savings game.
 % airport_profit                            - Computes from a cost and benefit vector the associated surplus game.
 % anti_coreQ  				    - Checks the existence of the anti-core of game v.
+% anti_partition                            - Computes from a partition its anti partition.
 % apex_game                                 - Creates an apex game.
+% apu_PGI                                   - Computes the Holler index w.r.t. a priori unions cs. 
+% apu_SolidarityValue                       - Determines the solidarity value w.r.t. a priori unions.
 % assignment_game                           - Creates an assignment game.
+% average_concaveQ                          - Returns true whenever the game v is average-concave.
 % average_convexQ                           - Checks the Tu-game on average convexity.
 % average_excess                            - Computes the average excess of game v.
 % balancedCollectionQ                       - Checking Kohlberg's criterion.
@@ -395,14 +466,21 @@ classdef MatTug < TuGame
 % belongToLeastCoreQ                        - Checks if a payoff vector belongs to the least core.
 % belongToLowerSetQ                         - Checks if a payoff vector belongs to lower set.
 % belongToUpperSetQ                         - Checks if a payoff vector belongs to upper set.
+% bint_AssignmentGame                       - Creates an assignment game (bintprog).
 % cardinality_game                          - Assigns zero to a coalition of size<=k<n, otherwise its cardinality.
+% cardinality_game2                         - Assigns a zero to a coalition of size<=k<n otherwise its cardinality times 100.
 % clToMatlab                                - Computes the unique integer representation of coalitions.
 % clp_kernel                                - Computes a kernel point using the CLP solver.
+% clp_weightedKernel                        - Computes a weighted kernel point using the CLP solver.
 % cls_kernel                                - Computes a kernel point using the CLS solver.
+% cls_weightedKernel                        - Computes a weighted kernel point using the CLS solver.
 % coeff_linearbasis                         - Determines the coefficients (dividends) of a linear basis from a TU game.
+% complementary_game                        - Generates a producer and buyer game.
 % compromiseAdmissibleQ                     - Checks if the core cover a TU game v is non-empty.
+% compromiseAntiAdmissibleQ                 - Checks if the anti-core cover a TU game v is non-empty.
 % compromiseStableQ                         - Checks if the game is compromise stable.
 % concave_gameQ                             - Checks the concavity of a Tu-game.
+% contentment                               - Computes the contentment vector of game v w.r.t. x.
 % convex_gameQ                              - Checks the convexity of a Tu-game.
 % coreQ                                     - Checks the non-emptiness of the core.
 % cplex_AntiNucl                            - Computes the anti nucleolus of game v using the CPLEX solver.
@@ -419,24 +497,36 @@ classdef MatTug < TuGame
 % cplex_prekernel                           - Computes a prekernel point using the CPLEX solver.
 % cplex_prenucl                             - Computes the prenucleolus using the CPLEX solver.
 % cplex_prenucl_llp                         - Computes the prenucleolus using the CPLEX solver.
+% cplex_prenucl_mod4                        - Computes the pre-nucleolus of game v using cplexmex (fast/method 4). 
 % critical_value1                           - Computes the biggest gain of any group of players.
 % critical_value2                           - Computes a critical value w.r.t. the strong epsilon-core.
 % critical_value_star                       - Computes a critical value which contains the intersection of the imputation and reasonable set
 % cvx_kernel                                - Computes a kernel point using the CVX solver. 
 % cvx_prekernel                             - Computes a prekernel point using the CVX solver. 
+% disagreement                              - Computes the disagreement vector of game v.
 % dual_game                                 - Creates the dual of a Tu-game.
 % equal_treatmentQ                          - Checks if a vector x satisfies ETP.
 % exact_game                                - Computes the exact game from v using Matlab's Optimization toolbox.
 % exact_gameQ  				    - Checks whether game v is an exact game using Matlab's Optimization toolbox.
 % excess                                    - Determines the excesses w.r.t. a payoff vector. 
+% fT_lin_basis                              - Computes an intermediate linear basis of the n-person TU game space.
 % feasible_dividends                        - Computes a collection of feasible dividends.
+% flow_game                                 - Computes from a flow problem a TU flow game using the optimization toolbox.
+% flow_probMinCut                           - Computes from a flow problem a minimal cut.
 % formatPowerSet  			    - Formats the Matlab cell output that contains the representation of coalitions into matrix form.
 % gameToMama                                - Converts a TU-game into Mathematica representation.
 % gameToMatlab                              - Converts a Tu-game into Matlab representation.
 % game_Two                                  - Constructs a 2-game from the coalition size 2 and number of players.
+% game_Wsys                                 - Creates a set of games from an asymmetric weight system (all types).
 % game_basis                                - Computes a game basis of the n-person TU game space.
 % game_space                                - Computes the game space which replicates a payoff as a pre-kernel element.
 % genUnionStable                            - Creates a union stable system.
+% getCOV                                    - Computes from a sample of observations obs and for n-assets the covariance matrix V of a portfolio with indefinite risk-return relationship. 
+% getCOV2                                   - Computes from a sample of observations obs and for n-assets the covariance matrix V of a portfolio with negative risk-return relationship.          
+% getCOV3                                   - Computes from a sample of observations obs and for n-assets the covariance matrix V of a portfolio with positive risk-return relationship. 
+% getMinimalWinning                         - Computes from a simple game the minimal winning coalitions.
+% getPSgame                                 - Computes a PS game from the PS game basis.
+% getSymCostMatrix                          - Computes a symmetric cost matrix from the cardinality of the player set and a upper bound value to specify the range from which the random number are drawn. 
 % getgame                                   - Creates a Tu-game from the unanimity coordinates.
 % glpk_AntiNucl                             - Computes the anti nucleolus of game v using the GLPK solver.
 % glpk_AntiNucl_llp                         - Computes the anti nucleolus of game v using the GLPK solver.
@@ -450,13 +540,13 @@ classdef MatTug < TuGame
 % glpk_prekernel                            - Computes a prekernel point using the GLPK solver. 
 % glpk_prenucl                              - Computes the prenucleolus using the GLPK solver.
 % glpk_prenucl_llp                          - Computes the prenucleolus using the GLPK solver.
+% grMaxFlowGame                             - Computes from a flow problem a TU flow game.
 % greedy_bankruptcy                         - Creates the greedy bankruptcy game.
 % gurobi_AntiNucl                           - Computes the anti nucleolus of game v using the GUROBI solver.
 % gurobi_AntiNucl_llp                       - Computes the anti nucleolus of game v using the GUROBI solver.
 % gurobi_AntiPreNucl                        - Computes the anti prenucleolus using the GUROBI solver.
 % gurobi_AntiPreNucl_llp                    - Computes the anti prenucleolus using the GUROBI solver.
 % gurobi_AssignmentGame                     - Creates an assignment game using the GUROBI solver.
-% gurobi_exact_game                         - Computes the exact game from v using the GUROBI solver.
 % gurobi_kernel                             - Computes a kernel point using the GUROBI solver. 
 % gurobi_modiclus                           - Computes the modiclus of game v using the GUROBI.
 % gurobi_nucl                               - Computes the nucleolus using the GUROBI solver.
@@ -485,24 +575,30 @@ classdef MatTug < TuGame
 % kernelQ                                   - Checks if an imputation is a kernel point.
 % lin_prekernel                             - Computes a prekernel point using optimization toolbox.
 % linear_basis                              - Determines the linear basis of the n-person TU game space.
+% linear_production                         - Computes from a production problem (A,mB,p) a linear production game. 
 % lowersetQ                                 - Checks the existence of the lower set. 
+% market2_game                              - Determines from two disjoint sets a market game.
 % market_game                               - Determines from two disjoint sets a market game.
 % mcst_game                                 - Computes from a cost matrix the corresponding mcst game.
-% mediation_game                            - Assigns its outside option to a coalition without player k (employer), the other players are the employees.
 % mex_coalitions                            - Computes the set of coalitions with maximum excesses
 % minNoBlockPayoff                          - Computes the minimum no blocking payoff from game v.
+% min_aspiration                            - Computes the minimum aspiration level of players of game v.
+% min_epsshift                              - Computes for an almost-convex game the min epsilon shift to construct a convex game. 
+% min_game                                  - Generates a minimum game.
+% min_homogrep                              - Computes from the threshold th and the weights w_vec the minimal homogeneous representation of an homogeneous weighted majority game. 
+% minimal_representation                    - Computes from the threshold th and the weights w_vec the minimal representation of an homogeneous weighted majority game.
 % minimal_winning                           - Computes the minimal winning coalitions.
 % modiclusQ                                 - Verifies whether the set of induced coalitions is a bi-balanced collection.
 % monotone_gameQ                            - Checks monotonicity of the TU game.
 % monotonic_cover                           - Determines the monotonic cover from a TU game.
 % msk_AntiNucl                              - Computes the anti nucleolus of game v using the MOSEK solver.
-% msk_AntiNucl_llp                          - Computes the anti nucleolus of game v using the MoSEK solver.
-% msk_AntiPreKernel                         - Computes from (v,x) an anti pre-kernel element using MOSEKMEX.
+% msk_AntiNucl_llp                          - Computes the anti nucleolus of game v using the MOSEK solver.
 % msk_AntiPreNucl                           - Computes the anti prenucleolus using the MOSEK solver.
 % msk_AntiPreNucl_llp                       - Computes the anti prenucleolus using the MOSEK solver.
 % msk_AssignmentGame                        - Creates an assignment game using the MOSEK solver.
 % msk_exact_game                            - Computes the exact game from v using the MOSEK solver.
 % msk_kernel                                - Computes a kernel point using the MOSEK solver.
+% msk_linear_production                     - Computes from a production problem (A,mB,p) a linear production game using mosekmex. 
 % msk_modiclus                              - Computes the modiclus of game v using the MOSEK solver.
 % msk_nucl                                  - Computes the nucleolus using the MOSEK solver.
 % msk_nucl_llp                              - Computes the nucleolus using the MOSEK solver.
@@ -512,15 +608,21 @@ classdef MatTug < TuGame
 % near_ringQ                                - Checks if a collection of coalitions is a near ring. 
 % nucl                                      - Computes the nucleolus using optimization toolbox.
 % nucl_llp                                  - Computes the nucleolus using optimization toolbox.
+% nullShapley                               - Determines a basis of the null space for the Shapley-value for n-persons.
+% nullShapleyLB                             - Determines a counting basis of the null space for the Shapley-value for n-persons.
 % oases_kernel                              - Computes a kernel point using the OASES solver.
 % oases_prekernel                           - Computes a prekernel point using the OASES solver.
+% oddeven_game                              - Assigns |S|-1 if S is odd and |S|+1 if S is even.
 % ols_prekernel                             - Computes a prekernel point using optimization toolbox.
 % potential                                 - Determines the potential of a TU game (basis).
 % product_game                              - Computes form a vector x the corresponding product game.
 % production_game                           - Creates an affine production game.
+% production_game2                          - Creates an affine production game.
 % production_game_sq                        - Creates a quadratic production game. 
 % profit_matrix                             - Creates the profit matrix of an assignment game. 
 % proper_amount                             - Computes the largest amount players contribute to a proper coalition.
+% ps_gameQ                                  - Checks whether a game is a PS game.
+% psstar_gameQ                              - Checks whether a game is a PS* game.
 % pure_overhead                             - Creates the matrix of pure overhead games.
 % qpBB_kernel                               - Computes a kernel point using the QPBB solver.
 % qpc_kernel                                - Computes a kernel point using the QPC solver.
@@ -530,41 +632,46 @@ classdef MatTug < TuGame
 % reasonable_outcome                        - Determines the reasonable outcome.
 % replicate_Shapley                         - Replicates the Shapley value for a game space. 
 % replicate_prk                             - Replicates a pre-kernel solution as a pre-kernel of a game space. 
+% root_game                                 - Computes from game v its associated root game.
 % savings_game                              - Creates a saving game from a cost game.
 % scrb_solution                             - Computes separable costs-remaining benefits allocation. 
 % select_starting_pt                        - Selects a starting point for the pre-kernel computation.
+% semi_concaveQ                             - Checks semi-concavity.
 % semi_convexQ                              - Checks semi-convexity.
 % separable_cost_allocation                 - Computes the separable cost allocation.
 % separating_collectionQ                    - Verifies if a collection is separating.
 % shiftGame  				    - Computes from the game v the t-shift game of v.
 % simple_game                               - Creates a simple game.
-% sm_Kernel.m                               - Computes an element of the simplified Kernel of a game.
+% sm_Kernel                                 - Computes an element of the simplified Kernel of a game.
 % sm_PreKernel  			    - Computes an element of the simplified pre-kernel of game v.	    
-% sm_PreKernel.m                            - Computes an element of the simplified Pre-kernel of a game.
 % sm_PreNucl                                - Computes the simplified pre-nucleolus of a game.
 % sm_nucl                                   - Computes the simplified nucleolus of a game.
 % smallest_amount                           - Computes the smallest amount vector.
 % sortsets                                  - Sorts a sub/power set w.r.t. its cardinality.
 % streps_value                              - Determines the strong epsilon-game.
+% sub_additiveQ				    - Returns true whenever the game v is sub-additive.
 % substitutes                               - Establishes which pair of players are substitutes.
 % super_additiveQ                           - Checks the Tu-game on super additivity.
+% superadditive_cover                       - Computes from game v its superadditive cover.
+% surplus_game                              - Computes from a cost game c the corresponding surplus game v. 
 % symmetricQ                                - Checks if the game v is symmetric.
+% totallyAntiBalancedQ                      - Checks whether the anti-core of all subgames is non-empty. 
 % totallyBalancedQ  			    - Checks whether the core of all subgames is non-empty.
+% tricameral_assembly                       - Computes from a set of parameters a simple game. 
 % unanimity_games                           - Computes the unanimity coordinates.
 % union_stableQ                             - Checks whether a system is union stable.
 % uppersetQ                                 - Checks the existence of the upper set.
 % value_matrix  			    - Computes from an assignment matrix the corresponding value matrix for a permutation game.	    
 % vclToMatlab                               - Computes a Tu-game and the corresponding unique integer representation of coalitions
 % veto_players                              - Determines the veto players of a simple game. 
-% weakly_sub_additiveQ                      - Checks the Tu-game on weakly sub additivity.
+% veto_rich_players                         - Returns a list of veto players for the TU-game v.
+% weakly_sub_additiveQ			    - Returns true whenever the game v is weakly sub-additive.
 % weakly_super_additiveQ                    - Checks the Tu-game on weakly super additivity.
-% weightedOwen                              - Computes the weighted Owen value.
-% weightedShapley                           - Computes the weighted Shapley value.
-% weightedSolidarity                        - Computes the weighted solidarity value.
 % weighted_majority                         - Creates a weighted majority game.
 % winning_coalitions                        - Determines the whole set of winning coalitions.
+% winning_players                           - Computes from a pre-defined set of winning coalitions (e.g. minimal winning coalitions) the set of winning players. 
 % zero_monotonicQ                           - Checks zero monotonicity.
-% zero_normalization                        - Creates a zero normalized game.
+% zero_normalization                        - Creates a zero normalized game. 
 %
 %
 % Class Objects
@@ -592,25 +699,41 @@ classdef MatTug < TuGame
 % pct_tugames: Parallel Computing
 %-------------------------------
 % p_ADvalue                                 - Computes the Aumann-Dreze value.
+% p_AP_DummyPlayer_propertyQ                - Checks if the solution x satisfies the AP-Dummy player property.
+% p_AP_DummyPlayers                         - Returns the player who are AP-Dummy players. 
+% p_AP_NullPlayer_propertyQ                 - Checks if the solution x satisfies the AP-Null player property. 
+% p_AP_NullPlayers                          - Returns the players who are AP-Null players. 
+% p_A_DummyPlayer_propertyQ                 - Checks if the solution x satisfies the A-Dummy player property. 
+% p_A_NullPlayer_propertyQ                  - Checks if the solution x satisfies the A-Null player property.
+% p_A_NullPlayers                           - Returns the players who are A-Null players. 
 % p_AllMarginalContributions                - Computes all marginal contributions of a Tu-game.
-% p_AntiBalancedSetQ                        - Verifies whether the set of induced coalitions is a anti balanced collection.
+% p_AlmostConcave_gameQ			    - Returns true whenever the game v is almost concave.
+% p_AlmostConvex_gameQ			    - Returns true whenever the game v is almost convex.
 % p_AntiB0_balancedCollectionQ              - Checks the reversal of weighted Kohlberg's criterion.
 % p_AntiReduced_game_propertyQ  	    - Checks whether an imputation x satisfies the anti-reduced game property.
+% p_Anti_ChiValue                           - Computes the anti-chi-value of a TU-game v. 
 % p_Anti_Converse_DGP_Q  		    - Checks whether an imputation x satisfies the anti-converse derived game property.
 % p_Anti_Derived_game_propertyQ  	    - Checks whether an imputation x satisfies a modified anti-derived game property.
+% p_Anti_Gap                                - Computes the anti-gap function from game v. 
+% p_Anti_GenGap                             - Computes the anti-generalized gap function from game v. 
 % p_Anti_ModPreKernel  			    - Computes from (v,x) a modified pre-kernel element.
 % p_Anti_ModPrekernelQ  		    - Checks whether the imputation x is a modified anti-pre-kernel element of the TU-game v.
 % p_Anti_PModPreKernel  		    - Computes from (v,x) a proper modified anti-pre-kernel element.
 % p_Anti_PModPrekernelQ  		    - Checks whether the imputation x is a proper modified anti-pre-kernel element of the TU-game v.
 % p_Anti_PreKernel                          - Computes an anti-pre-kernel element.
 % p_Anti_PrekernelQ                         - Checks if an imputation is an anti prekernel point.
-% p_Anti_PropModPreKernel  		    - Computes from (v,x) a proper modified anti-pre-kernel element.
+% p_Anti_PropModPreKernel                   - Computes from (v,x) a proper modified anti-pre-kernel element.
+% p_Anti_TauValue                           - Computes the anti-tau-value of a TU-game v. 
 % p_B0_balancedCollectionQ                  - Checking weak Kohlberg's criterion.
 % p_BestCoalitions                          - Computes  the set of most effective coalitions.
-% p_COV_propertyQ  			    - Verifies if the payoff x satisfies the covariance with strategic equivalence property w.r.t. (v,m,t).
-% p_CddExactGame                            - Computes the exact game from v (cddmex).
+% p_COV_propertyQ                           - Verifies if the payoff x satisfies COV property.
 % p_CddTotallyBalancedQ  		    - Checks whether the core of all subgames is non-empty (cddmex).
+% p_ChiValue				    - Computes the chi-value of a TU-game v.
+% p_CmpConsistencyQ			    - Checks whether an imputation x satisfies the complement consistency.
+% p_CmpRedGame				    - Computes from (v,x,S) a complement reduced game vS on S at x for game v.
 % p_CoalitionSolidarity                     - Determines the coalition solidarity value.
+% p_Complement_Reduced_game		    - Computes from (v,x) all complement reduced games on S at x of game v.
+% p_Converse_CmpConsistencyQ		    - Checks whether an imputation x satisfies the converse complement consistency property.
 % p_Converse_DGP_Q  			    - Checks whether an imputation x satisfies the converse derived game property.
 % p_Converse_RGP_Q                          - Checks if an imputation satisfies the CRGP.
 % p_DM_AntiReduced_game  		    - Computes from (v,x) all anti-reduced games on S at x of game v.
@@ -618,15 +741,22 @@ classdef MatTug < TuGame
 % p_DM_Derived_game  			    - Computes from (v,x) a modified Davis-Maschler reduced game vS on S at x for game v.
 % p_DM_Reduced_game                         - Computes all Davis-Maschler reduced games.
 % p_DecomposeGame                           - Computes the unique decomposition of a TU-game.
-% p_Derived_game_propertyQ  		    - Checks whether an imputation x satisfies a modifed derived game property.
+% p_DeeganPackel                            - Computes the Deegan-Packel index from the set of minimal winning coalitions. 
+% p_DeeganPackel_SV                         - Computes the Deegan-Packel index from a simple game to construct the set of minimal winning coalitions. 
+% p_Derived_game_propertyQ  		    - Checks whether an imputation x satisfies a modified derived game property.
 % p_DualCover  				    - The maximum characteristic values from the primal or dual game.
 % p_DualFloor  				    - The minimum characteristic values from the primal or dual game.
+% p_DummyPlayer_propertyQ                   - Verifies if x satisfies the dummy player property. 
+% p_DummyPlayers                            - Returns the list of dummy players of game v. 
 % p_ECCoverGame  			    - Computes from (v,x) an excess comparability cover of game v.
 % p_ECFloorGame  			    - Computes from (v,x) an excess comparability floor of game v.
+% p_ECGValue                                - Computes the Equal Collective Gains value of a TU-game v. 
 % p_EC_DGP_Q  				    - Checks whether the solution x satisfies excess comparability for each derived game.
 % p_EC_RGP_Q  				    - Checks whether the solution x satisfies excess comparability for each reduced game.
 % p_EC_propertyQ  			    - Checks whether the solution x satisfies excess comparability.
 % p_Gap                                     - Determines the gap function.
+% p_GenGap				    - Computes the generalized gap function from game v.
+% p_GenGap                                  - Computes the generalized gap function from game v. 
 % p_HMS_AntiReduced_game  		    - Computes from (v,x) all Hart/Mas-Colell anti-reduced games on S at x of game v.
 % p_HMS_Anti_Derived_game  		    - Computes from (v,x,S) a modified Hart-Mas-Colell anti-reduced game vS on S at x for game v.
 % p_HMS_Derived_game  			    - Computes from (v,x,S) a modified Hart-Mas-Colell reduced game vS on S at x for game v.
@@ -634,17 +764,35 @@ classdef MatTug < TuGame
 % p_HMS_Reduced_game                        - Creates all Hart/Mas-Colell reduced games. 
 % p_ISRG_propertyQ                          - Checks whether an imputation x satisfies the ISR game property.
 % p_ImputSavingReducedGame                  - Computes from (v,x) all imputation saving reduced games.
+% p_InessGame                               - Computes the inessential game from a payoff vector.
+% p_Johnston                                - Computes the Johnston power index from the set of winning coalitions. 
 % p_Kernel                                  - Computes a kernel point using the optimization toolbox.
 % p_LS_Nucl                                 - Computes the least square nucleolus of a game.
 % p_LS_PreNucl                              - Computes the least square pre-nucleolus of a game.
 % p_LedcoconsQ  			    - Checks whether an imputation x satisfies large excess difference converse consistency. 
 % p_Ledcons_propertyQ  			    - Checks whether an imputation x satisfies the ledcons property.
+% p_MaxConsistencyQ			    - Checks whether an imputation x satisfies maximal consistency.
+% p_ModDeeganPackel                         - Computes the modified Deegan-Packel index from the set of winning coalitions. 
+% p_ModDeeganPackel_SV                      - Computes the Deegan-Packel index from a simple game to construct the set of minimal winning coalitions. 
 % p_ModHoller  				    - Computes the modified Holler index from the set of winning coalitions.
+% p_ModPGI				    - Computes the modified public good index from the set of winning coalitions.
+% p_ModPGI_SV                               - Computes the modified public good index from a simple game to determine the set of minimal winning coalitions. 
 % p_ModPreKernel  			    - Computes from (v,x) a modified pre-kernel element.
 % p_ModPrekernelQ  			    - Checks whether the imputation x is a modified pre-kernel element.
 % p_MyersonValue                            - Computes the Myerson value of a Tu game.
+% p_NetworkBanzhaf                          - Computes the network Banzhaf power index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% p_NetworkDeeganPackel                     - Computes the network Deegan-Packel index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% p_NetworkJohnston                         - Computes the network Johnston power index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% p_NetworkMajorityGame			    - Computes from a network problem (E,c,th) a network majority TU game (simple game).
+% p_NetworkModDeeganPackel                  - Computes the network modified Deegan-Packel index from the set of winning coalitions of a network E while imposing a threshold of th. 
+% p_NetworkModPGI			    - Computes the network modified public good index from the set of winning coalitions of a network E while imposing a threshold.
+% p_NetworkPGI				    - Computes the network public good index from the set of minimal winning coalitions of a network E while imposing a threshold. 
+% p_NetworkShapleyShubik                    - Computes the network Shapley-Shubik power index from the set of winning coalitions of a network E while imposing a threshold of th. 
 % p_NullPlayer_propertyQ                    - Verifies if x satisfies the null player property.
+% p_NullPlayers                             - Returns the list of null players of game v. 
 % p_OwenValue                               - Computes the Owen value.
+% p_PGI					    - Computes the public good index from the set of minimal winning coalitions.
+% p_PGI_SV                                  - Computes the public good index from a simple game to determine the set of minimal winning coalitions. 
 % p_PModPreKernel  			    - Computes from (v,x) a proper modified pre-kernel element.
 % p_PModPrekernelQ  			    - Checks whether the imputation x is a proper modified pre-kernel element.
 % p_PermutationGame                         - Computes from an assignment matrix the permutation game.
@@ -660,28 +808,36 @@ classdef MatTug < TuGame
 % p_SD_ShapleyValue  			    - Computes the surplus division Shapley value.
 % p_SedcoconsQ  			    - Checks whether an imputation x satisfies small excess difference converse consistency.
 % p_Sedcons_propertyQ  			    - Checks whether an imputation x satisfies the sedcons property.
-% p_ShapleyQ                                - Checks if the imputation x is a Shapley value of game v.
 % p_ShapleyValue                            - Computes the Shapley value (potential).
 % p_ShapleyValueLB                          - Computes the Shapley value from the linear basis.
 % p_ShapleyValueM                           - Computes the Shapley value while relying on all marginal contributions.
-% p_ShapleyValueML                          - Computes the Shapley value using the multi-linear extension.
 % p_SolidarityShapleyValue                  - Determines the solidarity Shapley value. 
 % p_SolidarityValue                         - Determines the solidarity value. 
 % p_StrConverse_DGP_Q  			    - Checks whether an imputation x satisfies the strong converse derived game property.
 % p_StrConverse_RGP_Q  			    - Checks whether an imputation x satisfies the strong CRGP.
 % p_StrLedcoconsQ  			    - Checks whether an imputation x satisfies satisfies strong large excess difference converse consistency.
 % p_StrSedcoconsQ  			    - Checks whether an imputation x satisfies satisfies strong small excess difference converse consistency.
+% p_StrategicEquivalentPrK                  - Computes the pre-kernel of game v from a strategic equivalent game.
 % p_SubSets                                 - Creates all subsets of super set.
 % p_TauValue                                - Computes the Tau value.
+% p_UpperPayoff				    - Computes the utopia and minimum claim vector of game v.
+% p_UtopiaPayoff			    - Computes the utopia and minimum claim vector of game v.
+% p_WSysBestCoalitions                      - Computes  the set of most effective coalitions w.r.t. a weight system.
+% p_WSys_game_space                         - Computes a game space w.r.t. a weight system which replicates a payoff as a weighted pre-kernel element.
+% p_WSys_game_space_red                     - Computes a game space w.r.t. a weight system which replicates a payoff as a weighted pre-kernel element.
+% p_WSys_replicate_prk                      - Replicates a weighted pre-kernel point of a game space w.r.t. a weight system. 
 % p_airport_profit                          - Computes from a cost and benefit vector the associated surplus game.
+% p_apu_SolidarityValue                     - Determines the solidarity value w.r.t. a priori unions.
 % p_assignment_game                         - Creates  an assignment game.
+% p_average_concaveQ			    - Returns true whenever the game v is average-concave.
 % p_average_convexQ                         - Checks on average convexity.
 % p_balancedSetQ                            - Verifies whether the set of induced coalitions is a balanced collection. 
 % p_banzhaf                                 - Computes  the Banzhaf value.
 % p_basis_coordinates                       - Determines the basis coordinates of a Tu game.
 % p_basis_game                              - Determines bases games.
-% p_cls_kernel                              - Computes a kernel point using the CLS solver.
+% p_bint_AssignmentGame                     - Creates an assignment game (bintprog).
 % p_clp_kernel                              - Computes a kernel point using the CLP solver.
+% p_cls_kernel                              - Computes a kernel point using the CLS solver.
 % p_coeff_linearbasis                       - Determines the coefficients (dividends) of a linear basis from a TU game.
 % p_convex_gameQ                            - Checks on convexity.
 % p_coreQ                                   - Checks the non-emptiness of the core.
@@ -691,21 +847,28 @@ classdef MatTug < TuGame
 % p_cplex_prekernel                         - Computes a prekernel point using the CPLEX solver.
 % p_cvx_kernel                              - Computes a kernel point using the CVX solver. 
 % p_cvx_prekernel                           - Computes a prekernel point using the CVX solver. 
+% p_disagreement			    - Computes the disagreement vector of game v.
 % p_equal_treatmentQ                        - Checks if a vector x satisfies ETP.
 % p_exact_game                              - Computes the exact game from v using Matlab's Optimization toolbox.
 % p_excess                                  - Computes the excesses.
+% p_flow_game                               - Computes from a flow problem a TU flow game using the optimization toolbox.
 % p_game_basis                              - Computes a game basis of the n-person TU-game space.
 % p_game_space                              - Computes the game space which replicates a payoff as a pre-kernel element.
 % p_game_space_red                          - Computes the game space which replicates a payoff as a pre-kernel element.
 % p_genUnionStable                          - Creates a union stable system.
+% p_getMinimalWinning                       - Computes from a simple game the minimal winning coalitions. 
 % p_getgame                                 - Creates a Tu-game from the unanimity coordinates. 
 % p_glpk_exact_game                         - Computes the exact game from v using the GLPK solver.
 % p_glpk_kernel                             - Computes a kernel point using the GLPK solver. 
 % p_glpk_prekernel                          - Computes a prekernel point using the GLPK solver. 
+% p_grMaxFlowGame                           - Computes from a flow problem a TU flow game.
 % p_gurobi_AssignmentGame                   - Creates an assignment game using the GUROBI solver.
 % p_gurobi_exact_game                       - Computes the exact game from v using the GUROBI solver.
+% p_gurobi_flow_game                        - Computes from a flow problem a TU flow game (GUROBI).
 % p_gurobi_kernel                           - Computes a kernel point using the GUROBI solver. 
 % p_gurobi_prekernel                        - Computes a prekernel point using the GUROBI solver. 
+% p_gurobi_weightedKernel                   - Computes a weighted kernel point using the GUROBI solver. 
+% p_gurobi_weightedPreKernel                - Computes a weighted prekernel point using the GUROBI solver. 
 % p_harsanyi_dividends                      - Determines the the unanimity coordinates.
 % p_holler                                  - Computes the Holler index.
 % p_homogeneous_representationQ             - Checks if the weighted majority game possesses a homogeneous representation.
@@ -721,16 +884,23 @@ classdef MatTug < TuGame
 % p_lin_prekernel                           - Computes a prekernel point using optimization toolbox.
 % p_linear_basis                            - Determines the linear basis of the n-person TU game space.
 % p_mcst_game                               - Computes from a cost matrix the corresponding mcst game.
+% p_min_aspiration			    - Computes the minimum aspiration level of players of game v.
+% p_minimal_representation  		    - Computes from the threshold th and the weights w_vec the minimal representation of an homogeneous weighted majority game.
 % p_minimal_winning                         - Computes the minimal winning coalitions.
 % p_monotone_gameQ                          - Checks monotonicity of the Tu-game.
 % p_msk_AssignmentGame                      - Creates an assignment game using the MOSEK solver.
+% p_msk_bintAssignmentGame		    - Computes from an assignment problem the corresponding symmetric assignment game.
 % p_msk_exact_game                          - Computes the exact game from v using the MOSEK solver.
 % p_msk_kernel                              - Computes a kernel point using the MOSEK solver.
 % p_msk_prekernel                           - Computes a prekernel point using the MOSEK solver.
+% p_nullShapley                             - Determines a basis of the null space for the Shapley-value for n-persons.
 % p_oases_kernel                            - Computes a kernel point using the OASES solver.
 % p_oases_prekernel                         - Computes a prekernel point using the OASES solver.
 % p_ols_prekernel                           - Computes a prekernel point using optimization toolbox.
+% p_parity_basis                            - Computes a basis of the n-person TU game space.
+% p_parity_coeff                            - Computes the parity transform of the TU-game v.
 % p_potential                               - Determines the potential of a TU game (basis).
+% p_proper_amount			    - Computes the largest amount players can contribute to a proper coalition.
 % p_pure_overhead                           - Creates the matrix of pure overhead games.
 % p_qpBB_kernel                             - Computes a kernel point using the QPBB solver.
 % p_qpc_kernel                              - Computes a kernel point using the QPC solver.
@@ -741,16 +911,17 @@ classdef MatTug < TuGame
 % p_replicate_prk                           - Replicates a pre-kernel solution as a pre-kernel of a game space. 
 % p_select_starting_pt                      - Selects a starting point for the pre-kernel computation.
 % p_semi_convexQ                            - Checks semi-convexity.
-% p_sub_additiveQ                           - Checks the Tu-game on sub additivity.
+% p_smallest_amount			    - Computes the smallest amount vector of the game.
+% p_sub_additiveQ			    - Returns true whenever the game v is sub additive.
 % p_substitutes                             - Establishes which pair of players are substitutes.
 % p_super_additiveQ                         - Checks the Tu-game on super additivity.
+% p_superadditive_cover                     - Computes from game v its superadditive cover.
 % p_totallyBalancedQ  			    - checks whether the core of all subgames is non-empty.
+% p_tricameral_assembly                     - Computes from a set of parameters a simple game. 
 % p_unanimity_games                         - Computes the unanimity coordinates.
 % p_union_stableQ                           - Checks whether a system is union stable.
-% p_weightedOwen                            - Computes the weighted Owen value.
-% p_weightedShapley                         - Computes the weighted Shapley value.
-% p_winning_coalitions                      - Computes from a pre-defined set of minimal winning coalitions the whole set of winning coalitions.
-% p_zero_monotonicQ                         - Checks zero monotonicity.
+% p_veto_rich_players			    - Returns a list of veto players for the TU-game v.
+% p_zero_monotonicQ                         - Checks zero monotonicity. 
 %
 %
 % Class Objects
@@ -790,6 +961,8 @@ classdef MatTug < TuGame
 %   04/24/2018        1.7.0           hme        
 %   02/07/2019        1.7.5           hme
 %   01/31/2020        1.8.0           hme    
+%   04/25/2020        1.8.0.12        hme
+%   06/25/2021        1.9.0           hme
 %
  
 end

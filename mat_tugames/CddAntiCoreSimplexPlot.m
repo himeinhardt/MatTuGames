@@ -21,8 +21,8 @@ function CddAntiCoreSimplexPlot(varargin)
 %  add_sol    -- A string to invoke additional solutions into the plot.
 %                Permissible solutions are:
 %                'none', this is the default value.
-%                'prk', a pre-kernel element will be incorporated.
-%                'prn', the pre-nucleolus will be incorporated.
+%                'aprk', an anti-pre-kernel element will be incorporated.
+%                'aprn', the anti-pre-nucleolus will be incorporated.
 %                'shap', the Shapley value will be incorporated.
 %                'all', all three solutions above will be incorporated.
 %  vw_pt       -- A string command to determine the view point.
@@ -50,6 +50,7 @@ function CddAntiCoreSimplexPlot(varargin)
 %   Date              Version         Programmer
 %   ====================================================
 %   06/12/2015        0.7             hme
+%   05/23/2021        1.9             hme
 %
 
 narginchk(1,5);
@@ -65,10 +66,10 @@ for i=1:nargin
   if ischar(varargin{i})
     if strcmp(varargin{i},'none')
        add_sol='none';
-    elseif strcmp(varargin{i},'prk')
-       add_sol='prk';
-    elseif strcmp(varargin{i},'prn')
-       add_sol='prn';
+    elseif strcmp(varargin{i},'aprk')
+       add_sol='aprk';
+    elseif strcmp(varargin{i},'aprn')
+       add_sol='aprn';
     elseif strcmp(varargin{i},'shap')
        add_sol='shap';
     elseif strcmp(varargin{i},'all')
@@ -140,8 +141,8 @@ else
   [~,~,cr_vol,Pv]=CddAntiCoreSimplexVertices(v);
 end
 [~,~,~,Pip]=CddAntiImputationSimplexVertices(v);
-v_prk=PreKernel(v);
-v_prn=CddPrenucl(v);
+v_prk=Anti_PreKernel(v);
+v_prn=Anti_PreNucl(v);
 v_sh=ShapleyValue(v);
 ms1=min(Pip.V);
 ml1=max(Pip.V);
@@ -179,7 +180,7 @@ if n==4
       lighting phong;
       material shiny;
 % Pre-Kernel
-  elseif strcmp(add_sol,'prk')
+  elseif strcmp(add_sol,'aprk')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
@@ -200,7 +201,7 @@ if n==4
       lighting phong;
       material shiny;
 % Pre-Nucleolus
-  elseif strcmp(add_sol,'prn')
+  elseif strcmp(add_sol,'aprn')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
@@ -308,7 +309,7 @@ if n==4
       lighting phong;
       material shiny;
 % Pre-Kernel
-  elseif strcmp(add_sol,'prk')
+  elseif strcmp(add_sol,'aprk')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
@@ -329,7 +330,7 @@ if n==4
       lighting phong;
       material shiny;
 % Pre-Nucleolus
-  elseif strcmp(add_sol,'prn')
+  elseif strcmp(add_sol,'aprn')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,2);
@@ -438,7 +439,7 @@ else
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)]);
       hold off;
 % Pre-Kernel
-  elseif strcmp(add_sol,'prk')
+  elseif strcmp(add_sol,'aprk')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,1/2);
@@ -455,7 +456,7 @@ else
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)]);
       hold off;
 % Pre-Nucleolus
-  elseif strcmp(add_sol,'prn')
+  elseif strcmp(add_sol,'aprn')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,1/2);
@@ -543,7 +544,7 @@ else
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)]);
       hold off;
 % Pre-Kernel
-  elseif strcmp(add_sol,'prk')
+  elseif strcmp(add_sol,'aprk')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,1/2);
@@ -560,7 +561,7 @@ else
       set(gca,'XLim',[sm(1) lr(1)],'YLim',[sm(2) lr(2)]);
       hold off;
 % Pre-Nucleolus
-  elseif strcmp(add_sol,'prn')
+  elseif strcmp(add_sol,'aprn')
       ms2=min(Pv.V);
       ml2=max(Pv.V);
       mrg=min(max(ml2)/4,1/2);

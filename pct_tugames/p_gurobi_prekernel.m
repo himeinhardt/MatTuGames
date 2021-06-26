@@ -135,7 +135,8 @@ params.method= 1; % Use dual simplex method.
 % params.method= 3; % Use concurrent.
 % params.method= 4; % Use deterministic concurrent.
 % params.Presolve = 2;
-params.TimeLimit = 1000;
+params.Threads=3;
+params.TimeLimit = 6000;
 
 
 % Cycling may occur, so that we need an artificial halt

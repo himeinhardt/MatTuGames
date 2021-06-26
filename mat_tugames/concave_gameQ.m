@@ -8,7 +8,7 @@ function [cvq A]=concave_gameQ(v,tol)
 %  cvq      -- Returns 1 (true) or 0 (false).
 %  A        -- A pair matrix, which indicates whether the 
 %              marginal contribution of the pair (i,j) 
-%              has increasing differences (1) or not (0).
+%              has decreasing differences (1) or not (0).
 %  input:
 %  v        -- A TU-game of length 2^n-1.
 %  tol      -- Tolerance value. By default, it is set to (-2*10^4*eps).

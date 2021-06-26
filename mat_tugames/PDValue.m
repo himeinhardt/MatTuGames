@@ -1,0 +1,39 @@
+function pd=PDValue(v)
+% PDValue computes the proportional division value of a individually positive TU-game.
+%
+% Usage: pd=PDValue(v)
+%
+% Define variables:
+%  output:
+%  pd       -- Proportional division value of a individually positive 
+%              TU-game
+%
+%  input:
+%  v        -- A TU-Game of length 2^n-1.
+%
+%
+%  Author:        Holger I. Meinhardt (hme)
+%  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
+%  Institution:   University of Karlsruhe (KIT)  
+%
+%  Record of revisions:
+%   Date              Version         Programmer
+%   ====================================================
+%   02/27/2020        1.9             hme
+%
+N=length(v);
+[~, n]=log2(N);
+if N==1
+  pd=v;return;
+ else
+end
+k=1:n;
+sC=2.^(k-1);
+vi=v(sC);
+ipQ=all(vi>0);
+if ipQ==1
+   pd=(vi/sum(vi))*v(N);
+else
+   pd=-inf(1,n); 
+   warning("PDValue: Game is not individually positive!!"); 
+end   

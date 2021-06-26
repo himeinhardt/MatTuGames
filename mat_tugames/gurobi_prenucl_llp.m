@@ -60,6 +60,7 @@ params.method= 3; % Use concurrent.
 params.FeasibilityTol = 1e-9;
 params.OptimalityTol = 1e-9;
 params.BarConvTol = 1e-10;
+params.Threads=12;
 %params.TimeLimit = 3000;
 it=0:-1:1-n;
 bA=find(A1(:,end)==0);

@@ -46,7 +46,6 @@ N2=2^n1-1;
 ii=1;
 vs1=zeros(N2,1);
 vs2=vs1;
-A2=zeros(N2,n);
 for k=1:N1;
     for jj=1:N1
           if k>1 && jj >1

@@ -4,7 +4,7 @@ function v=getgame(hd,n);
 % Usage: v=getgame(hd,n)
 % Define variables:
 %  output:
-%  v        -- A TU-bankruptcy game.
+%  v         -- A TU game of size 2^n-1.
 %  input:
 %  hd        -- The harsanyi dividends.
 %  n         -- The number of player involved (optional)

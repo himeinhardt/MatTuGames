@@ -56,17 +56,15 @@ effQ=abs(v(end)-sum(x))<tol;
 prkQ=false;
 if effQ==0, return; end
 
-[e, smat]=p_msrpls(v,x);
-e=e';
+smat=p_msrpls(v,x);
 lms=abs(smat-smat')<tol;
 prkQ=all(all(lms));
 
 
 %-------------------------------------
-function [e, smat]=p_msrpls(v,x)
+function smat=p_msrpls(v,x)
 % Computes the maximum surpluses w.r.t. payoff x.
 % output:
-%  e        -- Excess vector
 %  smat     -- Matrix of maximum surpluses.
 %
 %  input:
@@ -79,28 +77,24 @@ N=length(v); n=length(x);
 % Borrowed from J. Derks
 Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % Determining max surpluses.
-v=parallel.pool.Constant(v);
-cXm=parallel.pool.Constant(Xm{1});
+v=distributed(v);
+cXm=distributed(Xm{1});
 clear Xm;
 spmd
-%cv=codistributed(v);
-%cXm=codistributed(Xm{1});
-e=v.Value-cXm.Value;
+e=v-cXm;
 [se1, sC1]=sort(e,'descend');
-Smat=-inf(n);
 end
-sC=gather(sC1)
+smat=-inf(n);
+sC=gather(sC1);
 se=gather(se1);
-clear sC1 se1;
-sC=parallel.pool.Constant(sC);
-se=parallel.pool.Constant(se);
+clear sC1 se1 e;
 q0=n^2-n;
 q=0;
 k=1;
 pl=1:n;
-spmd
+%spmd
  while q~=q0
-   kS=sC.Value(k);
+   kS=sC(k);
    ai=bitget(kS,pl)==1;
    bj=ai==0;
    pli=pl(ai);
@@ -108,8 +102,8 @@ spmd
    if isempty(plj)==0
      for i=1:numel(pli)
        for j=1:numel(plj)
-         if Smat(pli(i),plj(j))==-Inf
-            Smat(pli(i),plj(j))=se.Value(k); % max surplus of i against j.
+         if smat(pli(i),plj(j))==-Inf
+            smat(pli(i),plj(j))=se(k); % max surplus of i against j.
             q=q+1;
          end
        end
@@ -117,6 +111,5 @@ spmd
    end
    k=k+1;
  end
-end
-smat=Smat{1};
+%end
 smat=tril(smat,-1)+triu(smat,1);

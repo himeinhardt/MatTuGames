@@ -153,7 +153,8 @@ params.method= 2; % Use barrier method.
 % params.FeasibilityTol = 1e-08;
 % params.OptimalityTol = 1e-08;
 params.BarConvTol = 1e-11;
-params.TimeLimit = 1000;
+params.Threads=3;
+params.TimeLimit = 6000;
 
 
 % Cycling may occur, so that we need an artificial halt

@@ -22,6 +22,7 @@ function [x1, fmin]=Anti_PreNucl(v,tol)
 %   ====================================================
 %   08/29/2014        0.5             hme
 %   03/28/2015        0.7             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -31,6 +32,10 @@ if nargin<2
 end
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
@@ -68,7 +73,7 @@ while 1
   x=xmin';
   x1=x;
   if isempty(x1) == 1
-     warning('Prn:Exit0','Probably no pre-nucleolus found!')
+     warning('Prn:Exit0','Probably no anti pre-nucleolus found!')
      break;
   end
   x1(end)=[];
@@ -86,7 +91,7 @@ while 1
   wgh=pinv(tmS2)*ov';
   posQ=all(wgh>-tol);
   if exitflag ~= 1
-     warning('Prn:Exit1','Probably no pre-nucleolus found!')
+     warning('Prn:Exit1','Probably no anti pre-nucleolus found!')
      break; 
   elseif rk==n && posQ == 1
      x1=full(x1); 

@@ -22,6 +22,7 @@ function [x1, alp]=gurobi_AntiNucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/29/2021        1.9             hme
 %                
 
 
@@ -33,24 +34,24 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
-
 % solver parameter
 ra = smallest_amount(v);
 k=1:n;
-Nk=N-2.^(k-1);
-vi=v(Nk);
-%vi=v(bitset(0,k));
+vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
 end
-lb=[-ra,-Inf];
+lb=[ra,-Inf];
 ub=[vi,Inf];
 
 for k=1:n, A1(:,k) = bitget(S,k);end
@@ -67,6 +68,7 @@ params.outputflag = 0;
 params.method= 2; % Use barrier method.
 % params.method= 3; % Use concurrent.
 % params.method= 4; % Use deterministic concurrent.
+params.Threads=8;
 params.TimeLimit = 1000;
 
 while 1

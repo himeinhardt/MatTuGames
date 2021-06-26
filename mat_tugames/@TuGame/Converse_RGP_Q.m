@@ -25,6 +25,8 @@ function [CRGP CRGPC]=Converse_RGP_Q(clv,x,str,tol)
 %               in accordance with the pre-nucleolus.
 %              'PRK' that is, the Davis-Maschler reduced game 
 %               in accordance with pre-kernel solution.
+%              'CORE' that is, the Davis-Maschler reduced game 
+%               in accordance with the core.
 %              'SHAP' that is, the Hart-MasColell reduced game
 %               in accordance with the Shapley value.
 %              Default is 'PRK'.
@@ -41,6 +43,7 @@ function [CRGP CRGPC]=Converse_RGP_Q(clv,x,str,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   06/18/2020        1.9             hme
 %                
 
 N=clv.tusize;
@@ -115,6 +118,8 @@ sV_x{1,k}=x;
    elseif strcmp(str,'PRN')
     crgpq{k}=abs(sV_x{1,k}-x)<tol;
     crgpQ(k)=all(crgpq{k});
+   elseif strcmp(str,'CORE')
+    crgpQ(k)=clv.belongToCoreQ(sV_x{1,k});
    else
     crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
    end

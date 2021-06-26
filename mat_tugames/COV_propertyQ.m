@@ -107,6 +107,7 @@ else
     end
 end
 
+
 em=additive_game(m);
 v2=t*v+em;
 

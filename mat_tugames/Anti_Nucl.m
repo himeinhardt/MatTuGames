@@ -53,13 +53,13 @@ vi=v(Nk);
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
 end
-%lb=[ra,-Inf];
-lb=[];
+lb=[ra,-Inf];
+%lb=[];
 ub=[vi,Inf];
 
 options.Display='off';

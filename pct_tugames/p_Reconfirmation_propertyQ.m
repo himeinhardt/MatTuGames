@@ -28,6 +28,8 @@ function [RCP RCPC]=p_Reconfirmation_propertyQ(v,x,str,tol)
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleolus.
+%              'CORE' that is, the Davis-Maschler reduced game 
+%               in accordance with the core.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -45,7 +47,7 @@ function [RCP RCPC]=p_Reconfirmation_propertyQ(v,x,str,tol)
 %   06/29/2012        0.2 beta         hme
 %   05/27/2013        0.3              hme
 %   05/16/2014        0.5              hme
-%   04/01/2020        1.9             hme
+%   06/22/2020        1.9              hme
 %                
 
 
@@ -101,6 +103,11 @@ parfor k=1:N-1
     rSk=PlyMat(k,:);
     vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
     rcpq{k}=PrekernelQ(v,vS_y{1,k});
+  elseif strcmp(str,'CORE')
+    [~,vS_sol{1,k}]=LeastCore(vS{k}); % solution y restricted to S.
+    rSk=PlyMat(k,:);
+    vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+    rcpq{k}=belongToCoreQ(v,vS_y{1,k});
   elseif strcmp(str,'PRN')
     if length(vS{k})==1
       vS_sol{1,k}=PreKernel(vS{k}); % solution y restricted to S.
@@ -150,6 +157,10 @@ end
 if strcmp(str,'PRK')
   vS_sol{1,N}=p_PreKernel(v,x);
   rcpq{N}=p_PrekernelQ(v,x);
+  vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'CORE')
+  vS_sol{1,N}=LeastCore(v);
+  rcpq{N}=belongToCoreQ(v,x);
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'PRN')
   try 

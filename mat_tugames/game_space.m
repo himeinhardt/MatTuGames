@@ -38,7 +38,10 @@ function [v_sp, mat_hd, MatW, MatV, A, mat_vz]=game_space(v,x,slc,smc,method)
 %   05/10/2014        0.5             hme
 %                
 
-if nargin < 5
+if nargin < 4
+   smc=1;
+   method = 'full';
+elseif nargin < 5
    method = 'full';
 end
 

@@ -5,7 +5,7 @@ function [uv,mv]=UtopiaPayoff(clv)
 % Define variables:
 %  output:
 %  uv       -- The upper vector/payoff of game v.
-%  mv       -- The minimum claim vector of game v.
+%  mv       -- The minimum claim (concession) vector of game v.
 %
 %  input:
 %  clv      -- TuGame class object.

@@ -26,6 +26,7 @@ function [x, Lerr, smat, xarr]=Kernel(v,x)
 %   ====================================================
 %   12/28/2012        0.3             hme
 %   05/11/2019        1.1             hme
+%   10/21/2020        1.9             hme
 %                
 
 if nargin<1
@@ -93,9 +94,6 @@ else
     smc=1;
 end
 
-if islogical(v)
-   v=double(v);
-end
 
 [x, Lerr, smat, xarr]=computePrk(v,x,smc,0,mnQ);
 smat=tril(smat,-1)+triu(smat,1);
@@ -131,19 +129,32 @@ m=1+n*(n-1)/2;
 upe=true(n);
 
 ofval=inf;
-ra = reasonable_outcome(v)';
+%ra = reasonable_outcome(v)';
+ra=[];
 k=1:n;
-vi=v(bitset(0,k))';
-cvr=vi==ra;
-if any(cvr)
-   fi=find(cvr);
-   ra(fi)=Inf;
-end
+vi=double(v(bitset(0,k)))';
+%cvr=vi==ra;
+%if any(cvr)
+%   fi=find(cvr);
+%   ra(fi)=Inf;
+%end
 
 % Cycling may occur, so that we need an artificial halt
 while cnt<CNT  
     cnt=cnt+1;
-    [A, smat]=effCoalitions(v,x,smc,cnt);
+    [A, smat, pv]=effCoalitions(v,x,smc,cnt,[]);
+    if isempty(A) %% is empty if truncating of the data array has failed.
+       [A, smat]=effCoalitions(v,x,smc,cnt,pv);
+    end
+    if isempty(A)
+       msg00='Probably No Pre-Kernel Element found!.';
+       warning('PrK:ChangCard',msg00);
+       x=-inf(1,n);
+       Lerr=[];
+       smat=[];
+       xarr=[];
+       return;
+    end
     upe=tril(upe,-1);
     etr12=A';
     ec12=etr12(upe)';
@@ -241,7 +252,7 @@ end
 
 
 %--------------
-function [A, smat]=effCoalitions(v,x,smc,cnt)
+function [A, smat, pv]=effCoalitions(v,x,smc,cnt,pv)
 % Computes the set of most effective coalitions
 % of smallest/largest cardinality.
 %
@@ -256,6 +267,12 @@ function [A, smat]=effCoalitions(v,x,smc,cnt)
 %       -- otherwise, as above.
 %
 n=length(x);
+N=2^n-1;
+if isempty(pv)
+   pv1=0;
+else
+   pv1=pv;
+end
 % The set of effective coalitions might be too
 % large or too small due to floating point arithmetic.
 % Adjusting the tolerance value might help to find the
@@ -271,13 +288,67 @@ else
  tol=100*eps;
 end
 
-% Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
+% Inspired by Jean Derks.
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % Computing the excess vector w.r.t. x.
-e=v-Xm;
-clear v Xm;
+lv=islogical(v);
+%e=v-Xm{1};
+e=bsxfun(@minus,v,Xm{1});
+nf=max(randi([1 N],1,5));
+el=e(nf);
+% Truncate excess vector.
+if n>16
+   %el = min(e);
+   eh = max(e);
+   if abs(eh+el)<10^7*eps
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   elseif eh==1 && el==0
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   else
+      if lv==1
+         clear v Xm;
+         if eh > 0.7 && eh < 1
+            eh=1.3*eh;
+            pv=min((eh+el)*0.9,0.7); % 0.6 fine
+         else
+            pv=min((eh+el)*0.3,0.8);
+         end
+      else
+         vN=v(N);
+         [mv,idx]=max(v);
+         clear v Xm;
+         if mv<0
+            eh= 0.3*eh;
+            pv=(eh+el)*1.2; % eh 0.3 fine (increase to improve).     
+         elseif mv>vN
+            eh = 0.8*eh;
+            pv=(eh+el)*1.2; % 0.9 fine (increase to improve).
+         elseif idx<N
+            eh = 0.8*eh;
+            pv=(eh+el); % 0.9 fine (increase to improve).
+         else
+            eh = 0.8*eh;
+            pv=(eh+el)*0.3;
+         end
+      end
+      if pv1==0
+         pv=0.9*min(eh,pv);
+      else
+         pv=min(pv,pv1/2);
+      end
+      lp=e>pv-tol;
+      e=e(lp);
+      fS=find(lp);
+      [e,fC]=sort(e,'descend');
+      sC=fS(fC);
+   end
+else
+   [e,sC]=sort(e,'descend');
+end
 % Truncate data arrays.
-[e, sC]=sort(e,'descend');
+lC=length(sC);
 B=eye(n);
 smat=-inf(n);
 q0=n^2-n;
@@ -286,22 +357,36 @@ k=1;
 pl=1:n;
 while q~=q0
   kS=sC(k);
-  ai=bitget(kS,pl)==1;
-  bj=ai==0;
-  pli=pl(ai);
-  plj=pl(bj);
-  if isempty(plj)==0
-    for i=1:length(pli)
-      for j=1:length(plj)
-        if B(pli(i),plj(j))==0 
-           B(pli(i),plj(j))=k;
-           smat(pli(i),plj(j))=e(k); % max surplus of i against j.
-           q=q+1;
+  if kS<N
+     ai=(bsxfun(@bitget,kS,pl))==1;
+     bj=ai==0;
+     pli=pl(ai);
+     for i=pli
+        ri=B(i,:)==0;
+        if any(ri)
+           bn=pl(ri);
+           plj=pl(bj);
+           sj=plj(ismembc(plj,bn));
+           lj=length(sj);
+           if lj>0
+             B(i,sj)=k;
+             smat(i,sj)=e(k); % max surplus of i against j.
+             q=q+lj;
+           end
         end
-      end
-    end
+     end
   end
   k=k+1;
+  if k>lC
+     break;
+  end
+end
+%%% If we did too much concerning truncating
+%%% then we restart from scratch.
+if k>lC
+   A=[];
+   smat=[];
+   return;
 end
 m=max(B(:));
 e1=e(m)-tol;

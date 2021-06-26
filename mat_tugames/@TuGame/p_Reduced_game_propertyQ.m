@@ -37,6 +37,8 @@ function [RGP RGPC]=p_Reduced_game_propertyQ(clv,x,str,tol)
 %               equivalence in accordance with the modified pre-kernel.
 %              'PMPRK' that is, the Davis-Maschler reduced game 
 %               equivalence in accordance with the proper modified pre-kernel.
+%              'CORE' that is, the Davis-Maschler reduced game 
+%               in accordance with the core.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -53,6 +55,7 @@ function [RGP RGPC]=p_Reduced_game_propertyQ(clv,x,str,tol)
 %   05/16/2014        0.5              hme
 %   02/10/2018        0.9              hme
 %   04/09/2018        1.0              hme
+%   06/18/2020        1.9              hme
 %                
 
 N=clv.tusize;
@@ -131,6 +134,8 @@ parfor k=1:N-1
    rgpq(k)=ModPrekernelQ(vS{k},impVec{k});
   elseif strcmp(str,'PMPRK')
    rgpq(k)=PModPrekernelQ(vS{k},impVec{k});
+  elseif strcmp(str,'CORE')
+   rgpq(k)=belongToCoreQ(vS{k},impVec{k});
   elseif strcmp(str,'PRN')
    if length(vS{k})==1
      rgpq(k)=PrekernelQ(vS{k},impVec{k});
@@ -195,6 +200,8 @@ elseif strcmp(str,'MPRK')
   rgpq(N)=clv.p_ModPrekernelQ(x);
 elseif strcmp(str,'PMPRK')
   rgpq(N)=clv.p_PModPrekernelQ(x);
+elseif strcmp(str,'CORE')
+  rgpq(N)=clv.belongToCoreQ(x);
 elseif strcmp(str,'PRN')
    try
      sol{N}=clv.Prenucl(x); % using adjusted Derks pre-nucleolus function.

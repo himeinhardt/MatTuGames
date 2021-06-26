@@ -35,6 +35,8 @@ function [RGP RGPC]=Reduced_game_propertyQ(v,x,str,tol)
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleous.
+%              'CORE' that is, the Davis-Maschler reduced game 
+%               in accordance with the core.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -52,6 +54,7 @@ function [RGP RGPC]=Reduced_game_propertyQ(v,x,str,tol)
 %   05/28/2013        0.3             hme
 %   02/06/2018        0.9             hme
 %   04/07/2018        1.0             hme
+%   06/18/2020        1.9             hme
 %                
 
 
@@ -112,6 +115,8 @@ for k=1:N-1
    rgpq(k)=ModPrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'PMPRK')
    rgpq(k)=PModPrekernelQ(vS{1,k},impVec{1,k});
+  elseif strcmp(str,'CORE')
+   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'PRN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
@@ -167,6 +172,8 @@ elseif strcmp(str,'MPRK')
   rgpq(N)=ModPrekernelQ(v,x);
 elseif strcmp(str,'PMPRK')
   rgpq(N)=PModPrekernelQ(v,x);
+elseif strcmp(str,'CORE')
+  rgpq(N)=belongToCoreQ(v,x);
 elseif strcmp(str,'PRN')
    try
      sol{N}=Prenucl(v,x);

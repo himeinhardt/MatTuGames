@@ -2,7 +2,7 @@ function [hrQ hr wmg]=homogeneous_representationQ(th,w_vec)
 % HOMOGENEOUS_REPRESENTATIONQ  checks whether the weighted majority game
 % derived from (th,w_vec) possesses a homogeneous representation.
 % Th. (Sudhoelter 1996): The pre-kernel of every homogeneous weighted
-% majority game is star-shaped. 
+% majority game without veto-players is star-shaped. 
 %
 %
 % Usage: [hrQ hr wmg]=homogeneous_representationQ(th,w_vec);

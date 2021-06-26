@@ -40,8 +40,8 @@ end
 S=1:N;
 
 % upper bound increases elapsed computation time.
-%ra = reasonable_outcome(v);
-%ub=[ra,inf]';
+ra = reasonable_outcome(v);
+ub=[ra,inf]';
 lb=[-inf(n,1);-inf];
 A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end
@@ -55,7 +55,7 @@ c=[zeros(n,1);1];
 prob.c=c;
 prob.blc=-inf(N+1,1);
 prob.blx=lb;
-%prob.bux=ub;
+prob.bux=ub;
 % Changing parameter values to increase precision.
 [rcode,res] = mosekopt('param echo(0)');
 param=res.param;

@@ -24,7 +24,7 @@ function [x1, fmin]=cplex_AntiPreNucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/24/2017        0.9             hme
-%   04/04/2020        1.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -36,6 +36,10 @@ end
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 % solver parameter
 ra = reasonable_outcome(v);
 ub=[ra,inf];

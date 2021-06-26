@@ -22,6 +22,7 @@ function [x1, alp]=gurobi_AntiPreNucl_llp(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/03/2014        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -33,6 +34,10 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 S=1:N;
 
 ra = reasonable_outcome(v);

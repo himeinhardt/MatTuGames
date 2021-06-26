@@ -22,6 +22,7 @@ function [x1, alp]=msk_AnitPreNucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/29/2014        0.5             hme
+%   03/29/2021        1.9             hme
 %                
 
 
@@ -29,17 +30,24 @@ function [x1, alp]=msk_AnitPreNucl(clv,tol)
 if nargin<2
  tol= 10^8*eps; % Change this value if the solution is not correct.
 end
-tol=-tol;
+%tol=-tol;
 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 S=1:N;
 
 % upper bound increases elapsed computation time.
-%ra = reasonable_outcome(v);
-%ub=[ra,inf]';
-lb=[-inf(n,1);-inf];
+sm=smallest_amount(v)';
+k=1:n;
+vi=v(bitset(0,k));
+%ub=[vi,Inf]';
+ub=[inf(n,1);Inf];
+lb=[sm;-Inf];
 
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
@@ -48,7 +56,7 @@ A1(N:N+1,end)=0;
 %A1(N+1,end)=0;
 B1=[v';-v(N)];
 prob.buc=B1;
-c=[zeros(n,1);-1];
+c=[zeros(n,1);1];
 prob.c=c;
 prob.blc=-inf(N+1,1);
 prob.blx=lb;
@@ -57,23 +65,23 @@ prob.blx=lb;
 [rcode,res] = mosekopt('param echo(0)');
 param=res.param;
 %param.MSK_IPAR_INTPNT_BASIS   = sc.MSK_OFF;
-%param.MSK_DPAR_INTPNT_TOL_REL_GAP = 1.0000e-12; % Adjust this value if the solution is not correct.
+param.MSK_DPAR_INTPNT_TOL_REL_GAP = 1.0000e-12; % Adjust this value if the solution is not correct.
 param.MSK_IPAR_OPTIMIZER ='MSK_OPTIMIZER_DUAL_SIMPLEX'; % MSK 8
-%param.MSK_IPAR_OPTIMIZER = 5;  % Using dual simplex.
-%param.MSK_DPAR_BASIS_TOL_X = 1.0e-9;
-%param.MSK_DPAR_BASIS_TOL_S = 1.0e-9;
+%param.MSK_IPAR_OPTIMIZER = 5;  % Using dual simplex. MSK7
+param.MSK_DPAR_BASIS_TOL_X = 1.0e-9;
+param.MSK_DPAR_BASIS_TOL_S = 1.0e-9;
 %param=[];
-
+bA=find(A1(:,end)==0);
 while 1
   A2=sparse(A1);
   prob.a=A2;
-  [rcode,res] = mosekopt('minimize echo(0)',prob,param);
+  [rcode,res] = mosekopt('maximize echo(0)',prob,param);
   sol=res.sol;
   x=sol.bas.xx';
   x1=x;
   x1(end)=[];
   alp=sol.bas.pobjval;
-  bS1=(find(sol.bas.y<tol));
+  bS1=(find(sol.bas.y>tol));
   bA=find(A1(:,end)==0)';
   bS2=setdiff(bS1,bA);
   if isempty(bS2)==1
@@ -85,7 +93,7 @@ while 1
   rk=rank(mS2);
   ov=ones(1,n);
   wgh=pinv(tmS2)*ov';
-  posQ=all(wgh>tol);
+  posQ=all(wgh>-tol);
 %  sol.bas.solsta
   if strcmp(sol.bas.solsta,'OPTIMAL') ~= 1
      warning('Prn:ExitB','Probably no pre-nucleolus found!');
@@ -94,6 +102,6 @@ while 1
      break;
   end
   A1(bS2,end)=0;
-  B1(bS2)=B1(bS2)+alp;
+  B1(bS2)=B1(bS2)-alp;
   prob.buc=sparse(B1);
 end

@@ -27,6 +27,7 @@ function [bcQ, cmat, S]=Anti_B0_balancedCollectionQ(v,x,tol)
 %   ====================================================
 %   02/09/2017        0.9             hme
 %   02/24/2018        0.9             hme
+%   05/31/2021        1.9             hme
 %                
 
     
@@ -52,7 +53,7 @@ exc=excess(v,x);
 k=1:n;
 ic=2.^(k-1);
 nic=N-ic;
-if any(exc(nic)>0)
+if any(exc(nic)<-tol)
    bcQ=false;
    cmat=[];
    S=[];

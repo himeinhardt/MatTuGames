@@ -28,6 +28,7 @@ function ETP=equal_treatmentQ(v,x,tol)
 %   ====================================================
 %   02/06/2015        0.6             hme
 %   02/22/2017        0.9             hme
+%   12/27/2020        1.9             hme
 % 
 
 
@@ -35,6 +36,18 @@ if nargin < 3
     tol=10^6*eps;
 end    
 
+N=length(v);
+[~, n]=log2(N);
+
+Dx=diag(true(1,n));
+Dx0=Dx;
+for kk=1:n-1
+    for jj=2:n
+       Dx(kk,jj)=abs(x(kk)-x(jj))<tol;
+    end
+end
+%Dx
+mteq=all(all(Dx==Dx0));
 sbs=substitutes(v);
 if isempty(sbs)==0
    ls=size(sbs,1);
@@ -44,6 +57,9 @@ if isempty(sbs)==0
        eqt(k)=abs(y(1)-y(2))<tol;
    end    
    eqtQ=all(eqt);
+elseif mteq==1 %% contrapositive
+   eqtQ=isempty(sbs);
+   eqt=[];   
 else
    eqtQ=false;
    eqt=[];

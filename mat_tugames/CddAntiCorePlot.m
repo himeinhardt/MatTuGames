@@ -24,8 +24,8 @@ function CddAntiCorePlot(varargin)
 %  add_sol    -- A string to invoke additional solutions into the plot.
 %                Permissible solutions are:
 %                'none', this is the default value.
-%                'prk', a pre-kernel element will be incorporated.
-%                'prn', the pre-nucleolus will be incorporated.
+%                'aprk', an anti-pre-kernel element will be incorporated.
+%                'aprn', the anti-pre-nucleolus will be incorporated.
 %                'shap', the Shapley value will be incorporated.
 %                'all', all three solutions above will be incorporated.
 %  vw_pt       -- A string command to determine the view point.
@@ -50,6 +50,7 @@ function CddAntiCorePlot(varargin)
 %   ====================================================
 %   11/23/2012        0.3             hme
 %   09/26/2015        0.7             hme
+%   05/23/2021        1.9             hme
 %                
 
 
@@ -67,10 +68,10 @@ for i=1:nargin
   if ischar(varargin{i})
     if strcmp(varargin{i},'none')
        add_sol='none';
-    elseif strcmp(varargin{i},'prk')
-       add_sol='prk';
-    elseif strcmp(varargin{i},'prn')
-       add_sol='prn';
+    elseif strcmp(varargin{i},'aprk')
+       add_sol='aprk';
+    elseif strcmp(varargin{i},'aprn')
+       add_sol='aprn';
     elseif strcmp(varargin{i},'shap')
        add_sol='shap';
     elseif strcmp(varargin{i},'all')
@@ -150,7 +151,6 @@ if zov==0
 end
 [v_crv,~,~,Pcr]=CddAntiCoreVertices(zov);
 sz=size(v_crv);
-
 if isempty(v_crv)
   error('Cannot convert string to numbers!');
 elseif sz(1)==1
@@ -250,13 +250,13 @@ if n==4
 
 
      if strcmp(add_sol,'none')
-      elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+      elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h2=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h2,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -266,11 +266,11 @@ if n==4
          h2=plot3(v_sh(1),v_sh(2),v_sh(3));
          set(h2,'Marker','o','MarkerSize',6,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h3=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h3,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -294,13 +294,13 @@ if n==4
      end
 
      if strcmp(add_sol,'none')
-      elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+      elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h2=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h2,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -310,11 +310,11 @@ if n==4
          h2=plot3(v_sh(1),v_sh(2),v_sh(3));
          set(h2,'Marker','o','MarkerSize',6,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h3=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h3,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -331,13 +331,13 @@ if n==4
       set(h,'Marker','p','MarkerSize',5,'MarkerFaceColor',[0 .5 1]);
 
       if strcmp(add_sol,'none')
-       elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+       elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h2=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h2,'Marker','^','MarkerSize',8,'MarkerFaceColor','c');
@@ -347,11 +347,11 @@ if n==4
          h2=plot3(v_sh(1),v_sh(2),v_sh(3));
          set(h2,'Marker','o','MarkerSize',6,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          v_prk(:,ind)=[];
          h2=plot3(v_prk(1),v_prk(2),v_prk(3));
          set(h2,'Marker','s','MarkerSize',6,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          v_prn(:,ind)=[];
          h3=plot3(v_prn(1),v_prn(2),v_prn(3));
          set(h3,'Marker','^','MarkerSize',8,'MarkerFaceColor','w');
@@ -413,13 +413,13 @@ elseif n==3
     end
 
      if strcmp(add_sol,'none')
-      elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+      elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h2=plot(y1,y2);
          set(h2,'Marker','^','MarkerSize',5,'MarkerFaceColor','b');
@@ -429,11 +429,11 @@ elseif n==3
          h2=plot(z1,z2);
          set(h2,'Marker','o','MarkerSize',5,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h3=plot(y1,y2);
          set(h3,'Marker','^','MarkerSize',5,'MarkerFaceColor','c');
@@ -465,13 +465,13 @@ elseif n==3
     lr=ceil(max(ml1,ml2))+mrg;
 
      if strcmp(add_sol,'none')
-      elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+      elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h2=plot(y1,y2);
          set(h2,'Marker','^','MarkerSize',5,'MarkerFaceColor','b');
@@ -481,11 +481,11 @@ elseif n==3
          h2=plot(z1,z2);
          set(h2,'Marker','o','MarkerSize',5,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h3=plot(y1,y2);
          set(h3,'Marker','^','MarkerSize',5,'MarkerFaceColor','c');
@@ -502,13 +502,13 @@ elseif n==3
     set(h1,'FaceColor',[1 1 1],'EdgeColor',[0.5 0.5 0.5]);
      
     if strcmp(add_sol,'none')
-      elseif strcmp(add_sol,'prk')
-         v_prk=PreKernel(zov);
+      elseif strcmp(add_sol,'aprk')
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-       elseif strcmp(add_sol,'prn')
-         v_prn=CddPrenucl(zov);
+       elseif strcmp(add_sol,'aprn')
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h2=plot(y1,y2);
          set(h2,'Marker','^','MarkerSize',5,'MarkerFaceColor','b');
@@ -518,11 +518,11 @@ elseif n==3
          h2=plot(z1,z2);
          set(h2,'Marker','o','MarkerSize',5,'MarkerFaceColor','y');
        elseif strcmp(add_sol,'all')
-         v_prk=PreKernel(zov);
+         v_prk=Anti_PreKernel(zov);
          [x1 x2]=toSimplex(v_prk);
          h2=plot(x1,x2);
          set(h2,'Marker','s','MarkerSize',5,'MarkerFaceColor','r');
-         v_prn=CddPrenucl(zov);
+         v_prn=Anti_PreNucl(zov);
          [y1 y2]=toSimplex(v_prn);
          h3=plot(y1,y2);
          set(h3,'Marker','^','MarkerSize',5,'MarkerFaceColor','c');

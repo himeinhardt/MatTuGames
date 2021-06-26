@@ -25,7 +25,7 @@ function [x1, fmin]=cplex_AntiNucl_llp(clv,tol)
 %   ====================================================
 %   02/09/2017        0.9             hme
 %   02/24/2018        0.9             hme
-%   04/04/2020        1.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -42,8 +42,10 @@ vi=clv.tuvi;
 if essQ==1
    error('Game is not anti essential!')
 end
-
-
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 % solver parameter
 ra = clv.smallest_amount();
 k=1:n;
@@ -51,7 +53,7 @@ vi=v(bitset(0,k));
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 lb=[ra,-Inf]';
 ub=[vi,Inf]';

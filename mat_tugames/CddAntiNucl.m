@@ -25,6 +25,7 @@ function [x1, alp]=CddAntiNucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/09/2017        0.9             hme
+%   03/29/2021        1.9             hme
 %                
 
 
@@ -36,16 +37,17 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  return
+end
 ra = smallest_amount(v)';
 k=1:n;
-Nk=N-2.^(k-1);
-vi=v(Nk)';
-%vi=v(bitset(0,k))';
+vi=v(bitset(0,k))';
 cvr=vi==ra;
 if any(cvr)
    fi=find(cvr);
-   ra(fi)=Inf;
+   ra(fi)=-Inf;
 end
 if sum(vi)<v(N)
    error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
@@ -57,7 +59,7 @@ A1(N+1,:)=-A1(end,:);
 A1=[A1;-eye(n);eye(n)];
 A1(:,end+1)=1;
 A1(N:end,end)=0;
-B1=[v';-v(N);ra;vi];
+B1=[v';-v(N);-ra;vi];
 objective=[zeros(1,n),-1];
 
 while 1

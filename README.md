@@ -1,4 +1,4 @@
-# *Matlab* Toolbox *MatTuGames* Version 1.8.0
+# *Matlab* Toolbox *MatTuGames* Version 1.9.0
 
 ```
 Contents:
@@ -388,13 +388,13 @@ or much more. For a deeper discussion of the function set provided by the toolbo
  
 ## 3. Custom Installation
 
-To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d8.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
+To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d9.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
 
 Additional instructions can be found at the URL: 
 
 * [mltbx](https://mathworks.com/matlabcentral/answers/242430-how-do-i-install-a-mltbx-file-from-the-filesharing-site-into-r2015a)
 
-The mltbx file `mat_tugV1d8.mltbx` is provided at
+The mltbx file `mat_tugV1d9.mltbx` is provided at
 
 * [mltbx-file](https://github.com/himeinhardt/MatTuGames/releases)
 
@@ -402,7 +402,7 @@ The mltbx file `mat_tugV1d8.mltbx` is provided at
 ## 4. Requirements
 
 This release of *MatTuGames* was developed and tested using *Matlab
-R2019b* and earlier releases. A set of functions use the *Optimization Toolbox*
+R2021a* and earlier releases. A set of functions use the *Optimization Toolbox*
 and the *cdd-library* by *Komei Fukuda*, which can be found at the URL:
 
 * [CDD](http://www.inf.ethz.ch/personal/fukudak/cdd_home/)
@@ -434,7 +434,7 @@ the URL:
 
 * [Mathematica Symbolic Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/6044-mathematica-symbolic-toolbox-for-matlab-version-2-0)
 
-whereas *TuGames* Version 2.5.4 can be downloaded from the URL:
+whereas *TuGames* Version 2.6.1 can be downloaded from the URL:
 
 * [TuGames](https://github.com/himeinhardt/TuGames)
 

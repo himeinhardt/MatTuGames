@@ -1,5 +1,5 @@
-function RepSol=replicate_prk(v,x,scl,smc)
-% REPLICATE_PRK replicates the pre-kernel solution x as a pre-kernel of
+function RepSol=replicate_prk(v,x,scl,smc,method)
+% REPLICATE_PRK replicates the pre-kernel solution x of game v as a pre-kernel of
 % the game space v_sp.
 %
 % Usage: RepSol=replicate_prk(v,x,scl,smc)
@@ -14,17 +14,23 @@ function RepSol=replicate_prk(v,x,scl,smc)
 %  SBC                   -- Indicates the set of equivalence class/most
 %                           effective coalitions w.r.t. the pre-kernel
 %                           element x.
-%  Mat_W                 -- Matrix given by equation (5.15) Meinhardt, 2010.
+%  Mat_W                 -- Matrix given by equation (7.16) Meinhardt, 2013.
 %  P_Basis               -- Basis of the parameter space (null space of mat_W).
 %  VarP_Basis            -- Variation in the parameter basis. 
 %
 %
 %  input:
-%  v      -- A Tu-Game v of length 2^n-1. 
-%  x      -- pre-kernel payoff of length(1,n)
-%  scl    -- scaling factor
-%  smc    -- selecting from effc the smallest/largest 
-%            cardinality (optional). Value 1 or 0.
+%  v                     -- A Tu-Game v of length 2^n-1. 
+%  x                     -- pre-kernel payoff of length(1,n)
+%  scl                   -- scaling factor
+%  smc                   -- selecting from effc the smallest/largest 
+%                           cardinality (optional). Value 1 or 0.
+%  method                -- Permissible methods are:
+%                           'sparse'  or 
+%                           'full'
+%                           to compute spares or dense matrices. Default is full.
+%                           If you have a memory problem use 'sparse' instead.
+
 
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
@@ -35,6 +41,7 @@ function RepSol=replicate_prk(v,x,scl,smc)
 %   ====================================================
 %   02/05/2011        0.1 beta        hme
 %   03/02/2011        0.1 beta 2      hme
+%   05/10/2014        0.5             hme
 %                
 
 if nargin<1
@@ -44,25 +51,35 @@ elseif nargin==1
    scl=1;
    smc=1;
    tol=10^6*eps;
+   method='full';
 elseif nargin==2
    scl=1;
    smc=1;
    tol=10^6*eps;
+   method='full';
 elseif nargin==3 
    smc=1;
    tol=10^6*eps;
+   method='full';
+elseif nargin==4
+   if smc > 1, smc=1;
+   elseif smc < 0, smc=0;
+   else smc=round(smc);
+   end
+   tol=10^7*eps;
+   method='full';
 else
    if smc > 1, smc=1; 
    elseif smc < 0, smc=0;
    else smc=round(smc);  
    end
-   tol=10^6*eps;
+   tol=10^7*eps;
 end
 
 if isempty(x)
      x=PreKernel(v);
 else
-     prkQ=PrekernelQ(v,x);
+     prkQ=PrekernelQ(v,x,tol);
    if prkQ==0 
        warning('Input vector is not a pre-kernel element!')
        warning('Input vector must be a pre-kernel element!')
@@ -72,20 +89,21 @@ else
    end
 end
     
-[v_spc mat_uc mat_W mat_V A_v mat_vz]=game_space(v,x,scl,smc);
+[v_spc, mat_uc, mat_W, ~, A_v, mat_vz]=game_space(v,x,scl,smc,method);
 mat_hd=mat_uc';
 sz_v=size(v_spc);
 lgsp=sz_v(1);
 cA=cell(lgsp,1);
-v_spc_prkQ=zeros(1,lgsp);
-sbcQ=zeros(1,lgsp);
+v_spc_prkQ=false(1,lgsp);
+sbcQ=false(1,lgsp);
 
 for k=1:lgsp
-   [e cA{k,1} smat]=BestCoalitions(v_spc(k,:),x,smc);
+   [~, cA{k,1}, smat]=BestCoalitions(v_spc(k,:),x,smc);
    lms=abs(smat-smat')<tol;
    v_spc_prkQ(k)=all(all(lms));
    sbcQ(k)=all(all(cA{k,1}==A_v));
 end
+
 cA{lgsp+1,1}=A_v;
 % Formatting output
 fields=cell(lgsp+1,1);
@@ -93,5 +111,5 @@ for k=1:lgsp+1
  fields{k,1}=strcat('Eq', num2str(k));
 end
 eqc=cell2struct(cA,fields,1);
-RepSol=struct('V_PrkQ',v_spc_prkQ,'V_SPC', v_spc,'SBCQ',sbcQ,'SBC',eqc,'Mat_W',mat_W,'P_Basis', mat_hd,'VarP_Basis', mat_vz);
+RepSol=struct('V_PrkQ',v_spc_prkQ,'V_SPC', v_spc,'SBCQ',sbcQ,'SBC',eqc,'Mat_W',mat_W,'P_Basis', mat_hd,'VarP_Basis', mat_vz,'scl',scl);
 

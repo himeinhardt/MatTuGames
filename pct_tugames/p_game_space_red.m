@@ -74,7 +74,7 @@ else
    nlW=null(MatW);
 end
 clear MatW;
-[~,sW2]=size(nlW);
+[~, sW2]=size(nlW);
 hd=hd';
 HDm=repmat(hd,1,sW2);
 mat_hz=slc*nlW;

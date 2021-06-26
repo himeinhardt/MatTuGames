@@ -207,7 +207,6 @@ while cnt<CNT
     prob.cones.type   = [res.symbcon.MSK_CT_QUAD];
     prob.cones.sub    = [2*n+1,n+1:2*n];
     prob.cones.subptr = [1];
-
     [r,res2] = mosekopt('minimize echo(0)',prob,param);
     sol=res2.sol;
     obj=sol.itr.pobjval;

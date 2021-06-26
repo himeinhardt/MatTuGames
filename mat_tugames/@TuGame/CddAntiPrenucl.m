@@ -25,6 +25,7 @@ function [x1, alp]=CddAntiPrenucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/29/2014        0.5             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -37,8 +38,11 @@ tol=-tol;
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
 S=1:N;
-
 for k=1:n, A1(:,k) = bitget(S,k);end
 A1(N+1,:)=-A1(end,:);
 A1(:,end+1)=1;

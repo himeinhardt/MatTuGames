@@ -27,6 +27,7 @@ function [x, Lerr, smat, xarr]=Anti_Kernel(clv,x)
 %   01/19/2013        0.3             hme
 %   04/25/2019        1.0             hme
 %   05/11/2019        1.1             hme
+%   05/20/2021        1.9             hme
 %                
 
 if nargin<2
@@ -115,7 +116,6 @@ upe=true(n);
 ofval=inf;
 ra = smallest_amount(v)';
 k=1:n;
-%vi=v(bitset(0,k))';
 Nk=N-2.^(k-1);
 vi=v(Nk)';
 cvr=vi==ra;
@@ -142,7 +142,13 @@ while cnt<CNT
     if n==2, a=a'; end;
     err=norm(E*x-a)^2; if err<eps, x=x';break; end
 % checking anti-kernel property
-    ir=(vi-x)';
+    sxwi=zeros(1,n);
+    for kk=1:n
+        x2=x;
+        x2(kk)=[];
+        sxwi(kk)=sum(x2);
+    end
+    ir=(vi-sxwi)';
     irQ=all(ir>-tol);
     if irQ
       smat=tril(smat,-1)+triu(smat,1);

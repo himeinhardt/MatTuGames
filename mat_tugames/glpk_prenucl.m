@@ -23,6 +23,7 @@ function [x1, fmin]=glpk_prenucl(v,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   12/21/2012        0.3             hme
+%   03/30/2021        1.9             hme
 %                
 
 
@@ -42,6 +43,7 @@ lb=[-inf(1,n),-Inf];
 %lb=[];
 ctype=[];
 vartype=[];
+%ub=[]; % uncomment this line whenever the solution is not correct!
 s=1; % minimization problem 
 param.lpsolver=1; % simplex method
 

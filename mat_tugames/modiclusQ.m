@@ -28,6 +28,7 @@ function [bcQ,cmat,S]=modiclusQ(v,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   12/21/2017        0.9             hme
+%   04/04/2020        1.9             hme
 %                
 
     
@@ -169,7 +170,19 @@ mtv=verLessThan('matlab','9.1.0');
       if mtv==1
          options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
       else
-         options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+         %options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+         options.largescale='on';
+         options.algorithm='dual-simplex';
+         options.tolfun=1e-10;
+         options.tolx=1e-10;
+         options.tolrlpfun=1e-10;
+         %%%% for dual-simplex
+         % opts.MaxTime=9000;
+         options.preprocess='none';
+         options.tolcon=1e-6;
+         options.maxiter=128;
+         options.display='off';
+         options.threads=3;
       end
       options.barrier.convergetol=1e-12;
       options.simplex.tolerances.feasibility=1e-9;

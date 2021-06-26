@@ -23,6 +23,7 @@ function [x1, fmin]=glpk_AntiPreNucl_llp(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   08/05/2016        0.9             hme
+%   03/25/2021        1.9             hme
 %                
 
 
@@ -35,6 +36,11 @@ tol=-tol;
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
+if N==3
+  x1=clv.StandardSolution();
+  return
+end
+
 % solver parameter
 ra = clv.reasonable_outcome;
 ub=[ra,Inf];

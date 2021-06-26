@@ -30,6 +30,7 @@ function [x, Lerr, smat, xarr]=p_hsl_prekernel(clv,x)
 %   ====================================================
 %   01/10/2012        0.3             hme
 %   05/03/2019        1.1             hme
+%   11/01/2020        1.9             hme
 %                
 
 if nargin<2
@@ -125,7 +126,8 @@ while cnt<CNT
 
 %
 % Calling linear solver.
-     try 
+   if slv==0
+     try
         struct = hsl_ma87_factor(Q1);
         x = hsl_ma87_solve(struct,b);
      catch
@@ -137,6 +139,33 @@ while cnt<CNT
          x = hsl_ma86_solve(struct,b);
        end
      end
+   elseif slv==1
+      try
+        struct = hsl_ma86_factor(Q1);
+        x = hsl_ma86_solve(struct,b);
+     catch
+       if rank(Q) < n
+         struct = ma57_factor(Q1);
+         x = ma57_solve(Q1,b,struct);
+       else
+         struct = hsl_ma87_factor(Q1);
+         x = hsl_ma87_solve(struct,b);
+       end
+     end
+   else
+     try
+       struct = hsl_ma97_factor(Q1);
+       x = hsl_ma97_solve(struct,b);
+     catch
+       if rank(Q) < n
+         struct = ma57_factor(Q1);
+         x = ma57_solve(Q1,b,struct);
+     else
+         struct = hsl_ma86_factor(Q1);
+         x = hsl_ma86_solve(struct,b);
+       end
+     end       
+   end
 
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
@@ -177,7 +206,6 @@ else
   x=x';
 end
 
-
 %--------------
 function [A, smat]=effCoalitions(v,x,smc,cnt,gt)
 % Computes the set of most effective coalitions
@@ -187,12 +215,11 @@ function [A, smat]=effCoalitions(v,x,smc,cnt,gt)
 % output:
 % A     -- matrix of most effective coalitions of smallest/largest cardinality.
 % smat  -- as above.
-% cnt   -- loop counter.
 %
-% input:
+% input: 
 % cnt   -- loop counter.
 % gt    -- game type.
-%       -- otherwise, as above.
+%       -- as above.
 %
 n=length(x);
 % The set of effective coalitions might be too
@@ -201,7 +228,6 @@ n=length(x);
 % correct choice. In case that the set of most effective
 % coalitions is not selected correctly, pathological
 % cycles may appear.
-
 
 if cnt<6
  if strcmp(gt,'cv')
@@ -214,14 +240,61 @@ elseif cnt > 10
 else
  tol=100*eps;
 end
-
-% Borrowed from J. Derks
-Xm=x(1); for ii=2:n, Xm=[Xm x(ii) Xm+x(ii)]; end
+%
+% Inspired by Jean Derks.
+Xm{1}=x(1); for ii=2:n, Xm{1}=[Xm{1} x(ii) Xm{1}+x(ii)]; end
 % Computing the excess vector w.r.t. x.
-e=v-Xm;
-clear v Xm;
+lv=islogical(v);
+e=v-Xm{1};
+% Truncate excess vector.
+if n>16
+   el = min(e);
+   eh = max(e);
+   if abs(eh+el)<10^7*eps;
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   elseif eh==1 && el==0
+      clear v Xm;
+      [e,sC]=sort(e,'descend');
+   else
+      if lv==1
+         clear v Xm;
+         if eh > 0.7 && eh < 1
+            eh=1.3*eh;
+            pv=min((eh+el)*0.9,0.7); % 0.6 fine
+         else
+            pv=min((eh+el)*0.3,0.8);
+         end
+      else
+         N=2^n-1;
+         vN=v(N);
+         [mv,idx]=max(v);
+         clear v Xm;
+         if mv<0
+            eh= 0.3*eh;
+            pv=(eh+el)*1.2; % eh 0.3 fine (increase to improve).
+         elseif mv>vN
+            eh = 0.8*eh;
+            pv=(eh+el)*1.2; % 0.9 fine (increase to improve).
+         elseif idx<N
+            eh = 0.8*eh;
+            pv=(eh+el); % 0.9 fine (increase to improve).
+         else
+            eh = 0.8*eh;
+            pv=(eh+el)*0.3; %0.6 fine (decrease to improve)
+         end
+      end
+      lp=e>pv-tol;
+      e=e(lp);
+      fS=find(lp);
+      [e,fC]=sort(e,'descend');
+      sC=fS(fC);
+   end
+else
+   [e,sC]=sort(e,'descend');
+end
+%
 % Truncate data arrays.
-[e, sC]=sort(e,'descend');
 B=eye(n);
 smat=-inf(n);
 q0=n^2-n;
