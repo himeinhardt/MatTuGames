@@ -15,7 +15,7 @@ Contents:
 
 ## 1. Introduction
 
-The game theoretical *Matlab* toolbox *MatTuGames* provides about 400 functions
+The game theoretical *Matlab* toolbox *MatTuGames* provides about 500 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
