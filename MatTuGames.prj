@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3080011166" file="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9/MatTuGames.prj" location="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3080011166" file="/pfs/data5/home/yyy/xxx/xxx/matlab/mat_tugV1d9/MatTuGames.prj" location="/pfs/data5/home/yyy/xxx/xxx/matlab/mat_tugV1d9" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>MatTuGames</param.appname>
     <param.authnamewatermark>Holger I. Meinhardt</param.authnamewatermark>
     <param.email>Holger.Meinhardt@wiwi.uni-karlsruhe.de</param.email>
@@ -182,7 +182,7 @@ constructs in order to write more efficient Matlab functions.</param.description
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9/MatTuGames.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/xxx/xxx/matlab/mat_tugV1d9/MatTuGames.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
