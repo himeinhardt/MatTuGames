@@ -483,14 +483,19 @@ This project is licensed under the FreeBSD License - see the [LICENSE](LICENSE.m
 
 For citation consult the URL:
 
-* [Cite As:](https://de.mathworks.com/matlabcentral/fileexchange/35933-mattugames)
+* [Cite As:](https://de.mathworks.com/matlabcentral/fileexchange/74092-mattugames)
 
 
-## 8. MATLAB File Exchange
+## 8. MATLAB File Exchange 
 
-For additional information consult 
+For additional comments see also the retro site 
 
 [![View MatTuGames on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://de.mathworks.com/matlabcentral/fileexchange/35933-mattugames)
+
+
+For additional information of the current version consult  
+
+[![View MatTuGames on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://de.mathworks.com/matlabcentral/fileexchange/74092-mattugames)
 
 ## Author
 
