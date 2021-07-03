@@ -12,7 +12,7 @@ investigate TU-games, which are written in a C/C++ programming style with the co
 that these functions are executed relatively slowly, we heavily relied on vectorized
 constructs in order to write more efficient Matlab functions.</param.description>
     <param.screenshot>${PROJECT_ROOT}/MatTUG.png</param.screenshot>
-    <param.version>1.9.0.1</param.version>
+    <param.version>1.9.0.2</param.version>
     <param.output>${PROJECT_ROOT}/MatTuGames.mltbx</param.output>
     <param.products.name>
       <item>MATLAB Parallel Server</item>
