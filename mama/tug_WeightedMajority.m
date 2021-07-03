@@ -19,13 +19,14 @@ function SOL=tug_WeightedMajority(th,wghs)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/06/2011        0.1 beta        hme
+%   07/02/2021        1.9             hme
 %
 
 % Here we assume that the user has represented the game correctly.
 if nargin<1
-    error('The Estate and the claims vector must be provided!');
+    error('The quorum and the weights vector must be provided!');
 elseif nargin<2
-    error('The claims vector must be provided!');
+    error('The weights vector must be provided!');
 else
   if isvector(wghs)==0
      error('The weights must be a vector of length greater or equal to 2!');
@@ -41,8 +42,12 @@ n=length(wghs);
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
-disp('Passing Bankruptcy Situation to Mathematica ...')
+try
+   math('{Needs["TUG`"] }');
+catch
+  math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+end
+disp('Passing Weighted Majority Situation to Mathematica ...')
 math('matlab2math','n1',n);
 math('matlab2math','thv',th);
 math('ml=Rationalize[Flatten[thv,1][[1]]]');

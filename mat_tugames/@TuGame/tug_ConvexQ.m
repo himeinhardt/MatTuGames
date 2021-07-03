@@ -20,6 +20,7 @@ function SOL=tug_ConvexQ(clv)
 %   Date              Version         Programmer
 %   ====================================================
 %   11/01/2012        0.3             hme
+%   07/02/2021        1.9             hme
 %
 
 v=clv.tuvalues;
@@ -29,7 +30,11 @@ n=clv.tuplayers;
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing Game to Mathematica ...')
 w=gameToMama(clv);
 math('matlab2math','mg1',w);

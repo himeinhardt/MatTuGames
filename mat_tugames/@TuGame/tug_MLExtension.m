@@ -18,6 +18,7 @@ function SOL=tug_MLExtension(clv)
 %   Date              Version         Programmer
 %   ====================================================
 %   09/26/2014        0.5             hme
+%   07/02/2021        1.9             hme
 %
 
 n=clv.tuplayers;
@@ -25,7 +26,11 @@ n=clv.tuplayers;
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing Game to Mathematica ...')
 w=clv.gameToMama;
 math('matlab2math','mg1',w);

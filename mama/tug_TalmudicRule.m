@@ -19,6 +19,7 @@ function SOL=tug_TalmudicRule(E,d)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/09/2011        0.1 beta        hme
+%   07/02/2021        1.9             hme
 %
 
 % Here we assume that the user has represented the game correctly.
@@ -42,7 +43,11 @@ end
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing Contested Garment Problem to Mathematica ...')
 math('matlab2math','est',E);
 math('est1=Flatten[est,1][[1]]');

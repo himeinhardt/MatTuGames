@@ -22,6 +22,8 @@ function SOL=tug_DetRandCoord(sed_val,n)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/28/2013        0.5             hme
+%   07/02/2021        1.9             hme
+%   07/02/2021        1.9             hme
 %
 
 N=2^n-1;
@@ -31,7 +33,11 @@ bn=binomial(n,2);
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing input arguments to Mathematica ...')
 math('matlab2math','n1',n);
 math('matlab2math','sed',sed_val);

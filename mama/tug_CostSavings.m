@@ -17,6 +17,7 @@ function SOL=tug_CostSaving(c)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/06/2011        0.1 beta        hme
+%   07/02/2021        1.9             hme
 %
 
 % Here we assume that the user has represented the game correctly.
@@ -44,7 +45,11 @@ end
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing Cost Game to Mathematica ...')
 math('matlab2math','n1',n);
 math('matlab2math','c1',c);

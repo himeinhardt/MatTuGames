@@ -21,6 +21,7 @@ function SOL=tug_ImputationQ(v,y)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/08/2011        0.1 beta        hme
+%   07/02/2021        1.9             hme
 %
 
     
@@ -52,7 +53,11 @@ end
 math('quit')
 pause(1)
 math('$Version')
-math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }');
+try 
+    math('{Needs["TUG`"] }'); 
+catch 
+    math('{Needs["coop`CooperativeGames`"],Needs["VertexEnum`"],Needs["TuGames`"],Needs["TuGamesAux`"] }'); 
+end
 disp('Passing Game to Mathematica ...')
 w=gameToMama(v);
 math('matlab2math','mg1',w);
