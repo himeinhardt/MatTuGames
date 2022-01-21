@@ -7,10 +7,18 @@ disp('The dual Tu-Game vector is specified by:');
 dv=dual_game(v);
 try
     disp('Plotting the core with imputation set, the Shapley value, pre-nucleolus, and pre-kernel.');
-    CorePlot(v,'all',1);
+    if isunix || ismac 
+       CorePlot(v,'all',1);
+    elseif ispc
+       disp('Skipping test; not supported!'); 
+    end	    
     pause(5);
     disp('Plotting the core without imputation set, the Shapley value, pre-nucleolus, and pre-kernel.');
-    CorePlot(v,'all',0);
+    if isunix || ismac
+      CorePlot(v,'all',0);
+    elseif ispc
+      disp('Skipping test; not supported!');
+    end	     
     pause(5);
     disp('Plotting the core with imputation set using Cddmex, the Shapley value, pre-nucleolus, and pre-kernel.');
     CddCorePlot(v,'all',1);
@@ -19,7 +27,11 @@ try
     CddCorePlot(v,'all',0); 
     pause(5);    
     disp('Plotting the core without imputation set, and the Shapley value.');
-    CorePlot(v,'shap',0);
+    if isunix || ismac
+      CorePlot(v,'shap',0);
+    elseif ispc
+      disp('Skipping test; not supported!');
+    end	     
     pause(5);
     disp('Plotting the core with imputation set using Cddmex, and the Shapley value.');
     CddCorePlot(v,'shap',1);
@@ -121,10 +133,18 @@ try
     CddCoreCoverSimplexPlot(v,'none',1);
     pause(5);
     disp('Plotting the anti-core with the anti-imputation set, the Shapley value, anti-pre-nucleolus, and anti-pre-kernel.');
-    AntiCorePlot(dv,'all',1);
+    if isunix || ismac
+       AntiCorePlot(dv,'all',1);
+    elseif ispc
+       disp('Skipping test; not supported!');
+    end	    
     pause(5);
     disp('Plotting the anti-core without the anti-imputation set, the Shapley value, anti-pre-nucleolus, and anti-pre-kernel.');
-    AntiCorePlot(dv,'all',0);
+    if isunix || ismac 
+      AntiCorePlot(dv,'all',0);
+    elseif ispc
+      disp('Skipping test; not supported!');
+    end	     
     pause(5);
     disp('Plotting the anti-core with anti-imputation set using Cddmex, the Shapley value, anti-pre-nucleolus, and anti-pre-kernel.');
     CddAntiCorePlot(dv,'all',1);
@@ -133,7 +153,11 @@ try
     CddAntiCorePlot(dv,'all',0);
     pause(5);
     disp('Plotting the anti-core without anti-imputation set, and the Shapley value.');
-    AntiCorePlot(dv,'shap',0);
+    if isunix || ismac
+      AntiCorePlot(dv,'shap',0);
+    elseif ispc
+      disp('Skipping test; not supported!');
+    end	     
     pause(5);
     disp('Plotting the anti-core with anti-imputation set using Cddmex, and the Shapley value.');
     CddAntiCorePlot(dv,'shap',1);
