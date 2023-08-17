@@ -85,10 +85,12 @@ Having generated a game, we can check some game properties like convexity
 
 ```
 >> cvQ=convex_gameQ(bv)
->>
+
 cvQ =
 
-1
+  logical
+
+   1
 ```
 
 The returned logical value indicates that this game is indeed convex. This must
@@ -97,11 +99,12 @@ core of the game is non-empty or empty. To see this one needs just to invoke
 
 ```
 >> crQ=coreQ(bv)
->> Optimization terminated.
 
 crQ =
 
-1
+  logical
+
+   1
 ```
 
 which is answered by affirmation. This result confirms our expectation, since each
@@ -113,20 +116,20 @@ Shapley value, which can be computed by
 
 ```
 >> sh_v=ShapleyValue(bv)
->>
+
 sh_v =
 
-23.5175 18.7483 6.4950 44.3008 33.3317 49.6067
+   23.5175   18.7483    6.4950   44.3008   33.3317   49.6067
 ```
 
 A pre-kernel element can be computed with the function
 
 ```
 >> prk_v=PreKernel(bv)
->>
+
 prk_v =
 
-20.0000 16.0000 5.5000 48.3500 30.0000 56.1500
+   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
 ```
 
 which must be identical to the distributional law of justice proposed by the Talmudic
@@ -139,13 +142,13 @@ step the pre-nucleolus
 
 nc_bv =
 
-20.0000 16.0000 5.5000 48.3500 30.0000 56.1500
+   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
 
 >> pn_bv=PreNucl(bv)
 
 pn_bv =
 
-20.0000 16.0000 5.5000 48.3500 30.0000 56.1500
+   20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
 ```
 
 We observe that both solutions coincide, which must be the case for zero-monotonic games.
@@ -157,39 +160,45 @@ criterion
 
 ans =
 
-1
+  logical
+
+   1
 
 >> balancedCollectionQ(bv,nc_bv)
 
 ans =
 
-1
+  logical
+
+   1
 ```
 
 In order to verify that the solution found is really a pre-kernel element can be done while typing
 
 ```
 >> prkQ=PrekernelQ(bv,prk_v)
->>
+
 prkQ =
 
-1
+  logical
+
+   1
 ```
 
 Furthermore, with the toolbox we can also compute the modiclus of the game, which
 takes apart from the primal power also the preventive power of coalitions into account.
 
 ```
->> mnc_v=Modiclus(v)
+>> mnc_bv=Modiclus(bv)
 
-mnc_v =
+mnc_bv =
 
    22.5067   17.7567    7.4533   41.8600   37.1100   49.3133
 ```
 Checking this solution can be established while invoking a modified Kohlberg criterion.
 
 ```
->> modiclusQ(v,mnc_v)
+>> modiclusQ(bv,mnc_bv)
 
 ans =
 
@@ -202,9 +211,9 @@ can rely on the computation of the anti pre-nucleolus as a simple cross-check to
 that the solution is correct (cf. Meinhardt 2018c).
 
 ```
->> apn_v=Anti_PreNucl(v)
+>> apn_bv=Anti_PreNucl(bv)
 
-apn_v =
+apn_bv =
 
    22.5067   17.7567    7.4533   41.8600   37.1100   49.3133
 ```
@@ -213,7 +222,7 @@ of the modiclus was correct. Moreover, for the class of convex games the modiclu
 the core, which can be examined through 
 
 ```
->> belongToCoreQ(v,mnc_v)
+>> belongToCoreQ(bv,mnc_bv)
 
 ans =
 
@@ -229,9 +238,9 @@ and DCP, whereas DCP can also be replaced by DRP (cf. Meinhardt 2018c).
 Apart of SIVA (Single Valuedness), the toolbox can examine COV
 
 ```
->> COV_mnc_v=COV_propertyQ(v,mnc_v,'','','MODIC')
+>> COV_mnc_bv=COV_propertyQ(bv,mnc_bv,'','','MODIC')
 
-COV_mnc_v = 
+COV_mnc_bv = 
 
   struct with fields:
 
@@ -245,9 +254,9 @@ as well as EC
 
 
 ```
->> ECQ_mnc_v=EC_propertyQ(v,mnc_v,'MODIC')
+>> ECQ_mnc_bv=EC_propertyQ(bv,mnc_bv,'MODIC')
 
-ECQ_mnc_v = 
+ECQ_mnc_bv = 
 
   struct with fields:
 
@@ -260,9 +269,9 @@ and LEDCONS
 
 
 ```
->> [LEDC_mnc_v, LEDCGPQ_mnc_v]=Ledcons_propertyQ(v,mnc_v,'MODIC')
+>> [LEDC_mnc_bv, LEDCGPQ_mnc_bv]=Ledcons_propertyQ(bv,mnc_bv,'MODIC')
 
-LEDC_mnc_v = 
+LEDC_mnc_bv = 
 
   struct with fields:
 
@@ -271,7 +280,7 @@ LEDC_mnc_v =
     ledpropQ: [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]
 
 
-LEDCGPQ_mnc_v =
+LEDCGPQ_mnc_bv =
 
   1x4 cell array
 
@@ -282,9 +291,9 @@ to finally check DCP
 
 
 ```
->> DCP_mnc_v=DCP_propertyQ(v,mnc_v,'MODIC')
+>> DCP_mnc_bv=DCP_propertyQ(bv,mnc_bv,'MODIC')
 
-DCP_mnc_v = 
+DCP_mnc_bv = 
 
   struct with fields:
 
@@ -296,9 +305,9 @@ DCP_mnc_v =
 and DRP
 
 ```
->> DRP_mnc_v=DRP_propertyQ(v,mnc_v,'MODIC')
+>> DRP_mnc_bv=DRP_propertyQ(bv,mnc_bv,'MODIC')
 
-DRP_mnc_v = 
+DRP_mnc_bv = 
 
   struct with fields:
 
@@ -314,12 +323,12 @@ Moreover, the toolbox offers to the user the possibility to create several game 
   
 
 ```
->> sclv=TuSol(v,'cv','mattug');
+>> scl_bv=TuSol(bv,'cv','mattug');
 ```
-Having created the class object `sclv`, one can invoke a computation of getting results for some selected solution concepts while executing  
+Having created the class object `scl_bv`, one can invoke a computation of getting results for some selected solution concepts while executing  
 
 ```
->> sclv.setAllSolutions
+>> scl_bv.setAllSolutions
 
 ans = 
 
@@ -352,15 +361,15 @@ which stores apart of the solution concepts also some important data of the game
 
 
 ```
->> mpk_v=sclv.ModPreKernel
+>> mpk_bv=scl_bv.ModPreKernel
 
-mpk_v =
+mpk_bv =
 
    22.6550   17.9050    7.3050   41.8600   37.1100   49.1650
 
->> mpkQ_v=sclv.ModPrekernelQ(mpk_v)
+>> mpkQ_bv=scl_bv.ModPrekernelQ(mpk_bv)
 
-mpkQ_v =
+mpkQ_bv =
 
   logical
 
@@ -369,15 +378,15 @@ mpkQ_v =
 or the proper modified pre-kernel through
 
 ```
->> pmpk_v=sclv.PModPreKernel
+>> pmpk_bv=scl_bv.PModPreKernel
 
-pmpk_v =
+pmpk_bv =
 
    22.2100   17.4600    7.7500   41.8600   37.1100   49.6100
 
->> pmpkQ_v=sclv.PModPrekernelQ(pmpk_v)
+>> pmpkQ_bv=scl_bv.PModPrekernelQ(pmpk_bv)
 
-pmpkQ_v =
+pmpkQ_bv =
 
   logical
 
