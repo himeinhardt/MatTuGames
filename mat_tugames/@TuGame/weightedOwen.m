@@ -3,7 +3,7 @@ function ow_vl=weightedOwen(clv,cs)
 % a priori unions cs. % The weights will be 
 % computed from cs.
 %
-% Usage: ow_vl=weightedOwen(clv,cs)
+% Usage: ow_vl=clv.weightedOwen(cs)
 %
 % Define variables:
 %  output:
@@ -97,9 +97,9 @@ ow_vl=zeros(1,n);
          end
          % The reduced game. 
          v1=[sh_av(:,jj)',sh_cw(jj)];
-         ow_vl([idx])=ShapleyValue(v1);
+         ow_vl(idx)=ShapleyValue(v1);
       else    
-         ow_vl([idx])=sh_cw(jj);
+         ow_vl(idx)=sh_cw(jj);
       end
   end
 else
@@ -158,6 +158,7 @@ av=zeros(1,lg);
  J=1:lrc;
  pws3=PowerSet(J);
  % Correcting order of coalitional values. 
+ pm2=zeros(1,lg);
  for j=1:lg
      pm2(j)=sum(2.^(pws3{j}-1));
  end

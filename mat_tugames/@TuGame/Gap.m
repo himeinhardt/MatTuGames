@@ -23,6 +23,7 @@ function [g bv lv]=Gap(clv)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/29/2012        0.3             hme
+%   06/25/2023        1.9.1           hme
 %                
 
 v=clv.tuvalues;
@@ -34,17 +35,15 @@ bv=v(N)-v(Si);
 
 
 % Computing the gap function w.r.t. v.
-g=zeros(1,N); % the gap vector w.r.t. v.
 S=1:N;
 Bm=bv(1); for ii=2:n, Bm=[Bm bv(ii) Bm+bv(ii)]; end
 g=Bm-v;
 
-a=cell(n,1);
 lv=zeros(1,n);
 % concession vector
 for i=1:n
-   a{i}=bitget(S,i)==1;
-   lv(i)=min(g(a{i}));
+   a=bitget(S,i)==1;
+   lv(i)=min(g(a));
 end
 
 

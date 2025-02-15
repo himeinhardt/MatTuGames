@@ -57,30 +57,30 @@ elseif nargin==1
    x=p_PreKernel(v);
    scl=1;
    smc=1;
-   tol=10^6*eps;
+   tol=10^8*eps;
    method = 'full';
 elseif nargin==2
    scl=1;
    smc=1;
-   tol=10^6*eps;
+   tol=10^8*eps;
    method = 'full';
 elseif nargin==3 
    smc=1;
-   tol=10^6*eps;
+   tol=10^8*eps;
    method = 'full';
 elseif nargin==4
    if smc > 1, smc=1;
    elseif smc < 0, smc=0;
    else smc=round(smc);
    end
-   tol=10^6*eps;
+   tol=10^8*eps;
    method = 'full';
 else
    if smc > 1, smc=1; 
    elseif smc < 0, smc=0;
    else smc=round(smc);  
    end
-   tol=10^6*eps;
+   tol=10^8*eps;
 end
 
 if isempty(x)

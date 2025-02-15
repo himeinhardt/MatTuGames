@@ -107,7 +107,7 @@ for k=1:N-1
      try
        sol{1,k}=Anti_PreNucl(vS{1,k},impVec{1,k}); % using anti-pre-nucleolus function.
      catch
-       sol{1,k}=cplex_AntiPreNucl_llp(vS{1,k},impVec{1,k}); % use a third party solver instead!
+       sol{1,k}=msk_AntiPreNucl_llp(vS{1,k},impVec{1,k}); % use a third party solver instead!
      end
      rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
      rgpq(k)=all(rgpq_sol{1,k});
@@ -117,7 +117,7 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_AntiPreNucl_llp(vS{1,k}); % using adjusted Derks pre-nucleolus function.
+       sol{1,k}=msk_AntiPreNucl_llp(vS{1,k}); % using mosek solver.
      catch
        sol{1,k}=Anti_PreNucl_llp(vS{1,k}); % use a third party solver instead!
      end
@@ -133,7 +133,7 @@ for k=1:N-1
      try
        sol{1,k}=Anti_PreNucl(vS{1,k},impVec{1,k});
      catch
-       sol{1,k}=cplex_AntiPreNucl(vS{1,k},impVec{1,k}); % use a third party solver instead!
+       sol{1,k}=msk_AntiPreNucl(vS{1,k},impVec{1,k}); % use a third party solver instead!
      end
      rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
      rgpq(k)=all(rgpq_sol{1,k});
@@ -143,7 +143,7 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_AntiPreNucl_llp(vS{1,k});
+       sol{1,k}=msk_AntiPreNucl_llp(vS{1,k});
      catch
        sol{1,k}=Anti_PreNucl_llp(vS{1,k}); % use a third party solver instead!
      end
@@ -163,13 +163,13 @@ elseif strcmp(str,'APRN')
    try
      sol{N}=Anti_PreNucl(v,x);
    catch
-     sol{N}=cplex_AntiPreNucl(v,x); % use a third party solver instead!
+     sol{N}=msk_AntiPreNucl(v,x); % use a third party solver instead!
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'MODIC')
    try
-     sol{N}=cplex_modiclus(v);
+     sol{N}=msk_modiclus(v);
    catch
      sol{N}=Modiclus(v); % use a third party solver instead!
    end
@@ -181,13 +181,13 @@ elseif strcmp(str,'HMS_APN')
    try
      sol{N}=Anti_PreNucl(v,x);
    catch
-     sol{N}=cplex_AntiPreNucl(v,x); % use a third party solver instead!
+     sol{N}=msk_AntiPreNucl(v,x); % use a third party solver instead!
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'HMS_MODIC')
    try
-     sol{N}=cplex_modiclus(v);
+     sol{N}=msk_modiclus(v);
    catch
      sol{N}=Modiclus(v); % use a third party solver instead!
    end

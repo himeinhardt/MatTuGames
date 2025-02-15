@@ -32,6 +32,10 @@ end
 
 N=length(v);
 [~, n]=log2(N);
+if N==1
+  acvQ=true;
+  return;
+end	
 N1=N-1;
 acvQ=false(1,N1);
 

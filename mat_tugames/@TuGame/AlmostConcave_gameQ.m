@@ -33,6 +33,10 @@ if nargin<2
 end
 N=clv.tusize;
 n=clv.tuplayers;
+if N==1
+  acvQ=true;
+  return;
+end
 N1=N-1;
 acvQ=false(1,N1);
 

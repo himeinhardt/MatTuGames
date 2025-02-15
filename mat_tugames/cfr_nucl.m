@@ -1,0 +1,145 @@
+function [x1, fmin]=cfr_nucl(v,F,tol)
+% CFR_NUCL computes the nucleolus of game v with coalition formation restrictions 
+% using the optimization toolbox. Uses now Dual-Simplex (Matlab R2015a).
+%
+%
+% Source: Granot et al. (1978), Characterization sets for the nucleolus. IJGT.
+%
+% Usage: [x, fmin]=cfr_nucl(v,F,tol)
+% Define variables:
+%  output:
+%  x1        -- The nucleolus of game vF.
+%  fmin      -- The minmax excess value.
+%
+%  input:
+%  v        -- A Tu-Game v of length 2^n-1. 
+%  F        -- For instance, a characterization set for the nucleolus.
+%              F must contain the grand coalition N.
+%  tol      -- Tolerance value. Its default value is set to 10^8*eps.
+
+
+%  Author:        Holger I. Meinhardt (hme)
+%  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
+%  Institution:   University of Karlsruhe (KIT)  
+%
+%  Record of revisions:
+%   Date              Version         Programmer
+%   ====================================================
+%   07/15/2017        0.9             hme
+%   05/25/2024        1.9.2           hme
+%                
+
+
+
+if nargin<2
+   error('A collection of sets F is required!');
+elseif nargin<3
+ tol=10^8*eps;
+end
+
+
+N=length(v);
+[~, n]=log2(N);
+k=1:n;
+si=bitset(0,k);
+%% Addining the singleton coalitions to F, 
+%% since vF is definded over F and si.
+F=unique([F,si]);
+lf=length(F);
+
+
+%% F should contain the grand coalition for defining vF.
+S=1:N;
+lfNq=F(end)~=N;
+if lfNq
+   F(end+1)=N;
+   lf=lf+1;
+end
+CS=S(ismember(S,F)==0);
+vF=v;
+vF(CS)=[];
+
+if lfNq
+   vF(end)=0;
+end
+
+
+for k=1:n, A1(:,k) = -bitget(F,k);end
+A1(end+1,:)=-A1(end,:);
+A1(:,end+1)=-1;
+A1(lf:lf+1,end)=0;
+A2=sparse(A1);
+B1=[-vF';vF(lf)];
+C=[zeros(1,n),1];
+
+ra = reasonable_outcome(v);
+vi=v(si);
+cvr=vi==ra;
+if any(cvr)
+   fi=find(cvr);
+   ra(fi)=Inf;
+end
+if sum(vi)>v(N)
+   error('sum of lower bound exceeds value of grand coalition! No solution can be found that satisfies the constraints.')
+end
+lb=[vi,-Inf];
+ub=[ra,Inf];
+
+options.Display='off';
+options.Simplex='on';
+options.LargeScale='on';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    options.Algorithm='dual-simplex-highs';
+else
+    options.Algorithm='dual-simplex';
+end
+options.TolFun=1e-10;
+options.TolX=1e-10;
+options.TolRLPFun=1e-10;
+options.MaxIter=256;
+%opts
+%% for dual-simplex
+options.MaxTime=9000;
+options.Preprocess='none';
+options.TolCon=1e-6;
+options.MaxIter=10*(N+n);
+
+while 1
+  try
+    [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,options);
+  catch %% old api (before R2022a) with initial value.
+   [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],options);
+  end
+  if exitflag ~= 1 
+     warning('on','all');
+     warning('Prn:Exit','Probably no nucleolus found!')
+     break;
+  end
+  x=xmin;
+  x1=x';
+  x1(end)=[];
+  %lambda.ineqlin'
+  bS1=find(lambda.ineqlin'>tol);
+  bA=find(A1(:,end)==0)';
+  bS2=setdiff(bS1,bA);
+  if isempty(bS2)==1
+     break;
+  end
+  it=0:-1:1-n;
+  bA(end)=[];
+  bA=F(bA);
+  mS2=rem(floor(bA(:)*pow2(it)),2);
+  tmS2=mS2';
+  rk=rank(mS2);
+  ov=ones(1,n);
+  wgh=pinv(tmS2)*ov';
+  posQ=all(wgh>-tol);
+  if rk==n && posQ == 1
+     x1=full(x1);
+     break;
+  end
+  A1(bS2,end)=0;
+  A2=sparse(A1);
+  B1(bS2)=B1(bS2)+fmin;
+end

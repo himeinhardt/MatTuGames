@@ -18,6 +18,7 @@ function x=StandardSolution(v)
 %   ====================================================
 %   08/26/2010        0.1 beta        hme
 %                
+narginchk(1,1); % check for legal number of input arguments.
 
 k=1:2;
 x=v(k)+(v(3)-v(1)-v(2))/2;

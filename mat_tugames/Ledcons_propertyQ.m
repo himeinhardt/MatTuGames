@@ -141,7 +141,7 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_modiclus(vS{1,k}); % using cplex pre-nucleolus function. 
+       sol{1,k}=msk_modiclus(vS{1,k}); % using mosek modiclus function. 
      catch
        sol{1,k}=Modiclus(vS{1,k}); % use a third party solver instead!
      end
@@ -208,7 +208,7 @@ elseif strcmp(str,'PRN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'MODIC')
    try
-     sol{N}=cplex_modiclus(v_x);
+     sol{N}=msk_modiclus(v_x);
    catch
      sol{N}=Modiclus(v_x); % use a third party solver instead!
    end

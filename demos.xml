@@ -4,7 +4,7 @@
    <type>toolbox</type>
    <icon>HelpIcon.DEMOS</icon>
    <website/>
-   <description>The game theoretical Matlab toolbox MatTuGames provides about 500 functions
+   <description>The game theoretical Matlab toolbox MatTuGames provides more than 700 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
@@ -19,16 +19,52 @@ constructs in order to write more efficient Matlab functions.</description>
          <file>doc/html/testcase_graphics.html</file>
       </demoitem>
       <demoitem>
+         <label>Contents</label>
+         <type>other</type>
+         <source>Contents</source>
+         <file>doc/html/Contents.html</file>
+      </demoitem>
+      <demoitem>
          <label>GettingStarted</label>
          <type>other</type>
          <source>GettingStarted</source>
          <file>doc/html/GettingStarted.html</file>
       </demoitem>
       <demoitem>
+         <label>MatTuGames_Overview</label>
+         <type>other</type>
+         <source>MatTuGames_Overview</source>
+         <file>doc/html/MatTuGames_Overview.html</file>
+      </demoitem>
+      <demoitem>
          <label>mattug_features</label>
          <type>other</type>
          <source>mattug_features</source>
          <file>doc/html/mattug_features.html</file>
+      </demoitem>
+      <demoitem>
+         <label>mattug_quick_tour</label>
+         <type>other</type>
+         <source>mattug_quick_tour</source>
+         <file>doc/html/mattug_quick_tour.html</file>
+      </demoitem>
+      <demoitem>
+         <label>mattug_release_note</label>
+         <type>other</type>
+         <source>mattug_release_note</source>
+         <file>doc/html/mattug_release_note.html</file>
+      </demoitem>
+      <demoitem>
+         <label>mattug_start_page</label>
+         <type>other</type>
+         <source>mattug_start_page</source>
+         <file>doc/html/mattug_start_page.html</file>
+      </demoitem>
+      <demoitem>
+         <label>mattug_testcase_graphics</label>
+         <type>other</type>
+         <source>mattug_testcase_graphics</source>
+         <file>doc/html/mattug_testcase_graphics.html</file>
       </demoitem>
    </demosection>
 </demos>

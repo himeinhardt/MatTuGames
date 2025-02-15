@@ -3,6 +3,8 @@ function [cvq A]=p_convex_gameQ(clv,tol)
 %
 %
 % Usage: [cvq A]=p_convex_gameQ(clv,tol)
+%   or
+%        [cvq A]=clv.p_convex_gameQ(tol)    
 %
 % Define variables:
 %  output:

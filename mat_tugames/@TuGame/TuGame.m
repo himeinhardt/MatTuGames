@@ -1,4 +1,4 @@
-classdef TuGame < hgsetget & matlab.mixin.Copyable
+classdef TuGame < matlab.mixin.SetGetExactNames & matlab.mixin.Copyable
 % TUGAME is a class object to perform several computations for retrieving and modifying game data.
 % It stores relevant game information needed by overloading functions.
 %
@@ -60,6 +60,8 @@ classdef TuGame < hgsetget & matlab.mixin.Copyable
 %   Date              Version         Programmer
 %   ====================================================
 %   11/11/2012        0.3             hme
+%   10/31/2022        1.9.1           hme
+%   
 %
 
 

@@ -37,6 +37,7 @@ N=clv.tusize;
 n=clv.tuplayers;
 if N==3
   x1=clv.StandardSolution();
+  fmin=-inf;
   return
 end
 

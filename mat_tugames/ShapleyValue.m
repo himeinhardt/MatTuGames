@@ -27,6 +27,7 @@ function shv=ShapleyValue(v)
 %   06/16/2013        0.4             hme
 %   03/04/2014        0.5             hme
 %                
+narginchk(1,1); % check for legal number of input arguments.
 
 N=length(v);
 [~, n]=log2(N);

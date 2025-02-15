@@ -23,6 +23,8 @@ function [x1, fmin]=PreNucl(clv,tol)
 %   12/21/2012        0.3             hme
 %   10/21/2014        0.5             hme
 %   03/29/2015        0.7             hme
+%   06/22/2023        1.9.1           hme
+%   05/26/2024        1.9.2           hme
 %                
 
 
@@ -37,6 +39,7 @@ gt=clv.tutype;
 vi=clv.tuvi;
 if N==3
   x1=clv.StandardSolution();
+  fmin=-inf;
   return
 end
 
@@ -66,7 +69,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -79,7 +87,11 @@ opts.MaxIter=10*(N+n);
 it=0:-1:1-n;
 bA=find(A1(:,end)==0)';
 while 1
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+  try
+    [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,opts);
+  catch %% old api (before R2022a) with initial value.
+    [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+  end
   x=xmin;
   x1=x';
   if isempty(x1) == 1

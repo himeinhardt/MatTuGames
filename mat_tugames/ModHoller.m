@@ -25,11 +25,13 @@ function mhidx=ModHoller(th,w_vec)
 
 n=length(w_vec);
 sWCk=zeros(1,n);
-mWC=minimal_winning(th,w_vec);
-WC=winning_coalitions(mWC,n);
+[mWC,WC]=minimal_winning(th,w_vec);
+%WC=winning_coalitions(mWC,n);
 for k=1:n;
-  mWCk=WC(bitget(WC,k)==1);
-  sWCk(k)=length(mWCk);
+  if w_vec(k)~=0	
+     mWCk=WC(bitget(WC,k)==1);
+     sWCk(k)=length(mWCk);
+  end   
 end
 mhidx=sWCk./(sWCk*ones(n,1));
 

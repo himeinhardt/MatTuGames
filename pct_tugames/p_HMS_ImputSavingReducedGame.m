@@ -94,7 +94,7 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=cplex_nucl(subg{k});
+        subg_sh{k}=msk_nucl(subg{k});
       catch
         subg_sh{k}=nucl(subg{k});
       end

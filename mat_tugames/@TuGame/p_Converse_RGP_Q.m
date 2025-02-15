@@ -27,6 +27,8 @@ function [CRGP CRGPC]=p_Converse_RGP_Q(clv,x,str,tol)
 %               in accordance with pre-kernel solution.
 %              'CORE' that is, the Davis-Maschler reduced game 
 %               in accordance with the core.
+%              'HMS_CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              'SHAP' that is, the Hart-MasColell reduced game
 %               in accordance with the Shapley value.
 %              Default is 'PRK'.
@@ -44,6 +46,7 @@ function [CRGP CRGPC]=p_Converse_RGP_Q(clv,x,str,tol)
 %   ====================================================
 %   10/30/2012        0.3              hme
 %   06/18/2020        1.9              hme
+%   11/03/2021        1.9.1            hme
 %                
 
 v=clv.tuvalues;
@@ -109,6 +112,27 @@ sV_x{1,k}=x;
    sV_x{1,k}(rSk)=stdsol{1,k}; % extension to (x,x_N\S).
    crgpq{k}=abs(sV_x{1,k}-x)<tol;
    crgpQ(k)=all(crgpq{k});
+ elseif strcmp(str,'HMS_CORE')
+   vS{1,k}=clv.HMS_RedGame(x,cl2(k),'CORE'); %Hart-MasColell reduced game.
+   rS{k}=PlyMat2(k,:);
+   y=x(rS{k}); % solution x restricted to S.
+   bcq=belongToCoreQ(vS{1,k},x(rS{k}),'rat',tol); % solution x restricted to S. Must be an element of the core whenever it exists.
+   if bcq==1
+      sV_x{1,k}(rS{k})=y; % extension to (x,x_N\S).
+   else %% ex falso sequitur quodlibet
+      stdsol{1,k}=StandardSolution(vS{1,k}); % solution x restricted to S. Must be an element of the core whenever it exists.      
+      sV_x{1,k}(rS{k})=stdsol{1,k}; % extension to (x,x_N\S).      
+   end     
+   try 
+     crQ=clv.CddCoreQ();
+   catch
+     crQ=clv.coreQ();
+   end
+   if crQ==1   
+      crgpQ(k)=clv.belongToCoreQ(sV_x{1,k},'rat',tol);
+   else
+      crgpQ(k)=false;
+   end   
  else
    vS{1,k}=clv.RedGame(x,cl2(k)); % Davis-Maschler reduced game.
    stdsol{1,k}=StandardSolution(vS{1,k}); % solution x restricted to S.
@@ -117,7 +141,16 @@ sV_x{1,k}=x;
    if strcmp(str,'PRK')
      crgpQ(k)=clv.PrekernelQ(sV_x{1,k});
    elseif strcmp(str,'CORE')
-    crgpQ(k)=clv.belongToCoreQ(sV_x{1,k});
+     try
+       crQ=clv.CddCoreQ();
+     catch
+       crQ=clv.coreQ();
+     end 
+     if crQ==1
+      crgpQ(k)=clv.belongToCoreQ(sV_x{1,k},'rat',tol);
+     else
+      crgpQ(k)=false;
+     end     
    elseif strcmp(str,'PRN')
     crgpq{k}=abs(sV_x{1,k}-x)<tol;
     crgpQ(k)=all(crgpq{k});

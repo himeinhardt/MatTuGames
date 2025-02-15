@@ -62,6 +62,8 @@ function [v,x]=flow_game(E,c,ow)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/18/2016        0.8             hme
+%   06/24/2023        1.9.1           hme
+%   04/22/2024        1.9.2           hme
 %
 
 if iscell(E)
@@ -118,7 +120,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -134,7 +141,11 @@ opts.MaxIter=10*(N+n);
 A2=eye(m);
 B1=zeros(b,1);
 B2=c';
-[xmax, fmax, status, extra] = linprog(-C,A2,B2,A1,B1,lb,ub,[],opts);
+try
+    [xmax, fmax, status, extra] = linprog(-C,A2,B2,A1,B1,lb,ub,opts);
+catch  %% old api (before R2022a) with initial value.
+    [xmax, fmax, status, extra] = linprog(-C,A2,B2,A1,B1,lb,ub,[],opts);
+end	
 v(N)=C'*xmax;
 x(N,:)=xmax';
 
@@ -159,7 +170,11 @@ for S=1:N-1
    zc3=zc(ismember(E(zc,1),Es2(zc2,1)));
    C=zeros(m,1);
    C(zc3)=1;
-   [xmax, fmax, status, extra] = linprog(-C,A2,B3,A1,B1,lb,ub,[],opts);
+   try
+       [xmax, fmax, status, extra] = linprog(-C,A2,B3,A1,B1,lb,ub,opts);
+   catch  %% old api (before R2022a) with initial value.
+       [xmax, fmax, status, extra] = linprog(-C,A2,B3,A1,B1,lb,ub,[],opts);
+   end	   
    v(S)=C'*xmax;
    x(S,:)=xmax';
 end

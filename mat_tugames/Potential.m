@@ -21,6 +21,7 @@ function [pot,sh]=Potential(v)
 %   ====================================================
 %   03/07/2014        0.5             hme
 %
+narginchk(1,1); % check for legal number of input arguments.
 
 N=length(v);
 [~, n]=log2(N);
@@ -31,7 +32,7 @@ end
 
 % Converting logical to double to speed up computation
 % for weighted majority games.
-if isnumeric(v)==0
+if islogical(v)==0
    v=double(v);
 end
 
@@ -51,7 +52,7 @@ end
 
 Nk=bitset(N,k,0);
 sh=pot(N)-pot(Nk);
-
+end
 
 %----------------------------
 function p=potential2(vS,p,S,J)
@@ -61,3 +62,4 @@ plS=J(clS);
 Sni=S-2.^(plS-1);
 lgS=length(Sni);
 p(S)=(vS+p(Sni)*ones(lgS,1))/lgS;
+end

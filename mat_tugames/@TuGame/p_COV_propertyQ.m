@@ -112,7 +112,7 @@ if strcmp('PRK',str)
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('PRN',str)
    try 
-       sol_v2=cplex_prenucl_llp(v2);
+       sol_v2=msk_prenucl_llp(v2); % MOSEK solver.
    catch
        sol_v2=Prenucl_llp(v2);
    end
@@ -124,7 +124,7 @@ elseif strcmp('SHAP',str)
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('MODIC',str)
    try
-       sol_v2=cplex_modiclus(v2);
+       sol_v2=msk_modiclus(v2); % MOSEK solver.
    catch
        sol_v2=Modiclus(v2);
    end

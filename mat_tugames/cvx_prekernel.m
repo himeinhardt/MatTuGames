@@ -30,6 +30,7 @@ function [x, Lerr, smat, xarr]=cvx_prekernel(v,x)
 %   ====================================================
 %   12/28/2012        0.3             hme
 %   05/03/2019        1.1             hme
+%   06/11/2022        1.9.1           hme
 %                
 
 if nargin<1
@@ -295,10 +296,13 @@ function Seff=SortSets(effij,n,bd,smc)
 % coalitions with respect to their
 % cardinality. Ascent ordering.
 % Smallest coalitions are coming first.
-  Pm=zeros(bd,n);
-  for k=1:n, Pm(:,k) = bitget(effij,k);end
-  ov=ones(n,1);
-  clsize=Pm*ov;
+% Those of equal size are order lexicographically.     
+pl=1:n;
+bd=length(effij);
+it=0:-1:1-n;
+indM=rem(floor(effij(:)*pow2(it)),2);
+ov=ones(n,1);
+clsize=indM*ov;
   if smc==1
      mcl=min(clsize);
   else
@@ -308,15 +312,15 @@ function Seff=SortSets(effij,n,bd,smc)
   lc=length(eqm);
   if lc~=bd
      effij=effij(eqm);
-     Pm=Pm(eqm,:);
-     clsize=clsize(eqm);
+     indM=indM(eqm,:);
   end
-  pwcl=clsize.^3;
-  J=1:n;
-  J=J(ones(lc,1),:);
-  M=Pm.*J;
-  M=M.^(1/2);
-  clix=M*ov;
-  clnb=clix.*pwcl;
-  [~, ix]=sort(clnb);
-  Seff=effij(ix);
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+clm=n-imat;
+clm=2.^clm;
+dln=clm*ov;
+%dln=sum(clm,2)'; %% canonical numbers of coalitions S.
+%% canonical order R lex T iff d(R) > d(T).
+[st,sid]=sort(dln,'descend');
+%% Determining canonical order of coalitions S.
+Seff=effij(sid);

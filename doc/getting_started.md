@@ -186,14 +186,14 @@ sl_vl =
 
    28.0285   27.0297   24.5264   32.5247   30.1952   33.6954
 
-The pre-kernel element of the game is:
+A pre-kernel element of the game is:
 prk_v=PreKernel(bv)
 
 prk_v =
 
    20.0000   16.0000    5.5000   48.3500   30.0000   56.1500
 
-The kernel element of the game is:
+A kernel element of the game is:
 kr_v=Kernel(bv)
 
 kr_v =

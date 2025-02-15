@@ -6,7 +6,7 @@ function tB=totallyBalancedQ(v,tol)
 % Define structure variables:
 %  output:
 %  Q         -- The game is totally balanced if Q=1, otherwise false.
-%  crQ       -- An array of ones (true) and/or false indicating if the 
+%  sbgQ      -- An array of ones (true) and/or false indicating if the 
 %               the core of the associated subgame is empty or not. 
 %
 %  input:
@@ -35,7 +35,7 @@ crQ=false(1,N);
 for S=1:N
     subg=SubGame(v,S);
     try  
-      crQ(S)=CddCoreQ(subg);
+      crQ(S)=CddCoreQ(subg,tol);
     catch
       crQ(S)=coreQ(subg,tol);
     end

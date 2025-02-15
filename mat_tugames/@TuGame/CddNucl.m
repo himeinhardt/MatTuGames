@@ -37,6 +37,11 @@ tol=-tol;
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
+if N==3
+  x1=clv.StandardSolution();
+  alp=-inf;
+  return
+end
 essQ=clv.tuessQ;
 vi=clv.tuvi';
 if essQ==0

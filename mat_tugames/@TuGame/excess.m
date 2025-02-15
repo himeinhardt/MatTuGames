@@ -1,7 +1,7 @@
 function ex=excess(clv,x)
 % EXCESS computes the excess vector of game v w.r.t. x.
 %
-% Usage: ex=excess(clv,x)
+% Usage: ex=clv.excess(x)
 %
 % Define variables:
 % output:

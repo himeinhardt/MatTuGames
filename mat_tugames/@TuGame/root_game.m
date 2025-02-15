@@ -1,7 +1,7 @@
-function [vR,mnbp]=root_game(v)
+function [vR,mnbp]=root_game(clv)
 % ROOT_GAME computes from game v its associated root game vR.
 %
-% Usage: v=root_game(v)
+% Usage: clv=root_game()
 %
 %  Source: Zhao (2001) and Calleja et. al. (2009).
 %

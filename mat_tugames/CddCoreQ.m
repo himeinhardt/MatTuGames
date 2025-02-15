@@ -1,4 +1,4 @@
-function [crq, x]=CddCoreQ(v,tol)
+function [crq, x, lS]=CddCoreQ(v,tol)
 % CDDCOREQ checks the existence of the core of game v using cddmex.
 % 
 %
@@ -7,6 +7,7 @@ function [crq, x]=CddCoreQ(v,tol)
 %  output:
 %  crq      -- Returns 1 (true) or 0 (false).
 %  x        -- The smallest allocation that satisfies all core constraints.
+%  lS       -- Weights (dual solution).
 %
 %  input:
 %  v        -- A Tu-Game v of length 2^n-1. 
@@ -22,6 +23,7 @@ function [crq, x]=CddCoreQ(v,tol)
 %   ====================================================
 %   10/27/2012        0.3             hme
 %   05/12/2015        0.7             hme
+%   09/24/2022        1.9.1           hme
 %                
 
 
@@ -41,10 +43,11 @@ B1=[-v';v(N)];
 objective=PlyMat(end,:);
 IN=struct('obj',objective,'A',A1,'B',B1);
 OUT = cddmex('solve_lp_DS',IN);
-% lS=-OUT.lambda';
+lS=abs(OUT.lambda');
+lS(N+1)=[];
+x=OUT.xopt';
 if OUT.how~=1
   crq = false; 
 else
-  x=OUT.xopt';
   crq=abs(v(N)-OUT.objlp)<=abs(tol);
 end

@@ -24,6 +24,8 @@ function v_t=p_HMS_Reduced_game(clv,x,str)
 %               which is, the original definition. 
 %              'MODIC' that is, the Hart-MasColell reduced game 
 %               in accordance with the modiclus.
+%              'CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              Default is 'SHAP'.
 
 %  Author:        Holger I. Meinhardt (hme)
@@ -35,21 +37,21 @@ function v_t=p_HMS_Reduced_game(clv,x,str)
 %   ====================================================
 %   10/27/2012        0.3              hme
 %   04/01/2020        1.9              hme
+%   11/03/2021        1.9.1            hme
 %                
 v=clv.tuvalues;
 N=clv.tusize;
+n=clv.tuplayers;
 
 if nargin<2
-  x=ShapleyValue(v);
-  n=clv.tuplayers;
+  x=p_ShapleyValue(v);
   str='SHAP';
+  tol=10^4*eps;
 elseif nargin<3
-  n=clv.tuplayers;
   str='SHAP';
+  tol=10^4*eps;
 elseif nargin<4
-  n=clv.tuplayers;
-else
-  n=clv.tuplayers;
+  tol=10^4*eps;  
 end
 
 v1_t=cell(1,N-1);
@@ -57,14 +59,14 @@ v2_t=cell(1,N-1);
 v3_t=cell(1,N-1);
 
 parfor S=1:N-1
-  [v1_t{1,S} v2_t{1,S} v3_t{1,S}]=hms_red_game(v,S,n,str);
+  [v1_t{1,S} v2_t{1,S} v3_t{1,S}]=p_hms_red_game(v,x,S,n,str,tol);
 end
 
 
 v_t={v1_t v2_t v3_t};
 
 %---------------------------------
-function [vt subg_sh T]=hms_red_game(v,S,n,str)
+function [vt subg_sh T]=p_hms_red_game(v,x,S,n,str,tol)
 
 J=1:n;
 lmcS=bitget(S,J)==0;
@@ -96,7 +98,7 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-         subg_sh{k}=cplex_prenucl_mod4(subg{k});
+         subg_sh{k}=msk_prenucl_llp(subg{k});
       catch
          subg_sh{k}=PreNucl(subg{k});
       end
@@ -108,11 +110,34 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-         subg_sh{k}=cplex_modiclus(subg{k});
+         subg_sh{k}=msk_modiclus(subg{k});
       catch
          subg_sh{k}=modiclus(subg{k});
       end
    end
+ elseif strcmp(str,'CORE')
+   pl=logical(bitget(TorcS(k),J));
+   y=x(pl);
+   try
+      crQ=CddCoreQ(subg{k});
+   catch
+      crQ=coreQ(subg{k});
+   end
+   if crQ==1
+      bcQ=belongToCoreQ(subg{k},y,'rat',tol);
+      if bcQ==1
+         subg_sh{k}=y;
+      else
+         if convex_gameQ(subg{k})
+           subg_sh{k}=FindHMConsElm(subg{k},y,TorcS(k),S,n); % try to get HM-consistent core element.                
+         else
+           crv=CddCoreVertices(subg{k});
+           subg_sh{k}=crv(1,:);  % if y is not in the core of the sub-game, we select the first core element listed.
+        end 
+      end
+   else % taking an non-efficient vector; adding 5 to get also such kind of vector when v(N)=0.
+      subg_sh{k}=(ones(1,nnz(pl))*v(N))+5; % not applicable for totally balanced games.            
+   end   
  else
    subg_sh{k}=ShapleyValue(subg{k});
  end
@@ -124,3 +149,66 @@ for k=1:lgt
  sum_py{k}=Tz{k}*subg_sh{k}';
  vt(k)=v(TorcS(k))-sum_py{k};
 end
+
+
+%%--------Trying to Find Core Element for HM-consistency --------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function cr=FindHMConsElm(vQ,xQ,Q,S,n)
+% FINDHMCONSELM tries to get from (vQ,xQ) a core element of the subgame vQ that is
+% monotone w.r.t. xQ.
+%
+% Source: Dietzenbacher and Sudhoelter, Hart–Mas-Colell consistency and the core in convex games,
+%         IJGT pp. 1-17, (2021). See proof of Lemma 4.1.
+%
+% Define variables:
+%
+%  output:
+%  cr       -- monotone core element of sub-game vQ w.r.t. xQ,
+%              either we have cr <= xQ on all coordinates or at least on
+%              the restriciton of R = S \cap Q, i.e., cr_R <= xQ_R.
+%
+%  input:
+%
+%  vQ        -- A Tu-Game sub-game vQ of length 2^q-1.
+%  xQ        -- Payoff vector of size(1,q), i.e., restriction of x on Q.
+%               Must be efficient.
+%  Q         -- Coalition Q:=T \cup S^c.
+%  S         -- Two Person coalition.
+%  n         -- Cardinality of the whole player set.
+%
+%
+lq=length(xQ);
+try
+  crvm=CddCoreVertices(vQ);
+catch
+  crvm=CoreVertices(vQ);
+end
+greq=crvm<=xQ;
+tsm=sum(greq,2);
+[lrQ,idxQ]=max(tsm);
+if lrQ==lq
+   cr=crvm(idxQ,:);
+else %% Let R = S \cap Q, selecting first core element satisfying cr_R <= xQ_R.
+    pl=1:n;
+    pls=pl(logical(bitget(S,pl)));
+    plq=pl(logical(bitget(Q,pl)));
+    ps=ismember(plq,pls);
+    rs=xQ(ps);
+    ls=length(rs);
+    rsl=crvm(:,ps)<=rs;
+    srw=sum(rsl,2);
+    [lrS,idxS]=max(srw);
+    if lrS==ls
+       cr=crvm(idxS,:);
+    else %% exception handling
+       scr=find(srw==lrS); %% getting convex combination.
+       lqs=length(scr);
+       if lqs > 1
+          cr=sum(crvm(scr,:))/lqs;
+       else
+         cr=crvm(scr,:);
+       end
+    end
+end
+
+

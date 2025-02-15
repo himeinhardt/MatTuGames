@@ -11,7 +11,7 @@ function [scQ,smQ]=separating_collectionQ(clm,n)
 %
 %  input:
 %   clm       -- A collection of sets/coalitions represented by their
-%                unique integers.
+%                unique integers. A row (vector) of positive integers.
 %   n         -- Number of players involved (integer).
 
 %
@@ -23,29 +23,27 @@ function [scQ,smQ]=separating_collectionQ(clm,n)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/13/2015        0.6             hme
+%   01/23/2022        1.9.1           hme
 %
 
-N=2^n-1;
-S=1:N;
-for i=1:n
-   a(:,i)=bitget(S,i)==1;
-end
-b=a==0;
 smQ=eye(n)==1;
 for ii=1:n-1
     for jj=ii+1:n
-        tij=S(a(:,ii));
-        isQ=clm(ismember(clm,tij));
-        if isempty(isQ)==0
-           tji=S(b(:,jj));
-           smQ(ii,jj)=isempty(clm(ismember(clm,tji)))==0;
-        end
-        lji=S(a(:,jj));
-        isQ2=clm(ismember(clm,lji));
-        if isempty(isQ2)==0
-           lij=S(b(:,ii));
-           smQ(jj,ii)=isempty(clm(ismember(clm,lij)))==0;
-        end
+        aii=bitget(clm,ii)==1;
+        bjj=bitget(clm,jj)==0;
+        inj=any(aii & bjj);
+        ajj=bitget(clm,jj)==1;
+        bii=bitget(clm,ii)==0;
+        eqa=all(aii==ajj);
+        eqb=all(bii==bjj);
+        jni=any(ajj & bii);
+        if inj && jni || (eqa && eqb)==1;
+           smQ(ii,jj)=true;
+           smQ(jj,ii)=true;
+        else
+           smQ(ii,jj)=false;
+           smQ(jj,ii)=false;
+        end    
     end    
 end    
 scQ=all(all(smQ));

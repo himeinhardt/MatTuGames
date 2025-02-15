@@ -28,6 +28,7 @@ function PPly=PartitionPlySet(th,w_vec)
 %   Date              Version         Programmer
 %   ====================================================
 %   01/10/2021        1.9             hme
+%   05/17/2022        1.9.1           hme    
 %
 
 
@@ -53,64 +54,20 @@ lnn=length(nnpl);
 bd=nnpl(lnn);
 smpl=[];
 stpl=[];
-[~,i0]=min(M(1,:));
-i0=i0-1;
 satv=cell(lnn,5);
 for ii=1:lnn
     slc=nnpl(ii);
-    ncl=1:lmW;
-    idx=M(:,slc)';
-    idx=ncl(idx);
-    li=length(idx);
-    for jj=1:li
-        lS(jj)=max(imat(idx(jj),:));
+    slk=imat(imat(:,slc)==slc,:);
+    lck=size(slk);
+    lS=zeros(1,lck(1));
+    for jj=1:lck(1)
+        lS(jj)=max(slk(jj,:));        
     end
-    lk0=min(lS);
+    lk=min(lS);    
     wi=w_vec(slc);
-    %% Looking for fellows (symmetries) of ii.
-    %% This allows us to reduce the domain of smaller players.
-    we=pl(w_vec==wi);
-    t1=we(slc<=we);
-    lwe=length(we);
-    if lwe > 1
-       steqQ=we(end)==n;
-       if steqQ
-          we(end)=[];
-       end	       
-    end	    
-    if lwe > 1 && slc >= i0
-        if isempty(t1)==0	
-           t1=t1(1);	
-           wsQ=i0<=t1;
-        else 
-           wsQ=false;
-	end	
-    elseif lwe > 1 && slc < i0
-        wsQ=false;
-    elseif lwe == 1 && slc >= i0
-        wsQ=true;	    
-    elseif lwe == 1 && slc < i0
-        wsQ=true;
-    else	     
-       wsQ=false;	    
-    end
-    %% Defining domain of smaller players.    
-    if wsQ==0
-       lk=max(lk0,we(end));
-    else
-       if slc == we(1)  && i0 < we(1) && lwe == 1 && lk0-t1>=2
-          lk=lk0;
-       elseif slc == we(1)  && i0 < we(1) && lwe == 1 && lk0-t1<2
-          lk=we(1);
-       elseif slc >= we(1) && i0 <= we(end)  && lwe > 1
-           lk=max(lk0,we(end));
-       else
-          lk=lk0;
-       end
-    end
-    Dii=lk+1:bd;  %% Domain of smaller players.
+    Dii=lk+1:bd;  %% Domain of player slc.
     mCk=sum(w_vec(Dii));
-    if wi<=mCk && slc < lk+1 
+    if wi<=mCk 
        smpl=[smpl,slc];
        satv{ii,1}=wi;         %% satellite game.
        satv{ii,2}=w_vec(Dii); %% satellite game.

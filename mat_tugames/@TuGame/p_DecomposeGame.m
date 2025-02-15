@@ -1,4 +1,4 @@
-function DecG=DecomposeGame(clv)
+function DecG=p_DecomposeGame(clv)
 % P_DECOMPOSEGAME computes the unique decomposition of a TU-game v
 % from a linear basis using Matlab's PCT. The direct sum of w and z is equal to v.
 % For n>12 this function needs some time to complete.

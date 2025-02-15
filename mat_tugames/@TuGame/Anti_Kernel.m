@@ -28,6 +28,7 @@ function [x, Lerr, smat, xarr]=Anti_Kernel(clv,x)
 %   04/25/2019        1.0             hme
 %   05/11/2019        1.1             hme
 %   05/20/2021        1.9             hme
+%   09/13/2021        1.9.1           hme
 %                
 
 if nargin<2
@@ -166,16 +167,14 @@ while cnt<CNT
     b=-2*E'*a;
 
 % Calling quadratic programming solver.
-% Uncomment these lines if you don't have Mosek
-    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
-% Comment the two lines about out if you don't have Mosek.
-%    opts = optimset;
-%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-10,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-11,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-11);
-%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
-
-    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),ra,vi,x,opts);
+% Uncomment these lines if you don't have optimwarmstart.
+%    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
+%    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),ra,vi,x,opts);
+    opts = optimoptions('quadprog','Algorithm','active-set','Display','off','TolFun',1e-12);
+    ws=optimwarmstart(x',opts);
+    [ws,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),ra,vi,ws);
     if exitflag ~= 1
-       x=x';
+       x=ws.X';
        warning('Aker:No','Probably no anti-kernel point found!');
        break;
     elseif abs(fval-ofval)<tol
@@ -188,13 +187,13 @@ while cnt<CNT
        else
           krQ=false;
        end
-       x=x';
+       x=ws.X';
        if krQ==0
           warning('Aker:NoB','Probably no anti-kernel point found!');
        end
        break;
     end
-
+    x=ws.X;
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
     z1=any(isinf(x));

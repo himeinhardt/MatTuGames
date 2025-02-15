@@ -36,6 +36,11 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  alp=-inf;
+  return
+end
 
 ra = reasonable_outcome(v)';
 k=1:n;

@@ -34,6 +34,8 @@ function [shv,F,dfm]=ShapleyValueML(v,str)
 %   ====================================================
 %   09/27/2014        0.5             hme
 %
+msg=nargchk(1,2,nargin);
+error(msg);
 
 if nargin <2
    str='sym';

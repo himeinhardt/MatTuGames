@@ -50,8 +50,8 @@ if clv.CddCoreQ()==0
 end
 
 x=ones(1,n)*v(N)/n;
-Lsol=clv.CPCore(x,tol);
-bQ=clv.belongToCoreQ(x);
+Lsol=clv.CPCore(x);
+bQ=clv.belongToCoreQ(x,tol);
 if bQ
   Lsol.Cp=x;
   Lsol.D=0;

@@ -1,7 +1,7 @@
 function [x, Lerr, smat, xarr]=Kernel(v,x)
 % KERNEL computes from (v,x) a Kernel element using
 % Matlab's Optimization Toolbox.
-% Source: Meinhardt, 2010.
+% Source: Meinhardt, 2013.
 %
 % Usage: [x Lerr smat xarr] = Kernel(v,x)
 %
@@ -27,6 +27,7 @@ function [x, Lerr, smat, xarr]=Kernel(v,x)
 %   12/28/2012        0.3             hme
 %   05/11/2019        1.1             hme
 %   10/21/2020        1.9             hme
+%   09/13/2021        1.9.1           hme
 %                
 
 if nargin<1
@@ -97,7 +98,7 @@ end
 
 [x, Lerr, smat, xarr]=computePrk(v,x,smc,0,mnQ);
 smat=tril(smat,-1)+triu(smat,1);
-
+end
 % Main function to compute a
 % pre-kernel element.
 %-----------------------------
@@ -129,15 +130,10 @@ m=1+n*(n-1)/2;
 upe=true(n);
 
 ofval=inf;
-%ra = reasonable_outcome(v)';
 ra=[];
 k=1:n;
 vi=double(v(bitset(0,k)))';
-%cvr=vi==ra;
-%if any(cvr)
-%   fi=find(cvr);
-%   ra(fi)=Inf;
-%end
+
 
 % Cycling may occur, so that we need an artificial halt
 while cnt<CNT  
@@ -187,12 +183,13 @@ while cnt<CNT
     b=-2*E'*a;
 
 % Calling quadratic programming solver.
-% Setting optins
-    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
-
-    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
+% Setting options
+%    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
+    opts = optimoptions('quadprog','Algorithm','active-set','Display','off','TolFun',1e-12);
+    ws=optimwarmstart(x',opts);
+    [ws,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,ws);
     if exitflag ~= 1
-       x=x';
+       x=ws.X';
        warning('ker:No','Probably no kernel point found!');
        break;
     elseif abs(fval-ofval)<tol
@@ -205,13 +202,13 @@ while cnt<CNT
        else
           krQ=0;
        end
-       x=x';
+       x=ws.X'
        if krQ==0
           warning('Ker:NoB','Probably no kernel point found!');
        end
        break;
     end
-
+    x=ws.X;
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
     z1=any(isinf(x));
@@ -249,7 +246,7 @@ if cnt==CNT % should trigger errors ....
 else
 %  x=x';
 end
-
+end
 
 %--------------
 function [A, smat, pv]=effCoalitions(v,x,smc,cnt,pv)
@@ -260,7 +257,7 @@ function [A, smat, pv]=effCoalitions(v,x,smc,cnt,pv)
 % output:
 % A     -- matrix of most effective coalitions of smallest/largest cardinality.
 % smat  -- as above.
-% cnt   -- loop counter.
+% pv    -- lower bound for the excesses that be treated.
 %
 % input:
 % cnt   -- loop counter.
@@ -426,7 +423,7 @@ for i=1:n
      end
     end
 end
-
+end
 
 %-------------------------------
 function Seff=SortSets(effij,n,bd,smc)
@@ -434,10 +431,13 @@ function Seff=SortSets(effij,n,bd,smc)
 % coalitions with respect to their
 % cardinality. Ascent ordering.
 % Smallest coalitions are coming first.
-  Pm=zeros(bd,n);
-  for k=1:n, Pm(:,k) = bitget(effij,k);end
-  ov=ones(n,1);
-  clsize=Pm*ov;
+% Those of equal size are order lexicographically.     
+pl=1:n;
+bd=length(effij);
+it=0:-1:1-n;
+indM=rem(floor(effij(:)*pow2(it)),2);
+ov=ones(n,1);
+clsize=indM*ov;
   if smc==1
      mcl=min(clsize);
   else
@@ -447,15 +447,16 @@ function Seff=SortSets(effij,n,bd,smc)
   lc=length(eqm);
   if lc~=bd
      effij=effij(eqm);
-     Pm=Pm(eqm,:);
-     clsize=clsize(eqm);
+     indM=indM(eqm,:);
   end
-  pwcl=clsize.^3;
-  J=1:n;
-  J=J(ones(lc,1),:);
-  M=Pm.*J;
-  M=M.^(1/2);
-  clix=M*ov;
-  clnb=clix.*pwcl;
-  [~, ix]=sort(clnb);
-  Seff=effij(ix);
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+clm=n-imat;
+clm=2.^clm;
+dln=clm*ov;
+%dln=sum(clm,2)'; %% canonical numbers of coalitions S.
+%% canonical order R lex T iff d(R) > d(T).
+[st,sid]=sort(dln,'descend');
+%% Determining canonical order of coalitions S.
+Seff=effij(sid);
+end

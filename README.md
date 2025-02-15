@@ -1,4 +1,4 @@
-# *Matlab* Toolbox *MatTuGames* Version 1.9.0
+# *Matlab* Toolbox *MatTuGames* Version 1.9.2
 
 ```
 Contents:
@@ -15,7 +15,7 @@ Contents:
 
 ## 1. Introduction
 
-The game theoretical *Matlab* toolbox *MatTuGames* provides about 500 functions
+The game theoretical *Matlab* toolbox *MatTuGames* provides more than 700 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
@@ -36,7 +36,7 @@ compute some game properties or solution concepts, like convexity,
 the Shapley value, the (pre-)nucleolus or a pre-kernel element.
 
 For this purpose, consider a situation where an estate is insufficient
-to meet simultaneously all of the debts/claims of a set of claimants,
+to meet simultaneously all the debts/claims of a set of claimants,
 such a situation is known in game theory as a bankruptcy problem.
 The problem is now to find a fair/stable distribution in the sense that
 no claimant/creditor can find an argument to obstruct the proposed division
@@ -56,10 +56,8 @@ and an estate value which is equal to
 >> E = 176;
 ```
 
-We immediately observe that the estate `E` is insufficient to meet all
-of the claims simultaneously. It should be obvious that with these values
-we do not have defined a cooperative game, however, these information
-are enough to compute a proposal how to divide the estate between the
+We immediately observe that the estate `E` is insufficient to meet all the claims simultaneously. It should be obvious that with these values
+we do not have defined a cooperative game, however, this information was enough to compute a proposal how to divide the estate between the
 creditors. A fair division rule which is proposed by the Babylonian Talmud,
 is given by
 
@@ -133,7 +131,7 @@ prk_v =
 ```
 
 which must be identical to the distributional law of justice proposed by the Talmudic
-rule. Moreover, it must also coincides with the nucleolus due to the convexity
+rule. Moreover, it must also coincide with the nucleolus due to the convexity
 of the game. To see this, let us compute first the nucleolus and in the next
 step the pre-nucleolus
 
@@ -232,10 +230,10 @@ ans =
 ```
 
 However, if this should still not be enough evidence, then we can
-referring to the axiomatization of the modiclus, which is characterized by SIVA, COV, EC, LEDCONS,
+refer to the axiomatization of the modiclus, which is characterized by SIVA, COV, EC, LEDCONS,
 and DCP, whereas DCP can also be replaced by DRP (cf. Meinhardt 2018c).
 
-Apart of SIVA (Single Valuedness), the toolbox can examine COV
+Apart from SIVA (Single Valuedness), the toolbox can examine COV
 
 ```
 >> COV_mnc_bv=COV_propertyQ(bv,mnc_bv,'','','MODIC')
@@ -397,13 +395,13 @@ or much more. For a deeper discussion of the function set provided by the toolbo
  
 ## 3. Custom Installation
 
-To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d9.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
+To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double-click on the mltbx file `mat_tugV1d9d2.mltbx` and click "install". Alternatively, right-click on the .mltbx, and click "Install."
 
 Additional instructions can be found at the URL: 
 
 * [mltbx](https://mathworks.com/matlabcentral/answers/242430-how-do-i-install-a-mltbx-file-from-the-filesharing-site-into-r2015a)
 
-The mltbx file `mat_tugV1d9.mltbx` is provided at
+The mltbx file `mat_tugV1d9d2.mltbx` is provided at
 
 * [mltbx-file](https://github.com/himeinhardt/MatTuGames/releases)
 
@@ -411,7 +409,7 @@ The mltbx file `mat_tugV1d9.mltbx` is provided at
 ## 4. Requirements
 
 This release of *MatTuGames* was developed and tested using *Matlab
-R2021a* and earlier releases. A set of functions use the *Optimization Toolbox*
+R2024b* and earlier releases. A set of functions use the *Optimization Toolbox*
 and the *cdd-library* by *Komei Fukuda*, which can be found at the URL:
 
 * [CDD](http://www.inf.ethz.ch/personal/fukudak/cdd_home/)
@@ -429,7 +427,7 @@ the *MPT3 toolbox*, in particular of using the graphical features of
 our toolbox.
 
 For the computation of the pre-kernel and related solutions the *SuiteSparse* for *Matlab* is 
-recommend that can be got from the URL
+recommended that can be got from the URL
 
 * [SuiteSparse](https://github.com/DrTimothyAldenDavis/SuiteSparse)
 
@@ -443,7 +441,7 @@ the URL:
 
 * [Mathematica Symbolic Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/6044-mathematica-symbolic-toolbox-for-matlab-version-2-0)
 
-whereas *TuGames* Version 2.6.1 can be downloaded from the URL:
+whereas *TuGames* Version 3.1.4 can be downloaded from the URL:
 
 * [TuGames](https://github.com/himeinhardt/TuGames)
 
@@ -497,19 +495,14 @@ For citation consult the URL:
 
 ## 8. MATLAB File Exchange 
 
-For additional comments see also the retro site 
+For additional comments and information of the current version consult the URL:
 
 [![View MatTuGames on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://de.mathworks.com/matlabcentral/fileexchange/35933-mattugames)
 
-
-For additional information of the current version consult  
-
-[![View MatTuGames on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://de.mathworks.com/matlabcentral/fileexchange/74092-mattugames)
 
 ## Author
 
 *Holger I. Meinhardt*
 Institute of Operations Research
 University of Karlsruhe (KIT) 
-E-mail: Holger.Meinhardt ät wiwi.uni-karlsruhe.de
-        holger.meinhardt ät partner.kit.edu 
+E-mail: holger.meinhardt ät partner.kit.edu 

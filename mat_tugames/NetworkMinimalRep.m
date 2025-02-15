@@ -44,6 +44,7 @@ function NMR=NetworkMinimalRep(E,th,w_vec,tol);
 %   Date              Version         Programmer
 %   ====================================================
 %   01/20/2011        1.9             hme
+%   06/15/2022        1.9.1           hme
 %                    
 
 if nargin<4
@@ -145,66 +146,24 @@ expl=pl.*ones(lmW,n);
 imat=M.*expl;
 lnn=length(nnpl);
 bd=nnpl(lnn);
+Slm=LexMax(mW,n); % lex-max min-win coalition.
+Mlm=bitget(Slm,pl)==1;
 smpl=[];
 stpl=[];
-[~,i0]=min(M(1,:));
-i0=i0-1;
 satv=cell(lnn,5);
 for ii=1:lnn
     slc=nnpl(ii);
-    ncl=1:lmW;
-    idx=M(:,slc)';
-    idx=ncl(idx);
-    li=length(idx);
-    for jj=1:li
-        lS(jj)=max(imat(idx(jj),:));
+    slk=imat(imat(:,slc)==slc,:);
+    lck=size(slk);
+    lS=zeros(1,lck(1));
+    for jj=1:lck(1)
+        lS(jj)=max(slk(jj,:));        
     end
-    lk0=min(lS);
+    lk=min(lS);    
     wi=w_vec(slc);
-    %% Looking for fellows (symmetries) of ii.
-    %% This allows us to reduce the domain of smaller players.
-    we=pl(w_vec==wi);
-    t1=we(slc<=we);
-    lwe=length(we);
-    if lwe > 1
-       steqQ=we(end)==n;
-       if steqQ
-          we(end)=[];
-       end
-    end
-    if lwe > 1 && slc >= i0
-        if isempty(t1)==0
-		t1=t1(1);   
-           wsQ=i0<=t1;
-        else
-           wsQ=false;
-        end
-    elseif lwe > 1 && slc < i0
-        wsQ=false;
-    elseif lwe == 1 && slc >= i0
-        wsQ=false; %% true
-    elseif lwe == 1 && slc < i0
-        wsQ=true;
-    else
-       wsQ=false;
-    end
-    %% Defining domain of smaller players. 
-    if wsQ==0
-       lk=max(lk0,we(end));
-    else
-       if slc == we(1)  && i0 < we(1) && lwe == 1 && lk0-t1>=2
-          lk=lk0;
-       elseif slc == we(1)  && i0 < we(1) && lwe == 1 && lk0-t1<2
-          lk=we(1);
-       elseif slc >= we(1) && i0 <= we(end)  && lwe > 1
-           lk=max(lk0,we(end));	  
-       else
-          lk=lk0;
-       end
-    end
-    Dii=lk+1:bd;  %% Domain of smaller players. 
+    Dii=lk+1:bd;  %% Domain of player slc.
     mCk=sum(w_vec(Dii));
-    if wi<=mCk && slc < lk+1
+    if wi<=mCk 
        smpl=[smpl,slc];
        satv{ii,1}=wi;         %% satellite game.
        satv{ii,2}=w_vec(Dii); %% satellite game.
@@ -220,6 +179,7 @@ for ii=1:lnn
        satv{ii,5}=lk;
     end
 end
+% Defining recursively the minimum weights.
 gw_vec=zeros(lnn,1);
 gw_vec(lnn)=1;
 n1=lnn-1;
@@ -244,18 +204,22 @@ for kk=n1:-1:1
        end	       
     elseif any(ismember(smpl,kk)) %% character sum
        mwc=minimal_winning(wi,satv{kk,2});
+       if length(mwc)>1
+          mwc=LexMax(mwc,n1);  %% Taking the lex-max of the min-win coalitions
+       end                     %% of the satellite game of sum kk.
        pl2=1:lskk;
-       skk=skk(bitget(mwc(1),pl2)==1); %% Taking the lex-max of the min-win coalitions 
-       szmw=nnz(skk);                  %% of the satellite game of sum kk. 
+       skk=skk(bitget(mwc(1),pl2)==1);  
+       szmw=nnz(skk);                   
        ovsk=ones(1,szmw);
        gw_vec(kk)=ovsk*gw_vec(skk);
-    end	    
+    end
 end	
 g_vec=zeros(n,1);
 g_vec(nnpl)=gw_vec;
 mwg=zeros(1,n);
 mwg(widx)=g_vec';
-sz=min(M*g_vec);
+sz=Mlm*g_vec;
+%sz=min(M*g_vec);
 wmg_mr=NetworkMajorityGame(E,sz,mwg);
 eQ=all(abs(wmg_mr-wmg)<tol);
 NMR.mrQ=hrQ && eQ;
@@ -271,3 +235,49 @@ NMR.th0=th;    %% input quorum
 MR.wvec0=zeros(1,n);
 MR.wvec0(widx)=w_vec;  %% input weight
 NMR.M=M;    %% incidence matrix of min-win coalitions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function lm=LexMax(sS,n)
+% LexMax determines the lexicographical maximal coalition from sS, an array of integers
+% that represents minimal winning coalitions.
+% The input sS is first sorted in accordance with the shortest size,
+% and within the block of shortest size the lexicographical maximum is selected.
+%
+% Usage: lm=LexMax(sS,n);
+%
+% Define variables:
+%  output:
+%  lm       -- The lex-max coalition of sS.
+%
+%  input:
+%  sS       -- An array (vector) which contains the information about a set of minimal winning coalitions,
+%              for instance, the set of minimal winning coalitions.
+%  n        -- Number of player involved, must be an integer.
+%
+
+pl=1:n;
+it=0:-1:1-n;
+indM=rem(floor(sS(:)*pow2(it)),2);
+bd=length(sS);
+ov=ones(n,1);
+clsize=indM*ov;
+mcl=min(clsize);
+eqm=find(clsize==mcl);
+lc=length(eqm);
+if lc~=bd
+   sS=sS(eqm);
+   indM=indM(eqm,:);
+end
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+cl=zeros(1,lc);
+for kk=1:lc
+    clm=pl(imat(kk,:)>0);
+    clm=n-clm;
+    clm=2.^clm;
+    cl(kk)=sum(clm); %% dual numbers of coalitions sS.
+end
+[cl,sidx]=max(cl);
+%% Determining lexicographic maximal of coalitions sS.
+lm=sS(sidx);

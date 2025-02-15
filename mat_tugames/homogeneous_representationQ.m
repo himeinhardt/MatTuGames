@@ -13,10 +13,11 @@ function [hrQ hr wmg]=homogeneous_representationQ(th,w_vec)
 %              homogeneous representation, otherwise 0.
 %  hr       -- The list/vector of minimal winning coalitions.
 %  wmg      -- The underlying weighted majority game.
+%
 %  input:
 %  th       -- Threshold to pass a bill (positive number).
 %  w_vec    -- Vector of weights.
-
+%
 
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de

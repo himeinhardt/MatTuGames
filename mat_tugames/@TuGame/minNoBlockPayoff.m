@@ -28,6 +28,7 @@ function MNBP=minNoBlockPayoff(clv,tol);
 %   Date              Version         Programmer
 %   ====================================================
 %   09/24/2016        0.9             hme
+%   04/22/2024        1.9.2           hme
 %                
 if nargin<2
  tol=10^6*eps;
@@ -53,7 +54,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -64,7 +70,11 @@ opts.TolCon=1e-6;
 opts.MaxIter=10*(N+n);
 
 C=ones(n,1);
-[xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+try
+   [xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,opts);
+catch
+   [xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+end
 pm=xmin';
 mnbp=fmin;
 if exitflag ~= 1 

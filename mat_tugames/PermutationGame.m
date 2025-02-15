@@ -11,7 +11,7 @@ function v=PermutationGame(asm)
 %  input:
 %
 %  asm      -- A square assignment matrix.
-%              To construct one invokes for instance,
+%              To construct one, invoke for instance,
 %              asm=magic(5);
 %
 
@@ -51,4 +51,4 @@ for ss=1:N
  end
  v(ss)=max(ak);
 end
-    
+end    

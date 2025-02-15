@@ -41,6 +41,7 @@ if essQ==0
 end
 if N==3
   x1=clv.StandardSolution();
+  alp=-inf;
   return
 end
 

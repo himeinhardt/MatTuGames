@@ -65,7 +65,7 @@ if strcmp(str,'SHAP')
      y=p_ShapleyValue(v_x);
 elseif strcmp(str,'PRN')
    try
-     y=cplex_prenucl_llp(v_x);
+     y=msk_prenucl_llp(v_x); % MOSEK solver.
    catch
      y=PreNucl_llp(v_x);
    end
@@ -74,7 +74,7 @@ elseif strcmp(str,'PRK')
 elseif strcmp(str,'MODIC')
    dc_v=DualCover(v_x);
    try 
-     z=cplex_prenucl_llp(dc_v);
+     z=msk_prenucl_llp(dc_v); % MOSEK solver.
    catch
      z=PreNucl_llp(dc_v);
    end

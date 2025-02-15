@@ -55,7 +55,7 @@ function [DGP DGPC]=p_Derived_game_propertyQ(v,x,str,tol)
 
 
 if nargin<2
-  x=cplex_modiclus(v);
+  x=msk_modiclus(v);
   n=length(x);
   tol=10^6*eps;
   str='MODIC';
@@ -131,7 +131,7 @@ parfor k=1:N-1
      rgpq(k)=modiclusQ(vS{k},impVec{k});
    else
      try
-       sol{k}=cplex_prenucl_llp(vS{k}); % using cplex pre-nucleolus function. 
+       sol{k}=msk_prenucl_llp(vS{k}); % using mosek pre-nucleolus function. 
      catch
        sol{k}=PreNucl_llp(vS{k}); % use a third party solver instead!
      end
@@ -157,7 +157,7 @@ parfor k=1:N-1
      rgpq(k)=modiclusQ(vS{k},impVec{k});
    else
      try
-       sol{k}=cplex_prenucl_llp(vS{k});
+       sol{k}=msk_prenucl_llp(vS{k});
      catch
        sol{k}=PreNucl_llp(vS{k}); % use a third party solver instead!
      end
@@ -188,7 +188,7 @@ elseif strcmp(str,'PRN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'MODIC')
    try
-     sol{N}=cplex_prenucl(v);
+     sol{N}=msk_prenucl_llp(v);
    catch
      sol{N}=PreNucl(v); % use a third party solver instead!
    end
@@ -206,7 +206,7 @@ elseif strcmp(str,'HMS_PN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'HMS_MODIC')
    try
-     sol{N}=cplex_prenucl(v);
+     sol{N}=msk_prenucl_llp(v);
    catch
      sol{N}=PreNucl(v); % use a third party solver instead!
    end

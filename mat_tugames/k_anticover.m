@@ -19,6 +19,7 @@ function [vk kcQ]=k_anticover(v,k)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/10/2016        0.8             hme
+%   02/17/2022        1.9.1           hme
 %                
 
 
@@ -30,7 +31,7 @@ kcq=zeros(1,N);
 bv=zeros(1,n);
 lv=zeros(1,n);
 
-[gv bv lv]=Gap(v);
+[gv bv lv]=Anti_Gap(v);
 
 
 for S=1:N;
@@ -54,5 +55,5 @@ if length(sP)<k
     vk(S)=v(S);
  else
     lgS=length(sP);
-    vk(S)=bv(sP)*ones(lgS,1)-gv(N);
+    vk(S)=bv(sP)*ones(lgS,1)+gv(N);
 end

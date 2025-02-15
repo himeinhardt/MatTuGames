@@ -22,6 +22,7 @@ function [x1, fmin, pS]=PropNucl(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   05/21/2015        0.7             hme
+%   05/26/2024        1.9.2           hme
 %                
 
 
@@ -78,7 +79,12 @@ ub=[ra,Inf];
 opts.Display='off';
 opts.Simplex='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -90,7 +96,11 @@ opts.MaxIter=10*(N+n);
 bA=find(A1(:,end)==0)';
 y=-inf(1,n);
 while 1
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+  try
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,opts);
+  catch
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+  end
   x=xmin';
   x1=x;
   if isempty(x1) == 1

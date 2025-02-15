@@ -28,6 +28,7 @@ function [x, Lerr, smat, xarr]=p_cls_kernel(v,x)
 %   ====================================================
 %   05/28/2013        0.3             hme
 %   05/12/2019        1.1             hme
+%   06/12/2022        1.9.1           hme
 %                
 
 
@@ -182,17 +183,13 @@ while cnt<CNT
     C=[-eye(n);eye(n);E(m,:)];
     c=[-vi;ra;a(m)];
 % Calling solver constrainted ordinary least squares.
-% Comment these two lines out if you do not have Mosek.
-%    opts = optimset;
-%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-10,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-9);
-%    opts = optimset(opts,'MSK_IPAR_OPTIMIZER', 1 ,'MSK_IPAR_INTPNT_BASIS','MSK_ON','MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
-% uncomment these values if you do not have Mosek.
-    opts = optimset('LargeScale','on','TolFun',2.2204e-12,'TolPCG',0.2);
-% opts=[]; 
-    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,[],opts);
-% exitflag
+%    opts = optimset('LargeScale','on','TolFun',2.2204e-12,'TolPCG',0.2);
+%    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,[],opts);
+    opts = optimoptions('lsqlin','Algorithm','active-set','Display','off','TolFun',1e-12);
+    ws = optimwarmstart(x,opts);
+    [ws,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,ws);
     if exitflag ~= 1 
-       x=x';
+       x=ws.X';
        warning('ker:No','Probably no kernel point found!');
        break;
     elseif abs(resnorm-ofval)<tol
@@ -205,14 +202,14 @@ while cnt<CNT
        else
           krQ=0;
        end
-       x=x';
+       x=ws.X';
        if krQ==0
           warning('Ker:NoC','Probably no kernel point found!');
        end
        break;
     end
     ofval=resnorm;
-
+    x=ws.X;
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
     z1=any(isinf(x));
@@ -362,10 +359,13 @@ function Seff=SortSets(effij,n,bd,smc)
 % coalitions with respect to their
 % cardinality. Ascent ordering.
 % Smallest coalitions are coming first.
-  Pm=zeros(bd,n);
-  for k=1:n, Pm(:,k) = bitget(effij,k);end
-  ov=ones(n,1);
-  clsize=Pm*ov;
+% Those of equal size are order lexicographically.     
+pl=1:n;
+bd=length(effij);
+it=0:-1:1-n;
+indM=rem(floor(effij(:)*pow2(it)),2);
+ov=ones(n,1);
+clsize=indM*ov;
   if smc==1
      mcl=min(clsize);
   else
@@ -375,15 +375,15 @@ function Seff=SortSets(effij,n,bd,smc)
   lc=length(eqm);
   if lc~=bd
      effij=effij(eqm);
-     Pm=Pm(eqm,:);
-     clsize=clsize(eqm);
+     indM=indM(eqm,:);
   end
-  pwcl=clsize.^3;
-  J=1:n;
-  J=J(ones(lc,1),:);
-  M=Pm.*J;
-  M=M.^(1/2);
-  clix=M*ov;
-  clnb=clix.*pwcl;
-  [~, ix]=sort(clnb);
-  Seff=effij(ix);
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+clm=n-imat;
+clm=2.^clm;
+dln=clm*ov;
+%dln=sum(clm,2)'; %% canonical numbers of coalitions S.
+%% canonical order R lex T iff d(R) > d(T).
+[st,sid]=sort(dln,'descend');
+%% Determining canonical order of coalitions S.
+Seff=effij(sid);

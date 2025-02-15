@@ -30,6 +30,7 @@ function [x, Lerr, smat, xarr]=PreKernel(v,x)
 %   10/27/2014        0.5             hme
 %   11/10/2015        0.8             hme
 %   05/01/2019        1.1             hme
+%   06/03/2022        1.9.1           hme
 %                
 
 if nargin<1
@@ -88,7 +89,7 @@ end
 x=x';
 [x, Lerr, smat, xarr]=computePrk(v,x,smc,0,mnQ);
 smat=tril(smat,-1)+triu(smat,1);
-
+end
 % Main function to compute a
 % pre-kernel element.
 %-----------------------------
@@ -274,6 +275,7 @@ else
   x=x';
 end
 end
+end
 %--------------------------
 function x=chol_dec(Q,b)
 % Cholesky factorization solves the system
@@ -285,6 +287,7 @@ end
 R=chol(Q);
 y=R'\b;
 x=R\y;
+end
 %-----------------------------
 function x=qr_dec(Q,b)
 % QR-decomposition in order to solve the system 
@@ -302,6 +305,7 @@ if mf.A_condest > 10^16
   x=Q1*(R1'\b);
 else
    x=mf\b;
+end
 end
 %------------------------
 function x=svd_dec(Q,b)
@@ -321,6 +325,7 @@ else
   [U1,S1,V]=svd(Q,0);
   y=S1\(U1'*b);
   x=V*y;
+end
 end
 %
 %--------------
@@ -472,7 +477,7 @@ for i=1:n
      end
     end
 end
-
+end
 
 %-------------------------------
 function Seff=SortSets(effij,n,bd,smc)
@@ -480,10 +485,13 @@ function Seff=SortSets(effij,n,bd,smc)
 % coalitions with respect to their
 % cardinality. Ascent ordering.
 % Smallest coalitions are coming first.
-  Pm=zeros(bd,n);
-  for k=1:n, Pm(:,k) = bitget(effij,k);end
-  ov=ones(n,1);
-  clsize=Pm*ov;
+% Those of equal size are order lexicographically.     
+pl=1:n;
+bd=length(effij);
+it=0:-1:1-n;
+indM=rem(floor(effij(:)*pow2(it)),2);
+ov=ones(n,1);
+clsize=indM*ov;
   if smc==1
      mcl=min(clsize);
   else
@@ -493,15 +501,16 @@ function Seff=SortSets(effij,n,bd,smc)
   lc=length(eqm);
   if lc~=bd
      effij=effij(eqm);
-     Pm=Pm(eqm,:);
-     clsize=clsize(eqm);
+     indM=indM(eqm,:);
   end
-  pwcl=clsize.^3;
-  J=1:n;
-  J=J(ones(lc,1),:);
-  M=Pm.*J;
-  M=M.^(1/2);
-  clix=M*ov;
-  clnb=clix.*pwcl;
-  [~, ix]=sort(clnb);
-  Seff=effij(ix);
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+clm=n-imat;
+clm=2.^clm;
+dln=clm*ov;
+%dln=sum(clm,2)'; %% canonical numbers of coalitions S.
+%% canonical order R lex T iff d(R) > d(T).
+[st,sid]=sort(dln,'descend');
+%% Determining canonical order of coalitions S.
+Seff=effij(sid);
+end

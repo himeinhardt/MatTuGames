@@ -35,7 +35,11 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
-
+if N==3
+  x1=StandardSolution(v);
+  fmin=-inf;
+  return
+end
 % solver parameter
 ra = reasonable_outcome(v);
 ub=[ra,Inf];

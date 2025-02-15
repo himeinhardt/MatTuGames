@@ -23,6 +23,7 @@ function [v_e xm status]=p_exact_game(clv,tol);
 %   Date              Version         Programmer
 %   ====================================================
 %   02/25/2016        0.8             hme
+%   05/27/2024        1.9.2           hme
 %                
 if nargin<2
  tol=10^6*eps;
@@ -55,6 +56,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.Algorithm='dual-simplex';
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
@@ -67,7 +74,11 @@ opts.MaxIter=10*(N+n);
 
 parfor S=1:N
     C=PlyMat(S,:);
-    [xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+    try
+       [xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,opts);
+    catch
+       [xmin,fmin,exitflag]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+    end    
     xm(S,:)=xmin';
     v_e(S)=fmin;
     if exitflag ~= 1 

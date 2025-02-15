@@ -27,7 +27,8 @@ function [shv,F,dfm]=p_ShapleyValueML(v)
 %   ====================================================
 %   09/27/2014        0.5             hme
 %
-
+msg=nargchk(1,1,nargin);
+error(msg);
 
 N=length(v);
 [~, n]=log2(N);

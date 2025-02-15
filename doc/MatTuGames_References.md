@@ -1,4 +1,4 @@
-# *MATLAB* TOOLBOX: *MatTuGames* Version 1.9.0
+# *MATLAB* TOOLBOX: *MatTuGames* Version 1.9.2
 
 ## Bibliography
 
@@ -331,17 +331,20 @@ URL http://dx.doi.org/10.13140/RG.2.2.32651.75043.
 H. I. Meinhardt. Reconsidering Related Solutions of the Modiclus. Technical report, Karlsruhe Institute of Technology (KIT), Karlsruhe,
 Germany, 2018c. URL http://dx.doi.org/10.13140/RG.2.2.27739.82729.
 
-H. I. Meinhardt. On the Replication of the Pre-Kernel and Related Solutions. Technical report, Karlsruhe Institute of Technology (KIT),
-Karlsruhe, Germany, 2018d. URL http://dx.doi.org/10.13140/RG.2.2.21053.10725.
-
 H. I. Meinhardt. Deduction Theorem: The Problematic Nature of Common Practice in Game Theory. arXiv e-prints, art.
 arXiv:1908.00409, Jul 2019. URL https://arxiv.org/abs/1908.00409.
 
-H. I. Meinhardt. TuGames: A Mathematica Package for Cooperative Game Theory, 2020a.
-URL https://github.com/himeinhardt/TuGames.
+H. I. Meinhardt. Disentangle the Florentine Families Network by the Pre-Kernel. Technical report, Karlsruhe Institute of Technology
+(KIT), Karlsruhe, Germany, 2021b. URL http://dx.doi.org/10.13140/RG.2.2.10014.05447.
 
-H. I. Meinhardt. MatTuGames: A Matlab Toolbox for Cooperative Game Theory, 2020b.
-URL http://www.mathworks.com/matlabcentral/fileexchange/35933-mattugames.
+H. I. Meinhardt. MatTuGames: A Matlab Toolbox for Cooperative Game Theory, 2022. URL http://www.mathworks.com/matlabcent
+ral/fileexchange/74092-mattugames.
+
+H. I. Meinhardt. TuGames: A Mathematica Package for Cooperative Game Theory, 2023. URL https://github.com/himeinhardt/TuG
+ames.
+
+H. I. Meinhardt. On the Replication of the Pre-Kernel and Related Solutions. Computational Economics, 64:871946, 2024. URL
+http://dx.doi.org/10.1007/s10614-023-10428-w. Online available 2023.
 
 A. Meseguer-Artola. Using the Indirect Function to characterize the Kernel of a TU-Game. Technical report, Departament d’Economia
 i d’Història Econòmica, Universitat Autònoma de Barcelona, Nov. 1997. mimeo.

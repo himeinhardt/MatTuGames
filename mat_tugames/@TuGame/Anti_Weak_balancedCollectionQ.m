@@ -26,6 +26,8 @@ function [bcQ, cmat, S]=Anti_Weak_balancedCollectionQ(clv,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/12/2017        0.9             hme
+%   09/25/2021        1.9.1           hme
+%   05/25/2024        1.9.2           hme
 %                
 
     
@@ -71,7 +73,7 @@ if any(exc(nic)>0)
    S=[];
    return;
 else
-  iex=exc(nic)==0;
+  iex=abs(exc(nic))<tol;
 end
 b0=ic(iex);
 exc(N)=[];
@@ -158,7 +160,8 @@ f=zf';
 Aeq=ov';
 beq=0;
 mtv=verLessThan('matlab','9.1.0');
-    try
+mtv2=verLessThan('matlab','9.1.12');
+   try
       if mtv==1
          options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
       else
@@ -177,7 +180,12 @@ mtv=verLessThan('matlab','9.1.0');
       opts.Display='off';
       opts.Simplex='on';
       opts.LargeScale='on';
-      opts.Algorithm='dual-simplex';
+      mth1=verLessThan('matlab','24.1.0');
+      if mth1==0,
+          opts.Algorithm='dual-simplex-highs';
+      else
+          opts.Algorithm='dual-simplex';
+      end      
       opts.TolFun=1e-10;
       opts.TolX=1e-10;
       opts.TolRLPFun=1e-10;
@@ -186,7 +194,11 @@ mtv=verLessThan('matlab','9.1.0');
       opts.Preprocess='none';
       opts.TolCon=1e-6;
       opts.MaxIter=10*(N+n);
-      [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      if mtv2==0
+          [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],opts);
+      else  %% old api (before R2022a) with initial value.
+          [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      end
     end
 ef=exitflag; 
 

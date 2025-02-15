@@ -1,0 +1,44 @@
+function sdQ=p_secDiffOperatorQ(v)
+% P_SECDIFFOPERATOR checks whether the second order differences are all positive which indicates convexity
+% using Matlab's PCT.
+%
+% Source: Cores of Convex Games, By Lloyd S. Shapley, 1971.
+%
+% Usage: sdQ=p_secDiffOperatorQ(v)
+% Define variables:
+%  output:
+%  sdQ      -- Returns one (true) whenever all second order differences are positive.
+%
+%  output:
+%  v        -- A TU-Game of length 2^n-1.
+%    
+%
+%
+
+
+%  Author:        Holger I. Meinhardt (hme)
+%  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
+%  Institution:   University of Karlsruhe (KIT)  
+%
+%  Record of revisions:
+%   Date              Version         Programmer
+%   ====================================================
+%   12/27/2021        1.9.1           hme
+%    
+  
+if nargin<2
+   tol=10^8*eps;
+end
+
+N=length(v);
+[~, n]=log2(N);
+SDQ=false(N,N);
+parfor tT=1:N; 
+    dvT=diffOperator(v,tT);
+    for sS=1:N
+        SDQ(tT,sS)=all(diffOperator(dvT,sS)+tol>=0); 
+    end        
+end
+sdQ=all(SDQ(:));
+
+

@@ -102,7 +102,7 @@ for k=1:lgt
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=cplex_AntiPreNucl_llp(subg{k});
+        subg_sh{k}=msk_AntiPreNucl_llp(subg{k});
       catch
         subg_sh{k}=Anti_PreNucl_llp(subg{k}); % use a thrid party solver instead! 
       end
@@ -112,7 +112,7 @@ elseif strcmp(str,'MODIC')
       subg_sh{k}=subg{k};
    else
       try
-        subg_sh{k}=cplex_modiclus(subg{k});
+        subg_sh{k}=msk_modiclus(subg{k});
       catch
         subg_sh{k}=Modiclus(subg{k}); % use a thrid party solver instead! 
       end

@@ -24,13 +24,13 @@ function [v,gC]=airport_game(C)
 %   ====================================================
 %   01/26/2015        0.6             hme
 %   05/27/2021        1.9             hme
+%   05/04/2023        1.9.1           hme
 %
 n=length(C);
-N=2^n-1;
 S=1:N;
-
+A=false(N,n);
 for k=1:n, A(:,k) = bitget(S,k)==1;end
-
+gC1=zeros(1,N);
 for ss=1:N
     gC1(ss)=max(C(A(ss,:)));
 end

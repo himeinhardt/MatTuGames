@@ -37,21 +37,21 @@ function Lsol=LorenzSol(v,tol)
 
 
 if nargin<2
-  tol=10^6*eps;
+  tol=10^10*eps;
 end
 
 
 N=length(v);
 [~, n]=log2(N);
 
-if CddCoreQ(v)==0
+if CddCoreQ(v,tol)==0
    Lsol=inf(1,n);
    return;
 end
 
 x=ones(1,n)*v(N)/n;
-Lsol=CPCore(v,x,tol);
-bQ=belongToCoreQ(v,x);
+Lsol=CPCore(v,x);
+bQ=belongToCoreQ(v,x,'rat',tol);
 if bQ
   Lsol.Cp=x;
   Lsol.D=0;

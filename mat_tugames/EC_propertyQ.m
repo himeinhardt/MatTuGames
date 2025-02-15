@@ -64,7 +64,7 @@ if strcmp(str,'SHAP')
      y=ShapleyValue(v_x);
 elseif strcmp(str,'PRN')
    try
-     y=cplex_prenucl_llp(v_x);
+     y=msk_prenucl_llp(v_x);
    catch
      y=PreNucl_llp(v_x);
    end
@@ -73,7 +73,7 @@ elseif strcmp(str,'PRK')
 elseif strcmp(str,'MODIC')
    dc_v=DualCover(v_x);
    try 
-     z=cplex_prenucl_llp(dc_v);
+     z=msk_prenucl_llp(dc_v);
    catch
      z=PreNucl_llp(dc_v);
    end

@@ -35,6 +35,8 @@ function [RGP RGPC]=MaxConsistencyQ(v,x,str,tol)
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleous.
+%              'HMS_CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              'CORE' that is, the Davis-Maschler reduced game 
 %               in accordance with the core.    
 %              Default is 'PRK'.
@@ -87,6 +89,8 @@ elseif strcmp(str,'HMS_PK')
   vS=HMS_Reduced_game(v,x,'PRK');
 elseif strcmp(str,'HMS_PN')
   vS=HMS_Reduced_game(v,x,'PRN');
+elseif strcmp(str,'HMS_CORE')
+  vS=HMS_Reduced_game(v,x,'CORE');
 else
   vS=DM_Reduced_game(v,x);
 end
@@ -112,7 +116,9 @@ for k=1:N1
   elseif strcmp(str,'PMPRK')
    rgpq(k)=PModPrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'CORE')
-   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});   
+   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});  
+  elseif strcmp(str,'HMS_CORE')
+   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});	  
   elseif strcmp(str,'PRN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});

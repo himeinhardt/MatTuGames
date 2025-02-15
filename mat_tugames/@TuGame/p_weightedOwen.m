@@ -105,7 +105,7 @@ idx=cell(1,lcs);
       end
   end
   for j=1:lcs 
-  ow_vl([idx{j}])=iow{j};
+  ow_vl(idx{j})=iow{j};
   end
 else
    ow_vl=ShapleyValue(v); 
@@ -163,6 +163,7 @@ av=zeros(1,lg);
  J=1:lrc;
  pws3=PowerSet(J);
  % Correcting order of coalitional values. 
+ pm2=zeros(1,lg);
  for j=1:lg
      pm2(j)=sum(2.^(pws3{j}-1));
  end

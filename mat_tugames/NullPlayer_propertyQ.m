@@ -1,5 +1,5 @@
 function NPPQ=NullPlayer_propertyQ(v,x,tol)
-% NULLPLAYER_PROPERTYQ 
+% NULLPLAYER_PROPERTYQ checks if the solution x satisfies the Null player property. 
 %
 %  Usage: NPPQ=NullPlayer_propertyQ(v,x,tol)
 %
@@ -26,6 +26,7 @@ function NPPQ=NullPlayer_propertyQ(v,x,tol)
 %   ====================================================
 %   10/16/2015        0.7             hme
 %   11/18/2015        0.8             hme
+%   12/27/2020        1.9             hme
 %
 
 if nargin<2
@@ -37,25 +38,29 @@ end
 
 N=length(v);
 [~, n]=log2(N);
-
+pl=1:n;
 S=1:N;
 npQ=false(1,n);
-
+NppQ=false;
 for k=1:n
     a=bitget(S,k)==1;
     Swk=S(a==0);
     Sk=S(a);
-    vS=min(v(Swk));
+    vS=[0,v(Swk)];
     npQ(k)=all(abs(v(Sk)-vS)<tol);
 end    
 NpQ=any(npQ);
-J=1:n;
-snp=J(npQ);
-
+snp=pl(npQ);
+nnp=pl(npQ==0);
+nlp=pl(x(pl)~=0);
 if NpQ==1
    zpQ=abs(x(snp))<tol;
-   pzp=J(zpQ);
+   pzp=pl(zpQ);
    NppQ=any(zpQ);
+elseif any(nlp) %% contrapositive
+   slc=ismember(nnp,nlp);	
+   NppQ=all(nnp(slc)==nlp);
+   pzp=pl(x(pl)==0);
 else
    NppQ=false;
    pzp=[];

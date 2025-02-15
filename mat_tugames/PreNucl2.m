@@ -24,6 +24,7 @@ function [x1, fmin]=PreNucl2(v,x1,tol)
 %   ====================================================
 %   12/22/2012        0.3             hme
 %   10/21/2014        0.5             hme
+%   04/22/2024        1.9.2           hme
 %                
 
 N=length(v);
@@ -61,7 +62,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -74,7 +80,11 @@ bA=find(A1(:,end)==0)';
 y=-inf(1,n);
 
 while 1
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,x1,opts);
+  try
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,opts);
+  catch %% old api (before R2022a) with initial value.
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,x1,opts);
+  end	
   x=xmin;
   x1=x';
   if isempty(x1) == 1

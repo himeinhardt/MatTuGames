@@ -6,7 +6,7 @@ function tB=totallyBalancedQ(clv,tol)
 % Define structure variables:
 %  output:
 %  Q         -- The game is totally balanced if Q=1, otherwise false.
-%  crQ       -- An array of ones (true) and/or false indicating if the 
+%  sbgQ      -- An array of ones (true) and/or false indicating if the 
 %               the core of the associated subgame is empty or not. 
 %
 %  input:

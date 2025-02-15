@@ -29,6 +29,8 @@ N=clv.tusize;
 n=clv.tuplayers;
 if isa(clv,'TuVal')
    ptn = clv.tu_ptn;
+elseif isa(clv,'p_TuVal')
+   ptn = clv.tu_ptn;
 else
    ptn='';
 end

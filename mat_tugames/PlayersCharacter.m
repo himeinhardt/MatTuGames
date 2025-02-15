@@ -30,7 +30,7 @@ function PC=PlayersCharacter(th,w_vec)
 %   ====================================================
 %   10/01/2021        1.9             hme
 %          
-PPly=PartitionPlySet(th,w_vec);
+PPly=GetPlayersCharacter(th,w_vec);
 %% Partition of the Player set.
 PC.sums=PPly.sums; % Sums 
 PC.steps=PPly.steps; % Steps 

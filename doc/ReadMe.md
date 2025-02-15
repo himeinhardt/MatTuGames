@@ -1,4 +1,4 @@
-# *MATLAB* TOOLBOX: *MatTuGames* Version 1.9.0
+# *MATLAB* TOOLBOX: *MatTuGames* Version 1.9.2
 
 ```
 Contents
@@ -15,7 +15,7 @@ Contents
 ## 1. INTRODUCTION
 
 
-The game theoretical *Matlab* toolbox *MatTuGames* provides about 500 functions
+The game theoretical *Matlab* toolbox *MatTuGames* provides more than 700 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
@@ -32,7 +32,7 @@ are provided how to call our *Mathematica* package *TuGames* within a running Ma
 ## 2. REQUIREMENTS
 
 This release of *MatTuGames* was developed and tested using *Matlab
-R2021b* and earlier releases. A set of functions use the *Optimization Toolbox*
+R2024b* and earlier releases. A set of functions use the *Optimization Toolbox*
 and the *cdd-library* by *Komei Fukuda*, which can be found at the URL:
 
 * [CDD](http://www.inf.ethz.ch/personal/fukudak/cdd_home/)
@@ -64,7 +64,7 @@ the URL:
 
 * [Mathematica Symbolic Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/6044-mathematica-symbolic-toolbox-for-matlab-version-2-0)
 
-whereas *TuGames* Version 2.6.1 can be downloaded from the URL:
+whereas *TuGames* Version 3.1.4 can be downloaded from the URL:
 
 * [TuGames](https://github.com/himeinhardt/TuGames)
 
@@ -78,13 +78,13 @@ Moreover, the toolbox works also with the game theory toolbox written by *Jean D
 
 * [Derks](https://www.maastrichtuniversity.nl/jean.derks/research)
 
-We added some adjusted files that fix a problems with closed loops under certain game classes. 
+We added some adjusted files that fix a problem with closed loops under certain game classes. 
 
 This toolbox can be used to compute the pre-nucleolus up to 10-persons, if one has no license of Matlab's optimization toolbox. 
 
 Finally, the toolbox offers interfaces to access the solvers of CVX, CPLEX, GLPK, GUROBI, HSL, IPOPT, MOSEK, and OASES. The CPLEX interfaces are compatible with version 12.10.  
 
-To summarize, apart of the mentioned software, the toolbox requires the following MATLAB toolboxes:
+To summarize, apart from the mentioned software, the toolbox requires the following MATLAB toolboxes:
 
 *MATLAB Parallel Server*,
 *Optimization Toolbox*,
@@ -99,7 +99,7 @@ to get full functionality in serial as well as in parallel.
 ## 3. INSTALLATION
 ### 3.0 Custom Installation
 
-To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double click on the mltbx file `mat_tugV1d9.mltbx` and click "install". Alternatively, right click on the .mltbx, and click "Install."
+To install the toolbox, we recommend a custom installation. Having downloaded the .mltbx file, navigate to it within the Matlab file explorer, double-click on the mltbx file `mat_tugV1d9.mltbx` and click "install". Alternatively, right-click on the .mltbx, and click "Install."
 
 Additional instructions can be found at the URL: 
 
@@ -133,7 +133,7 @@ on the command line.
 The first operation above will create a folder named ` mat_tugV1d9 `, 
 where all the m-files and documentary files will be copied. In the next
 step rename the folder name mat_tugV1d9 to ` mat_tug `. In case of an update
-make an backup of your old directory ` mat_tug `.
+make a backup of your old directory ` mat_tug `.
 
 #### 3.1.2 SETTING ENVIRONMENT VARIABLES
 
@@ -160,7 +160,7 @@ or add the paths by selecting the appropriate menu of Matlab Command Window.
 #### 3.1.3.a SHELL-SCRIPT
 
 Getting the functions `CoreVertices()` and `CorePlot()` to work, one has 
-to install the files located in the sub-directories `bin`, and `tools` 
+to install the files located in the subdirectories `bin`, and `tools` 
 in the folder `mat_tug`. These are some auxiliary files that perform 
 some reading/writing operations on your hard-disk, and which call the 
 cdd-library. Hence, you have to install, the ` lcdd ` and ` lcdd_gmp `
@@ -214,7 +214,7 @@ cd src
 tar xvzf cddlib-094f.tar.gz
 ```
 
-This creates a sub-directory called "cddlib-094f", change in this directory by
+This creates a subdirectory called "cddlib-094f", change in this directory by
 
 ```
 cd cddlib-094f
@@ -284,7 +284,7 @@ See, the Windows section.
 
 ## 4. DOCUMENTATION
 
-See the manual file "manual_mat_tugames.pdf" in the "doc" sub-directory.
+See the manual file "manual_mat_tugames.pdf" in the "doc" subdirectory.
 
 
 ## 5. TROUBLESHOOTING
@@ -300,4 +300,4 @@ Institute of Operations Research
 Karlsruhe Institute of Technology (KIT)
 Englerstr. 11, Building: 11.40 
 D-76128 Karlsruhe 
-E-mail: Holger.Meinhardt ät wiwi.uni-karlsruhe.de
+E-mail: holger.meinhardt@partner.kit.edu

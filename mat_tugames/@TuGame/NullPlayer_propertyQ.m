@@ -26,6 +26,7 @@ function NPPQ=NullPlayer_propertyQ(clv,x,tol)
 %   ====================================================
 %   10/16/2015        0.7             hme
 %   11/20/2015        0.8             hme
+%   12/27/2020        1.9             hme
 %
 
 N=clv.tusize;
@@ -39,25 +40,29 @@ elseif nargin<3
    tol=10^6*eps;
 end
 
+pl=1:n;
 S=1:N;
 npQ=false(1,n);
-
+NppQ=false;
 for k=1:n
     a=bitget(S,k)==1;
     Swk=S(a==0);
     Sk=S(a);
-    vS=min(v(Swk));
+    vS=[0,v(Swk)];
     npQ(k)=all(abs(v(Sk)-vS)<tol);
 end    
-
 NpQ=any(npQ);
-J=1:n;
-snp=J(npQ);
-
+snp=pl(npQ);
+nnp=pl(npQ==0);
+nlp=pl(x(pl)~=0);
 if NpQ==1
    zpQ=abs(x(snp))<tol;
    pzp=J(zpQ);
    NppQ=any(zpQ);
+elseif any(nlp) %% contrapositive
+   slc=ismember(nnp,nlp);       
+   NppQ=all(nnp(slc)==nlp);
+   pzp=pl(x(pl)==0);
 else
    NppQ=false;
    pzp=[];

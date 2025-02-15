@@ -37,8 +37,14 @@ function [RGP RGPC]=Reduced_game_propertyQ(clv,x,str,tol)
 %               equivalence in accordance with the modified pre-kernel.
 %              'PMPRK' that is, the Davis-Maschler reduced game 
 %               equivalence in accordance with the proper modified pre-kernel.
+%              'HMS_MODIC' that is, Hart/MasColell reduced game
+%               equivalence in accordance with the modiclus.
+%              'HMS_CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              'CORE' that is, the Davis-Maschler reduced game
 %               in accordance with the core.
+%              'LOR' that is, the Davis-Maschler reduced game 
+%               in accordance with the Lorenz solution.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -54,6 +60,7 @@ function [RGP RGPC]=Reduced_game_propertyQ(clv,x,str,tol)
 %   05/29/2013        0.3             hme
 %   03/09/2018        1.0             hme
 %   06/18/2020        1.9             hme
+%   11/03/2021        1.9.1           hme
 %                
 
 N=clv.tusize;
@@ -97,6 +104,10 @@ elseif strcmp(str,'HMS_PK')
   vS=clv.HMS_Reduced_game(x,'PRK');
 elseif strcmp(str,'HMS_PN')
   vS=clv.HMS_Reduced_game(x,'PRN');
+elseif strcmp(str,'HMS_CORE')
+  vS=clv.HMS_Reduced_game(x,'CORE');
+elseif strcmp(str,'HMS_MODIC')
+  vS=clv.HMS_Reduced_game(x,'MODIC');
 else
   vS=clv.DM_Reduced_game(x);
 end
@@ -122,7 +133,27 @@ for k=1:N-1
   elseif strcmp(str,'PMPRK')
    rgpq(k)=PModPrekernelQ(vS{1,k},impVec{1,k});
   elseif strcmp(str,'CORE')
-   rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k});
+    try
+       crQ=CddCoreQ(vS{1,k});
+    catch
+       crQ=coreQ(vS{1,k});
+    end  
+    if crQ==1    
+      rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k},'rat',tol);
+    else
+      rgpq(k)=false;
+    end     
+  elseif strcmp(str,'HMS_CORE')
+    try
+       crQ=CddCoreQ(vS{1,k});
+    catch
+       crQ=coreQ(vS{1,k});
+    end  
+    if crQ==1    
+       rgpq(k)=belongToCoreQ(vS{1,k},impVec{1,k},'rat',tol);
+    else
+       rgpq(k)=false;
+    end   
   elseif strcmp(str,'PRN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
@@ -140,15 +171,29 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_modiclus(vS{1,k}); % using cplex pre-nucleolus function. 
+       sol{1,k}=msk_modiclus(vS{1,k}); % using mosek pre-nucleolus function. 
      catch
        sol{1,k}=Modiclus(vS{1,k}); % use a third party solver instead!
      end
      rgpq_sol{1,k}=abs(sol{1,k}-impVec{1,k})<tol;
      rgpq(k)=all(rgpq_sol{1,k});
    end
+  elseif strcmp(str,'HMS_MODIC')
+    if length(vS{1,k})==1
+       rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
+    else
+     try
+       sol{k}=msk_modiclus(vS{1,k}); % using mosek solver to get the modiclus.
+     catch
+       sol{k}=Modiclus(vS{1,k}); % using default solver instead!
+     end
+    rgpq_sol{k}=abs(sol{1,k}-impVec{1,k})<tol;
+    rgpq(k)=all(rgpq_sol{1,k});
+    end
+  elseif strcmp(str,'LOR')
+    rgpq(k)=LorenzMaxCoreQ(vS{1,k},impVec{1,k});    
   elseif strcmp(str,'HMS_PK')
-    rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
+    rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});   
   elseif strcmp(str,'HMS_PN')
    if length(vS{1,k})==1
      rgpq(k)=PrekernelQ(vS{1,k},impVec{1,k});
@@ -169,6 +214,8 @@ if strcmp(str,'SHAP')
    sol{N}=clv.ShapleyValue();
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
+elseif strcmp(str,'LOR')
+   rgpq(N)=clv.LorenzMaxCoreQ(x);   
 elseif strcmp(str,'PRK')
   rgpq(N)=clv.PrekernelQ(x);
 elseif strcmp(str,'POPK')
@@ -178,7 +225,27 @@ elseif strcmp(str,'MPRK')
 elseif strcmp(str,'PMPRK')
   rgpq(N)=clv.PModPrekernelQ(x);
 elseif strcmp(str,'CORE')
-  rgpq(N)=clv.belongToCoreQ(x);
+    try
+        crQ=clv.CddCoreQ();
+    catch
+        crQ=clv.coreQ();
+    end  
+    if crQ==1    
+       rgpq(N)=clv.belongToCoreQ(x,'rat',tol);
+    else
+       rgpq(N)=false;
+    end     
+elseif strcmp(str,'HMS_CORE')
+    try
+       crQ=clv.CddCoreQ();
+    catch
+       crQ=clv.coreQ();
+    end
+    if crQ==1
+       rgpq(N)=clv.belongToCoreQ(x,'rat',tol);
+    else
+       rgpq(N)=false;
+    end
 elseif strcmp(str,'PRN')
    try
      sol{N}=clv.Prenucl(x); % using adjusted Derks pre-nucleolus function.
@@ -189,7 +256,7 @@ elseif strcmp(str,'PRN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'MODIC')
    try
-     sol{N}=clv.cplex_modiclus();
+     sol{N}=clv.msk_modiclus();
    catch
      sol{N}=clv.Modiclus(); % use a third party solver instead!
    end
@@ -205,6 +272,16 @@ elseif strcmp(str,'HMS_PN')
    end
    rgpq_sol{N}=abs(sol{N}-x)<tol;
    rgpq(N)=all(rgpq_sol{N});
+elseif strcmp(str,'HMS_MODIC')
+   try
+     sol{N}=clv.msk_modiclus(); % using mosek solver to get the modiclus.
+   catch
+     sol{N}=clv.Modiclus(); % using default solver instead!
+   end
+   rgpq_sol{N}=abs(sol{N}-x)<tol;
+   rgpq(N)=all(rgpq_sol{N});
+else 
+  rgpq(N)=clv.PrekernelQ(x);
 end
 
 rgpQ=all(rgpq);

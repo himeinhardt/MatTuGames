@@ -132,7 +132,7 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_prenucl_llp(vS{1,k}); % using cplex pre-nucleolus function.
+       sol{1,k}=msk_prenucl_llp(vS{1,k}); % using mosek pre-nucleolus function.
      catch
        sol{1,k}=PreNucl_llp(vS{1,k}); % use a third party solver instead!
      end
@@ -158,7 +158,7 @@ for k=1:N-1
      rgpq(k)=modiclusQ(vS{1,k},impVec{1,k});
    else
      try
-       sol{1,k}=cplex_prenucl_llp(vS{1,k});
+       sol{1,k}=msk_prenucl_llp(vS{1,k});
      catch
        sol{1,k}=PreNucl_llp(vS{1,k}); % use a third party solver instead!
      end
@@ -190,7 +190,7 @@ elseif strcmp(str,'PRN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'MODIC')
    try
-     sol{N}=cplex_prenucl(v);
+     sol{N}=msk_prenucl_llp(v);
    catch
      sol{N}=PreNucl(v); % use a third party solver instead!
    end
@@ -208,7 +208,7 @@ elseif strcmp(str,'HMS_PN')
    rgpq(N)=all(rgpq_sol{N});
 elseif strcmp(str,'HMS_MODIC')
    try
-     sol{N}=cplex_prenucl(v);
+     sol{N}=msk_prenucl_llp(v);
    catch
      sol{N}=PreNucl(v); % use a third party solver instead!
    end

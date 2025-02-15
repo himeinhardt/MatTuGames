@@ -21,8 +21,10 @@ function subg=SubGame(clv,S)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/28/2012        0.3             hme
+%   06/21/2020        1.9             hme
 %                
 
+v=clv.tuvalues;
 n=clv.tuplayers;
 subS=SubSets(S,n);
 subg=v(subS);

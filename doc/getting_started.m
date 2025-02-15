@@ -48,10 +48,10 @@ tau_v=TauValue(bv)
 disp('The solidarity value of the game is:');
 disp('sl_vl=SolidarityValue(bv)');
 sl_vl=SolidarityValue(bv)
-disp('The pre-kernel element of the game is:');
+disp('A pre-kernel element of the game is:');
 disp('prk_v=PreKernel(bv)');
 prk_v=PreKernel(bv)
-disp('The kernel element of the game is:');
+disp('A kernel element of the game is:');
 disp('kr_v=Kernel(bv)');
 kr_v=Kernel(bv)
 disp('The pre-nucleolus of the game is:');
@@ -133,6 +133,3 @@ csm=clToMatlab(CS)
 disp(['The Myerson value w.r.t. communication structure csm is specified by:']);
 disp('my_vl=MyersonValue(bv,csm)');
 my_vl=MyersonValue(bv,csm,'cs')
-
-
-

@@ -1,8 +1,8 @@
 function NPPQ=p_NullPlayer_propertyQ(v,x,tol)
-% NULLPLAYER_PROPERTYQ verifies if x satisfies the null player property 
+% P_NULLPLAYER_PROPERTYQ verifies if x satisfies the null player property 
 % using Matlab's PCT.
 %
-%  Usage: COV=p_COV_propertyQ(v,x,m,t,str)
+%  Usage: NPPQ=p_NullPlayer_propertyQ(v,x,tol)
 %
 % Define variables:
 %  output: Fields
@@ -26,6 +26,7 @@ function NPPQ=p_NullPlayer_propertyQ(v,x,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   10/18/2015        0.7             hme
+%   12/27/2020        1.9             hme
 %
 
 if nargin<3
@@ -34,26 +35,30 @@ end
 
 N=length(v);
 [~, n]=log2(N);
-
+pl=1:n;
 S=1:N;
 npQ=false(1,n);
-
+NppQ=false;
 parfor k=1:n
     a=bitget(S,k)==1;
     Swk=S(a==0);
     Sk=S(a);
-    vS=min(v(Swk));
+    vS=[0,v(Swk)];
     npQ(k)=all(abs(v(Sk)-vS)<10^6*eps);
 end    
-
-NpQ=any(npQ);
-J=1:n;
-snp=J(npQ);
-
+sny(npQ);
+snp=pl(npQ);
+nnp=pl(npQ==0);
+nlp=pl(x(pl)~=0);
+np=J(npQ);
 if NpQ==1
    zpQ=abs(x(snp))<10^6*eps;
    pzp=J(zpQ);
    NppQ=any(zpQ);
+elseif any(nlp) %% contrapositive
+   slc=ismember(nnp,nlp);
+   NppQ=all(nnp(slc)==nlp);
+   pzp=pl(x(pl)==0);
 else
    NppQ=false;
    pzp=[];

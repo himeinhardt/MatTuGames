@@ -89,9 +89,10 @@ if strcmp(str,'us')
 int=0:-1:1-n;
 vG=zeros(N,1);
  parfor k=1:N
+     cs1=cs;
      sb=SubSets(k,n);
-     cs=sort(cs);
-     iS=sb(ismembc(sb,cs));
+     cs1=sort(cs1);
+     iS=sb(ismembc(sb,cs1));
      csm=rem(floor(iS(:)*pow2(int)),2)==1;
      scl=csm*ones(n,1);
      mc=max(scl);
@@ -101,7 +102,8 @@ vG=zeros(N,1);
 else
  vG=zeros(N,1);
  parfor k=1:N
-     SG=PartitionSL(k,cs,n);
+     cs1=cs;
+     SG=PartitionSL(k,cs1,n);
      SG(SG==0)=[];
      vG(k)=sum(v(SG));
  end 

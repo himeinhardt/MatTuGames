@@ -24,6 +24,7 @@ function [crq, x, lS]=coreQ(clv,tol)
 %   ====================================================
 %   10/29/2012        0.3             hme
 %   05/14/2015        0.7             hme
+%   05/25/2024        1.9.2           hme
 %                
 
 
@@ -44,7 +45,12 @@ v1(N)=v(N);
 opts.Display='off';
 opts.Simplex='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -54,7 +60,11 @@ opts.Preprocess='none';
 opts.TolCon=1e-6;
 opts.MaxIter=10*(N+n);
 
-[x,fval,exitflag,~,lambda]=linprog(ones(n,1),-PlyMat,-v1,[],[],[],[],[],opts);
+try
+  [x,fval,exitflag,~,lambda]=linprog(ones(n,1),-PlyMat,-v1,[],[],[],[],opts);
+catch %% old api (before R2022a) with initial value.
+  [x,fval,exitflag,~,lambda]=linprog(ones(n,1),-PlyMat,-v1,[],[],[],[],[],opts);
+end      	
 x=x';
 lS=lambda.ineqlin';
 crq=abs(v(N)-fval)<=abs(tol);

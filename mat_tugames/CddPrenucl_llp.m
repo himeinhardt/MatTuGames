@@ -36,6 +36,11 @@ tol=-tol;
 
 N=length(v);
 [~, n]=log2(N);
+if N==3
+  x1=StandardSolution(v);
+  alp=-inf;
+  return
+end
 S=1:N;
 for k=1:n, A1(:,k) = -bitget(S,k);end
 A1(N+1,:)=-A1(end,:);

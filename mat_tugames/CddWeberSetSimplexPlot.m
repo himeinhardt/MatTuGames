@@ -152,7 +152,7 @@ web_vol=volume(Pweb);
 
 clf;
 if n==4
-% Plot Core
+% Plot Core 
  if core_sol==1
 % All Solutions
   if strcmp(add_sol,'all')
@@ -312,7 +312,7 @@ if n==4
       material shiny;
   end
 %
-% No Core
+% No Core 
  else
   if strcmp(add_sol,'all')
       ms2=min(Pweb.V);
@@ -445,7 +445,7 @@ if n==4
 %
 % 3-Perons 
 else
-% Plot Core
+% Plot Core 
  if core_sol==1
 % All Solutions
   if strcmp(add_sol,'all')
@@ -580,7 +580,7 @@ else
       title(['Weber Set of the Game']);
       hold off;
   end
-% Plot No Core
+% Plot No Core 
  else
 % All Solutions
   if strcmp(add_sol,'all')

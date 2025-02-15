@@ -1,18 +1,26 @@
 function LD = LorenzDom(v,x,y,tol)
 % LORENZDOM checks if x Lorenz dominates y in game v.
-% 
 %
-% Usage: [crq x]=LorenzDom(v,x,y,tol)
+% Source: Hougaard, J.L., Peleg, B., Thorlund-Petersen, L., 2001. On the set of Lorenz-maximal
+%         imputations in the core of a balanced game. Internat. J. Game Theory 30, 147–165.
+%
+% Usage: LD=LorenzDom(v,x,y,tol)
 %
 % Define variables:
-%  output:
-%  crq      -- Returns 1 (true) or 0 (false).
-%  x        -- The smallest allocation that satisfies all core constraints.
+%  output: field variables
+%  ldQ      -- Returns 1 (true) if x Lorenz Dom y, otherwise 0 (false).
+%              Not required that y is in the core.
+%  phi      -- Mapping of phi(x) and phi(y). 
+%  dij      -- Matrices of dij(x)=max(del_ij(x),0) and dij(y)=max(del_ij(y),0) 
+%              for all pairs (i,j). Zero matrix is a necessary condition for x to 
+%              be Lorenz max within the core, whenever x is in the core.
 %
 %  input:
 %  v        -- A Tu-Game v of length 2^n-1. 
+%  x        -- An allocation x of length n.
+%  y        -- An alternative allocation of length n.
 %  tol      -- Tolerance value. Its default value is set to 10^8*eps.
-
+%
 
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
@@ -23,6 +31,7 @@ function LD = LorenzDom(v,x,y,tol)
 %   ====================================================
 %   07/12/2015        0.7             hme
 %   01/15/2019        1.0             hme
+%   11/20/2021        1.9.1           hme
 %
 
 
@@ -58,9 +67,8 @@ ldQ=false;
 dij.x=DIJ(v,x,n);
 dij.y=DIJ(v,y,n);
 
-
-phi.x=phif(sort(x),n,N);
-phi.y=phif(sort(y),n,N);
+phi.x=phif(x,n,N);
+phi.y=phif(y,n,N);
 ldQ=all(phi.x>=phi.y-tol);
 LD=struct('ldQ',ldQ,'phi',phi,'dij',dij);
 
@@ -69,18 +77,21 @@ LD=struct('ldQ',ldQ,'phi',phi,'dij',dij);
 function dij=DIJ(v,z,n)
 
 [~,smat]=PrekernelQ(v,z);
-%dij=zeros(n,n);
+dij=zeros(n,n);
 del=zeros(n,n);
 
-for ii=1:n-1
-   for jj=ii+1:n
-           del(ii,jj)=min((z(jj)-z(ii))/2,-smat(ii,jj));
+if n>1
+  for ii=1:n-1
+      for jj=ii+1:n
+           del(ii,jj)=min((z(jj)-z(ii))/2,-smat(jj,ii));
            dij(ii,jj)=max(del(ii,jj),0);
-           del(jj,ii)=min((z(ii)-z(jj))/2,-smat(jj,ii));
+           del(jj,ii)=min((z(ii)-z(jj))/2,-smat(ii,jj));
            dij(jj,ii)=max(del(jj,ii),0);            
-   end
-end
-
+      end
+  end
+else
+  dij=max(-smat,0);
+end	
 
 
 %----------------------

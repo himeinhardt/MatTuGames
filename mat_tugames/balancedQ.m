@@ -5,6 +5,20 @@ function [bcQ, cmat, rk, cf]=balancedQ(cS,n,tol)
 %
 % Usage: [bcQ, cmat, rk]=balancedQ(cS,n,tol)
 %
+% Define variables:
+%  output:
+%  bcQ      -- Returns 1 (true) or 0 (false).
+%  cmat     -- Incidence matrix of players. 
+%  rk       -- Rank of matrix cmat.
+%  cf       -- Balanced weights.
+%
+%
+%  input:
+%  cS        -- Collection of coalitions.
+%  n         -- Number of players involved.
+%  tol       -- Tolerance value. Its default value is set to 10^4*eps.
+%
+%
 % 1. Example:
 % Choose a collection of coalitions:
 %
@@ -63,20 +77,9 @@ function [bcQ, cmat, rk, cf]=balancedQ(cS,n,tol)
 %    0.0909
 %
 % 
-% Define variables:
-%  output:
-%  bcQ      -- Returns 1 (true) or 0 (false).
-%  cmat     -- Incidence matrix of players. 
-%  rk       -- Rank of matrix cmat.
-%  cf       -- Balanced weights.
-%
-%
-%  input:
-%  cS        -- Collection of coalitions.
-%  n         -- Number of players involved.
-%  tol       -- Tolerance value. Its default value is set to 10^4*eps.
 %
 
+%
 %  Author:        Holger I. Meinhardt (hme)
 %  E-Mail:        Holger.Meinhardt@wiwi.uni-karlsruhe.de
 %  Institution:   University of Karlsruhe (KIT)  
@@ -88,6 +91,7 @@ function [bcQ, cmat, rk, cf]=balancedQ(cS,n,tol)
 %   03/28/2015        0.7             hme
 %   02/24/2018        0.9             hme
 %   05/25/2019        1.1             hme
+%   04/22/2024        1.9.2           hme
 %                
 
     
@@ -154,6 +158,7 @@ f=zf';
 Aeq=ov';
 beq=0;
 mtv=verLessThan('matlab','9.1.0');
+mtv2=verLessThan('matlab','9.1.12');
     try
       if mtv==1
          options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
@@ -172,7 +177,12 @@ mtv=verLessThan('matlab','9.1.0');
       opts.Display='off';
       opts.Simplex='on';
       opts.LargeScale='on';
-      opts.Algorithm='dual-simplex';
+      mth1=verLessThan('matlab','24.1.0');
+      if mth1==0,
+         opts.Algorithm='dual-simplex-highs';
+      else
+         opts.Algorithm='dual-simplex';
+      end
       opts.TolFun=1e-10;
       opts.TolX=1e-10;
       opts.TolRLPFun=1e-10;
@@ -181,7 +191,11 @@ mtv=verLessThan('matlab','9.1.0');
       opts.Preprocess='none';
       opts.TolCon=1e-6;
       opts.MaxIter=10*(N+n);
-      [sol,fval,ef,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      if mtv2==0
+          [sol,fval,ef,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],opts);
+      else  %% old api (before R2022a) with initial value.
+          [sol,fval,ef,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      end      
     end
 %
 % Trying to find positive weights.

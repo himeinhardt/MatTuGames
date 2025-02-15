@@ -51,10 +51,10 @@ while 1
   M0=M;  
   CM=setdiff(J,M);
   if isempty(CM)==0
-     xm=sum(x([M]));
+     xm=sum(x(M));
      m=length(M);
-     x([CM])=x([CM])+xm/(n-m);
-     x([M])=0;
+     x(CM)=x(CM)+xm/(n-m);
+     x(M)=0;
   end 
   M2=J(x<0);
   M=unique([M,M2]);

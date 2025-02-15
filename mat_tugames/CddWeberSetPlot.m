@@ -166,7 +166,7 @@ web_vol=volume(Pweb);
 
 clf;
 if n==4
-% Plot Core
+% Plot Core 
  if core_sol==1
 % All Solutions
   if strcmp(add_sol,'all')
@@ -459,7 +459,7 @@ if n==4
 %
 % 3-Perons 
 else
-% Plot Core
+% Plot Core 
  if core_sol==1
 % All Solutions
   if strcmp(add_sol,'all')

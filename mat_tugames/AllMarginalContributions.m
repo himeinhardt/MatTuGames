@@ -21,9 +21,11 @@ function Mgc=AllMarginalContributions(v)
 %   08/29/2010        0.1 beta        hme
 %   10/27/2012        0.3             hme
 %   09/07/2020        1.9             hme
+%   06/08/2023        1.9.1           hme
 %                
-
-
+narginchk(1,1); % check for legal number of input arguments.
+%
+% Section for assigning variables and pre-allocations.
 N=length(v);
 [~, n]=log2(N);
 pl=1:n;
@@ -44,7 +46,9 @@ idx=sub2ind([n sz(1)],rw,clm);
 Pt=P';
 P=reshape(Pt(idx),sz(1),n);
 clear ix idx rw clm Pt;
-rP1=P;
+% Section marginal worth vectors.
+rP1=zeros(sz);
+% Initialization of the baseline matrix of permutations.  
 for k=1:n
     rP1(:,k)=P(:,k)-ci(k);
 end

@@ -23,14 +23,20 @@ function [RCP RCPC]=Reconfirmation_propertyQ(clv,x,str,tol)
 %               in accordance with the pre-nucleolus.
 %              'PRK' that is, the Davis-Maschler reduced game 
 %               in accordance with pre-kernel solution.
+%              'MODIC' that is, the Davis-Maschler reduced game 
+%               equivalence in accordance with the modiclus.
 %              'SHAP' that is, Hart-MasColell reduced game 
 %               in accordance with the Shapley Value.
 %              'HMS_PK' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleolus.
+%              'HMS_CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              'CORE' that is, the Davis-Maschler reduced game 
 %               in accordance with the core.
+%              'LOR' that is, the Davis-Maschler reduced game 
+%               in accordance with the Lorenz solution.
 %              Default is 'PRK'.
 %  tol      -- Tolerance value. By default, it is set to 10^6*eps.
 %              (optional) 
@@ -46,6 +52,7 @@ function [RCP RCPC]=Reconfirmation_propertyQ(clv,x,str,tol)
 %   ====================================================
 %   05/29/2013        0.3             hme
 %   06/22/2020        1.9             hme
+%   11/03/2021        1.9.1           hme
 %                
 
 v=clv.tuvalues;
@@ -88,6 +95,8 @@ elseif strcmp(str,'HMS_PK')
   vS=clv.HMS_Reduced_game(x,'PRK');
 elseif strcmp(str,'HMS_PN')
   vS=clv.HMS_Reduced_game(x,'PRN');
+elseif strcmp(str,'HMS_CORE')
+  vS=clv.HMS_Reduced_game(x,'CORE');
 else
   vS=clv.DM_Reduced_game(x);
 end
@@ -113,7 +122,7 @@ for k=1:N-1
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     else
       try
-        vS_sol{1,k}=cplex_prenucl_mod4(vS{1,k}); % solution y restricted to S.
+        vS_sol{1,k}=msk_prenucl_llp(vS{1,k}); % solution y restricted to S.
       catch
          vS_sol{1,k}=PreNucl(vS{1,k}); % use a third party solver instead!
       end
@@ -121,11 +130,33 @@ for k=1:N-1
       vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     end
+  elseif strcmp(str,'MODIC')
+     if length(vS{1,k})==1
+        vS_sol{1,k}=Modiclus(vS{1,k}); % solution y restricted to S.
+        rS{k}=PlyMat(k,:);
+        vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
+        rcpq{k}=abs(vS_y{1,k}-x)<tol;
+     else
+        try
+          vS_sol{1,k}=msk_modiclus(vS{1,k}); % solution y restricted to S.
+        catch
+          vS_sol{1,k}=Modiclus(vS{1,k}); % use a third party solver instead!
+        end
+        rS{k}=PlyMat(k,:);
+        vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
+        rcpq{k}=abs(vS_y{1,k}-x)<tol;
+     end    
   elseif strcmp(str,'SHAP')
     vS_sol{1,k}=ShapleyValue(vS{1,k}); % solution y restricted to S.
     rS{k}=PlyMat(k,:);
     vS_y{1,k}(rS{k})=vS_sol{1,k};     % extension to (y,x_N\S).
     rcpq{k}=abs(vS_y{1,k}-x)<tol;
+  elseif strcmp(str,'LOR')
+    LD_vs=LorenzSol(vS{1,k}); % solution y restricted to S.
+    vS_sol{1,k}=LD_vs.Cp;
+    rS{k}=PlyMat(k,:);
+    vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
+    rcpq{k}=LorenzMaxCoreQ(v,vS_y{1,k});    
   elseif strcmp(str,'HMS_PN')
     if length(vS{1,k})==1
       vS_sol{1,k}=PreKernel(vS{1,k}); % solution y restricted to S.
@@ -134,7 +165,7 @@ for k=1:N-1
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     else
       try
-        vS_sol{1,k}=cplex_prenucl_mod4(vS{1,k}); % solution y restricted to S.
+        vS_sol{1,k}=msk_prenucl_llp(vS{1,k}); % solution y restricted to S.
       catch
         vS_sol{1,k}=PreNucl(vS{1,k}); % use a third party solver instead!
       end
@@ -142,12 +173,17 @@ for k=1:N-1
       vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     end
- else % default
+  elseif strcmp(str,'HMS_CORE')
+     [~,vS_sol{1,k}]=LeastCore(vS{1,k}); % solution y restricted to S.
+     rS{k}=PlyMat(k,:);
+     vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S).
+     rcpq{k}=clv.belongToCoreQ(vS_y{1,k}); % if the core does not exist, it is false.   
+  else % default
     vS_sol{1,k}=PreKernel(vS{1,k}); % solution y restricted to S.
     rS{k}=PlyMat(k,:);
     vS_y{1,k}(rS{k})=vS_sol{1,k}; % extension to (y,x_N\S)
-    rcpq{k}=clv.PrekernelQ(vS_y{1,k});
-  end
+    rcpq{k}=PrekernelQ(v,vS_y{1,k});
+  end    
  rcpQ(k)=all(rcpq{k});
 end
 
@@ -155,21 +191,44 @@ if strcmp(str,'PRK')
   vS_sol{1,N}=clv.PreKernel(x);
   rcpq{N}=clv.PrekernelQ(x);
   vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'LOR')
+  LD=clv.LorenzSol();
+  lmQ=clv.LorenzMaxCoreQ(LD.Cp);
+  if lmQ
+     vS_sol{1,N}=LD.Cp;
+     rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+     vS_y{1,N}=vS_sol{1,N};
+  else
+     rcpq{1,N}=false;
+     vS_y{1,N}=vS_sol{1,N};
+  end
 elseif strcmp(str,'CORE')
   vS_sol{1,N}=clv.LeastCore();
   rcpq{N}=clv.belongToCoreQ(x);
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'PRN')
   try
-     vS_sol{1,N}=clv.cplex_prenucl_mod4();
+     vS_sol{1,N}=clv.msk_prenucl_llp();
   catch
      vS_sol{1,N}=clv.PreNucl();
+  end
+  rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+  vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'MODIC')
+  try
+   vS_sol{1,N}=msk_modiclus(v);
+  catch
+   vS_sol{1,N}=Modiclus(v);
   end
   rcpq{N}=abs(vS_sol{1,N}-x)<tol;
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'SHAP')
   vS_sol{1,N}=clv.ShapleyValue();
   rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+  vS_y{1,N}=vS_sol{1,N};  
+elseif strcmp(str,'HMS_CORE')
+  vS_sol{1,N}=clv.LeastCore();
+  rcpq{N}=clv.belongToCoreQ(x);
   vS_y{1,N}=vS_sol{1,N};
 else
   vS_sol{1,N}=clv.PreKernel(x);

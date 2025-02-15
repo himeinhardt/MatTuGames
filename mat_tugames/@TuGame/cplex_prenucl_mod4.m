@@ -39,6 +39,7 @@ N=clv.tusize;
 n=clv.tuplayers;
 if N==3
   x1=clv.StandardSolution();
+  fmin=-inf;
   return
 end
 % solver parameter
@@ -99,12 +100,15 @@ while 1
   end
   mS2=rem(floor(bA(:)*pow2(it)),2);
   mS2(1:2,:)=[];
+  tmS2=mS2';  
   rk=rank(mS2);
   if rk==n
   %   x=(-mS2\B1(bA))';
      break;
   else
     if isempty(mS2)
+       CbS2=[];
+    elseif rank(tmS2) < rank([tmS2,mbS2']) % no solution
        CbS2=[];
     else 
        CbS2=mbS2/mS2;
@@ -118,10 +122,14 @@ while 1
 %% Checking if coalitions sS are in the span.
 %% This has a negative impact on the performance.
   sS=S(ismembc(S,bA)==0);
-  C1=(rem(floor(sS(:)*pow2(it)),2));
-  mC=C1/mS2;
   if rk>2
-     lC=(abs(mC*mS2-C1)<tol)';
+     C1=(rem(floor(sS(:)*pow2(it)),2));
+     if rank(tmS2) == rank([tmS2,C1'])     
+         mC=C1/mS2;       
+         lC=(abs(mC*mS2-C1)<tol)';
+    else % no solution
+        mC=[];
+     end
   else
      mC=[];
   end

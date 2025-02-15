@@ -217,14 +217,14 @@ if n==4
  if rws>2
 
   if imp_set==1
-   h=Pcr.plot('linewidth', 1.2);
+   h=Pcr.plot('wire',true,'linewidth', 1.2);
    if strcmp(add_sol,'none')
      set(h,'FaceColor',[0 .5 1],'EdgeColor','k');
    else
     set(h,'EdgeColor','k','FaceColor',[0 .5 1],'FaceAlpha',0.5);
    end
 
-   Pim.plot('alpha',0,'linewidth', 0.9);
+   Pim.plot('wire',true,'alpha',0,'linewidth', 0.9);
    text(iX(1,1)-.05,iX(1,2),iX(1,3)-.04,'Player 1');
    text(iX(2,1)+.17,iX(2,2),iX(2,3)+.09,'Player 2');
    text(iX(3,1),iX(3,2),iX(3,3)+.04,'Player 3');

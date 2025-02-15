@@ -1,4 +1,4 @@
-function [v sS]=vclToMatlab(clm,vlm)
+function [v sS]=vclToMatlab(clm,vlm,cv)
 % VCLTOMATLAB computes from a cell, which contains the coalition
 % representation in generic power set representation (e.g. Mathematica), 
 % and a valuation vector for these coalition, a game v as well as 
@@ -16,6 +16,8 @@ function [v sS]=vclToMatlab(clm,vlm)
 %              in generic power set representation (e.g. Mathematica format).   
 %  vlm      -- The valuation vector of coalitions in the order as presented by
 %              the cell input clm. 
+%  cv       -- Setting the coaltion values to the complement of clm.
+%              Must be an integer.
 %    
 %
 %    
@@ -47,7 +49,12 @@ function [v sS]=vclToMatlab(clm,vlm)
 %   Date              Version         Programmer
 %   ====================================================
 %   06/02/2012        0.2 beta        hme
+%   08/10/2014        0.5             hme
 %                    
+
+if nargin<3
+  cv='';
+end
 
 vsz=length(vlm);    
 csz=numel(clm);
@@ -67,5 +74,9 @@ end
 n=numel(clm{end});
 N=2^n-1;
 S=1:N;
-v=zeros(1,N);
+if isempty(cv)
+  v=zeros(1,N);
+else
+  v=cv*ones(1,N);
+end
 v(sS)=vlm;

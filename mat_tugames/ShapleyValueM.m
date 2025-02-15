@@ -1,6 +1,7 @@
 function sh=ShapleyValueM(v)
 % SHAPLEYVALUEM computes the Shapley value by the marginal contributions 
-% of TU-game v. For n>10 use the function ShapleyValue() instead.
+% of TU-game v. For n>10 use the function ShapleyValue() instead. Notice
+% that for n=12, the computation requires at least 360 GB.
 %
 % Usage: sh=ShapleyValueM(v)
 % Define variables:
@@ -20,8 +21,7 @@ function sh=ShapleyValueM(v)
 %   08/10/2010        0.1 beta        hme
 %   10/27/2012        0.3             hme
 %                
-
-
+narginchk(1,1); % check for legal number of input arguments.
 
 N=length(v);
 [~, n]=log2(N);

@@ -22,7 +22,6 @@ function tauv=TauValue(v)
 %   10/27/2012        0.3             hme
 %                
 
-
 if nargin<1
     error('At least the game must be given!');  
 else
@@ -30,31 +29,32 @@ else
     [~, n]=log2(N);  
     if (2^n-1)~=N, error('Game has not the correct size!'); end
 end
-
-
+%
+% pre-allocating tau-value.
 tauv=zeros(1,n);
-
+% getting the gap.
 [g bv lv]=Gap(v);
-
-
-if g(N)==0
-   tauv=bv;
-elseif g(N)>0
-   sumlv=lv*ones(n,1);
-   if sumlv==0
-     warning('Tau:ZeroConc','The sum of the concession vector is zero. Assuming simple game!');
-     [~, lvp]=veto_players(v);
-     J=1:n;
-     slcvp=J(lvp);
-     lgtv=length(slcvp);
-     if lgtv>0
-        tauv=lvp/lgtv;
+%
+% Determining the tau-value. 
+  if g(N)==0
+     tauv=bv;
+  elseif g(N)>0
+     sumlv=lv*ones(n,1);
+     if sumlv==0
+        warning('Tau:ZeroConc','The sum of the concession vector is zero. Assuming simple game!');
+        [~, lvp]=veto_players(v);
+        J=1:n;
+        slcvp=J(lvp);
+        lgtv=length(slcvp);
+        if lgtv>0
+           tauv=lvp/lgtv;
+        else
+          error('Simple game has no veto player! No Tau-Value computed. Sorry!');
+        end  
      else
-     error('Simple game has no veto player! No Tau-Value computed. Sorry!');
-     end  
-   else
-     tauv=bv-(g(N)*lv)/sumlv;
-   end
-else
-  error('Game is not quasi-balanced! No Tau-Value computed. Sorry!');
-end
+       tauv=bv-(g(N)*lv)/sumlv;
+     end
+  else
+     error('Game is not quasi-balanced! No Tau-Value computed. Sorry!');
+  end
+end  

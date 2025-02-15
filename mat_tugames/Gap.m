@@ -24,31 +24,30 @@ function [g bv lv]=Gap(v)
 %   08/10/2010        0.1 beta        hme
 %   09/14/2012        0.2             hme
 %   10/27/2012        0.3             hme
+%   06/25/2023        1.9.1           hme
 %                
 
 
-
+% pre-allocating
 N=length(v);
 [~, n]=log2(N);
 % upper vector
 Si=zeros(n,1);
 k=1:n;
+% marginal contribution vector.
 Si=bitset(N,k,0);
 bv=v(N)-v(Si);
-
-
+%
 % Computing the gap function w.r.t. v.
-g=zeros(1,N); % the gap vector w.r.t. v.
 S=1:N;
 Bm=bv(1); for ii=2:n, Bm=[Bm bv(ii) Bm+bv(ii)]; end
 g=Bm-v;
-
-a=cell(n,1);
+% pre-allocating concession.
 lv=zeros(1,n);
 % concession vector
-for i=1:n
-   a{i}=bitget(S,i)==1;
-   lv(i)=min(g(a{i}));
+ for i=1:n
+    a=bitget(S,i)==1;
+    lv(i)=min(g(a));
+ end
 end
-
 

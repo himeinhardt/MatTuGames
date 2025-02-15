@@ -56,7 +56,7 @@ if nargin<2
    N=length(v);
    tol=10^6*eps;
    str='MODIC';
-   mnc_v=cplex_modiclus(v);
+   mnc_v=msk_modiclus(v);
 elseif nargin<3
    N=length(v);
    tol=10^6*eps;
@@ -67,7 +67,7 @@ elseif nargin<3
    else
       warning('Sol:Wrn','Input vector is not the modiclus!');
       mnc_v=x;
-      mnc_v=cplex_modiclus(v);
+      mnc_v=msk_modiclus(v);
    end
 elseif nargin < 4
    N=length(v);
@@ -78,7 +78,6 @@ elseif nargin < 4
    else
       warning('Sol:Wrn','Input vector is not the modiclus!');
       mnc_v=x;
-      %mnc_v=cplex_modiclus(v);
    end
 else
    N=length(v);
@@ -88,7 +87,6 @@ else
    else
       warning('Sol:Wrn','Input vector is not the modiclus!');
       mnc_v=x;
-      %mnc_v=cplex_modiclus(v);
    end
 end
 [~, n]=log2(N);
@@ -99,7 +97,7 @@ k=1:n;
 parfor S=1:N-1
     a=bitget(S,k)==1;
     try 
-      x_S=cplex_modiclus(vS{1,S});
+      x_S=msk_modiclus(vS{1,S});
     catch
       x_S=Modiclus(vS{1,S});
     end  

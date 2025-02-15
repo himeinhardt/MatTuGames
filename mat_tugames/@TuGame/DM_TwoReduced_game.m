@@ -9,6 +9,8 @@ function [v_t,sS,PlyMat2]=DM_TwoReduced_game(clv,x)
 %
 % Usage: v_t=clv.DM_TwoReduced_game(x) 
 % Define variables:
+% Usage: v_t=DM_TwoReduced_game(v,x) 
+% Define variables:
 %  output:
 %  v_t{1,:} -- All Davis-Maschler single and two-person reduced games w.r.t. x.
 %  v_t{2,:} -- The corresponding sub-coalitions which define a reduced game.

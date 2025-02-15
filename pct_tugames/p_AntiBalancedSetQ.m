@@ -3,7 +3,7 @@ function [bcQ, cmat, S]=p_AntiBalancedSetQ(exc,n,S,tol)
 % coalitions is a anti balanced collection. Checking Kohlberg's criterion.
 % Requires Matlab's Optimization toolbox (default), otherwise CPLEX.
 % Uses now Dual-Simplex (Matlab R2015a). It is recommended not to 
-% use this function, use p__B0_balancedCollectionQ instead.
+% use this function, use p_B0_balancedCollectionQ instead.
 % 
 %
 % Usage: bcQ=p_AntiBalancedSetQ(exc,n,S,tol)
@@ -29,6 +29,7 @@ function [bcQ, cmat, S]=p_AntiBalancedSetQ(exc,n,S,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   02/06/2017        0.9             hme
+%   05/27/2024        1.9.2           hme
 %                
 
     
@@ -114,8 +115,15 @@ zf=A'*ovn;
 f=zf';
 Aeq=ov';
 beq=0;
+mtv=verLessThan('matlab','9.1.0');
+mtv2=verLessThan('matlab','9.1.12');
     try 
-      options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
+      if mtv==1
+         options = cplexoptimset('MaxIter',128,'Dual-Simplex','on','Display','off');
+      else
+         options = cplexoptimset('MaxIter',128,'Algorithm','primal','Display','off');
+      end	    
+%      options = cplexoptimset('MaxIter',128,'Simplex','on','Display','off');
       options.barrier.convergetol=1e-12;
       options.simplex.tolerances.feasibility=1e-9;
       options.simplex.tolerances.optimality=1e-9;
@@ -129,7 +137,12 @@ beq=0;
       opts.Display='off';
       opts.Simplex='on';
       opts.LargeScale='on';
-      opts.Algorithm='dual-simplex';
+      mth1=verLessThan('matlab','24.1.0');
+      if mth1==0,
+         opts.Algorithm='dual-simplex-highs';
+      else
+         opts.Algorithm='dual-simplex';
+      end      
       opts.TolFun=1e-10;
       opts.TolX=1e-10;
       opts.TolRLPFun=1e-10;
@@ -138,7 +151,11 @@ beq=0;
       opts.Preprocess='none';
       opts.TolCon=1e-6;
       opts.MaxIter=10*(N+n);
-      [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      if mtv2==0
+          [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],opts);
+      else  %% old api (before R2022a) with initial value.
+          [sol,fval,exitflag,~,lambda] = linprog(f,A,b,Aeq,beq,[],[],[],opts);
+      end
     end
 ef=exitflag; 
 

@@ -22,7 +22,8 @@ function [Mgc mgc P ix]=p_AllMarginalContributions(v)
 %   10/27/2012        0.3              hme
 %   08/31/2020        1.9              hme
 %                
-
+msg=nargchk(1,1,nargin);
+error(msg);
 
 N=length(v);
 [~, n]=log2(N);

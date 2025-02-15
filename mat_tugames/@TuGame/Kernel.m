@@ -27,6 +27,7 @@ function [x, Lerr, smat, xarr]=Kernel(clv,x)
 %   12/28/2012        0.3             hme
 %   05/11/2019        1.1             hme
 %   10/21/2020        1.9             hme
+%   09/13/2021        1.9.1           hme
 %                
 
 
@@ -184,11 +185,14 @@ while cnt<CNT
     b=-2*E'*a;
 
 % Setting options
-    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
-% qudratic Matlab solver.
-    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
+%    opts = optimset('Algorithm','interior-point-convex','Display','off','TolFun',1e-12);
+    opts = optimoptions('quadprog','Algorithm','active-set','Display','off','TolFun',1e-12);
+    ws=optimwarmstart(x',opts);
+% qudratic Matlab solver.    
+    [ws,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,ws);
+%    [x,fval,exitflag,output,lambda] = quadprog(Q,b,[],[],E(m,:),a(m),vi,ra,x,opts);
     if exitflag ~= 1
-       x=x';
+       x=ws.X';
        warning('Ker:No','Probably no kernel point found!');
        break;
     elseif abs(fval-ofval)<tol
@@ -201,13 +205,13 @@ while cnt<CNT
        else
           krQ=0;
        end
-       x=x';
+       x=ws.X';
        if krQ==0
           warning('Ker:NoB','Probably no kernel point found!');
        end
        break;
     end
-
+    x=ws.X;
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
     z1=any(isinf(x));

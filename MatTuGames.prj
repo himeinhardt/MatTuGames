@@ -1,18 +1,18 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3080011166" file="/pfs/data5/home/yyy/xxx/xxx/matlab/mat_tugV1d9/MatTuGames.prj" location="/pfs/data5/home/yyy/xxx/xxx/matlab/mat_tugV1d9" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="3080011166" file="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9d2/MatTuGames.prj" location="/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9d2" name="MatTuGames" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>MatTuGames</param.appname>
     <param.authnamewatermark>Holger I. Meinhardt</param.authnamewatermark>
-    <param.email>Holger.Meinhardt@wiwi.uni-karlsruhe.de</param.email>
+    <param.email>holger.meinhardt@partner.kit.edu</param.email>
     <param.company>Karlsruhe Institute of Technology (KIT)</param.company>
     <param.summary>A Matlab Toolbox for Cooperative Game Theory</param.summary>
-    <param.description>The game theoretical Matlab toolbox MatTuGames provides about 500 functions
+    <param.description>The game theoretical Matlab toolbox MatTuGames provides more than 700 functions
 for modeling, and calculating some solutions as well as properties of cooperative
 games with transferable utilities. In contrast to existing Matlab toolboxes to
 investigate TU-games, which are written in a C/C++ programming style with the consequence
 that these functions are executed relatively slowly, we heavily relied on vectorized
 constructs in order to write more efficient Matlab functions.</param.description>
     <param.screenshot>${PROJECT_ROOT}/MatTUG.png</param.screenshot>
-    <param.version>1.9.0.2</param.version>
+    <param.version>1.9.2.1</param.version>
     <param.output>${PROJECT_ROOT}/MatTuGames.mltbx</param.output>
     <param.products.name>
       <item>MATLAB Parallel Server</item>
@@ -32,11 +32,11 @@ constructs in order to write more efficient Matlab functions.</param.description
     </param.products.id>
     <param.products.version>
       <item>7.1</item>
-      <item>9.1</item>
-      <item>7.4</item>
-      <item>8.6</item>
-      <item>12.1</item>
-      <item>8.7</item>
+      <item>24.2</item>
+      <item>24.2</item>
+      <item>24.2</item>
+      <item>24.2</item>
+      <item>24.2</item>
     </param.products.version>
     <param.platforms />
     <param.guid>f64b66ec-abff-48df-880a-b8c86e5e374f</param.guid>
@@ -68,14 +68,44 @@ constructs in order to write more efficient Matlab functions.</param.description
          &lt;file type="main"&gt;/doc/testcase_graphics.m&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
+      &lt;example name="Contents" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/Contents.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/Contents.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
       &lt;example name="GettingStarted" type="html"&gt;
          &lt;file type="source"&gt;/doc/html/GettingStarted.html&lt;/file&gt;
          &lt;file type="main"&gt;/doc/GettingStarted.mlx&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
+      &lt;example name="MatTuGames_Overview" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/MatTuGames_Overview.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/MatTuGames_Overview.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
       &lt;example name="mattug_features" type="html"&gt;
          &lt;file type="source"&gt;/doc/html/mattug_features.html&lt;/file&gt;
          &lt;file type="main"&gt;/doc/mattug_features.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="mattug_quick_tour" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/mattug_quick_tour.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/mattug_quick_tour.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="mattug_release_note" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/mattug_release_note.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/mattug_release_note.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="mattug_start_page" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/mattug_start_page.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/mattug_start_page.mlx&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="mattug_testcase_graphics" type="html"&gt;
+         &lt;file type="source"&gt;/doc/html/mattug_testcase_graphics.html&lt;/file&gt;
+         &lt;file type="main"&gt;/doc/mattug_testcase_graphics.mlx&lt;/file&gt;
          &lt;file type="thumbnail"/&gt;
       &lt;/example&gt;
    &lt;/exampleCategory&gt;
@@ -130,7 +160,6 @@ constructs in order to write more efficient Matlab functions.</param.description
     <param.additional.sw.linux.url />
     <unset>
       <param.authnamewatermark />
-      <param.email />
       <param.company />
       <param.output />
       <param.platforms />
@@ -161,6 +190,7 @@ constructs in order to write more efficient Matlab functions.</param.description
       <file>${PROJECT_ROOT}/Contents.md</file>
       <file>${PROJECT_ROOT}/Contents.pdf</file>
       <file>${PROJECT_ROOT}/LICENSE.md</file>
+      <file>${PROJECT_ROOT}/LICENSE.pdf</file>
       <file>${PROJECT_ROOT}/MatTUG.png</file>
       <file>${PROJECT_ROOT}/README.md</file>
       <file>${PROJECT_ROOT}/README.pdf</file>
@@ -182,11 +212,11 @@ constructs in order to write more efficient Matlab functions.</param.description
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/yyy/xxx/xxx/matlab/mat_tugV1d9/MatTuGames.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="MatTuGames.mltbx" optional="false">/pfs/data5/home/kit/ior/iu6059/matlab/mat_tugV1d9d2/MatTuGames.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/pfs/data5/software_uc2/bwhpc/common/math/matlab/R2021a</root>
+      <root>/pfs/data5/software_uc2/bwhpc/common/math/matlab/R2024b</root>
       <toolboxes>
         <toolbox name="matlabcoder" />
         <toolbox name="embeddedcoder" />
@@ -235,7 +265,7 @@ constructs in order to write more efficient Matlab functions.</param.description
       <vista>false</vista>
       <linux>true</linux>
       <solaris>false</solaris>
-      <osver>4.18.0-193.28.1.el8_2.x86_64</osver>
+      <osver>4.18.0-477.70.1.el8_8.x86_64</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>glnxa64</arch>

@@ -29,6 +29,8 @@ function [RCP RCPC]=p_Reconfirmation_propertyQ(clv,x,str,tol)
 %               in accordance with the pre-kernel solution.
 %              'HMS_PN' that is, Hart-MasColell reduced game 
 %               in accordance with the pre-nucleolus.
+%              'HMS_CORE' that is, the Hart-MasColell reduced game 
+%               in accordance with the core.
 %              'CORE' that is, the Davis-Maschler reduced game 
 %               in accordance with the core.
 %              Default is 'PRK'.
@@ -47,6 +49,7 @@ function [RCP RCPC]=p_Reconfirmation_propertyQ(clv,x,str,tol)
 %   05/30/2013        0.3              hme
 %   05/16/2014        0.5              hme
 %   04/01/2020        1.9              hme
+%   11/03/2021        1.9.1            hme
 %                
 
 v=clv.tuvalues;
@@ -97,6 +100,10 @@ elseif strcmp(str,'HMS_PN')
   vSa=clv.p_HMS_Reduced_game(x,'PRN');
   vS=vSa{:,1};
   clear vSa;
+elseif strcmp(str,'HMS_CORE')
+  vSa=clv.p_HMS_Reduced_game(x,'CORE');
+  vS=vSa{:,1};
+  clear vSa;
 else
   vSa=clv.p_DM_Reduced_game(x);
   vS=vSa{:,1};
@@ -110,6 +117,12 @@ parfor k=1:N-1
     rSk=PlyMat(k,:);
     vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
     rcpq{k}=clv.PrekernelQ(vS_y{1,k});
+  elseif strcmp(str,'LOR')
+    LD_vs=LorenzSol(vS{k}); % solution y restricted to S.
+    vS_sol{1,k}=LD_vs.Cp;
+    rSk=PlyMat(k,:);
+    vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+    rcpq{k}=LorenzMaxCoreQ(v,vS_y{1,k});
   elseif strcmp(str,'CORE')
     [~,vS_sol{1,k}]=LeastCore(vS{k}); % solution y restricted to S.
     rSk=PlyMat(k,:);
@@ -124,7 +137,7 @@ parfor k=1:N-1
     else
       try
         %vS_sol{1,k}=Prenucl(vS{k}); % solution y restricted to S.
-        vS_sol{1,k}=cplex_prenucl_mod4(vS{k}); 
+        vS_sol{1,k}=msk_prenucl_llp(vS{k}); 
       catch
         vS_sol{1,k}=PreNucl(vS{k}); % use a third party solver instead!
       end
@@ -132,6 +145,22 @@ parfor k=1:N-1
       vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     end
+  elseif strcmp(str,'MODIC')
+     if length(vS{1,k})==1
+        vS_sol{1,k}=Modiclus(vS{k}); % solution y restricted to S.
+        rSk=PlyMat(k,:);
+        vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+        rcpq{k}=abs(vS_y{1,k}-x)<tol;
+     else
+        try
+          vS_sol{1,k}=msk_modiclus(vS{k}); % solution y restricted to S.
+        catch
+          vS_sol{1,k}=Modiclus(vS{k}); % use a third party solver instead!
+        end
+        rSk=PlyMat(k,:);
+        vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+        rcpq{k}=abs(vS_y{1,k}-x)<tol;
+     end    
   elseif strcmp(str,'SHAP')
     vS_sol{1,k}=ShapleyValue(vS{k}); % solution y restricted to S.
     rSk=PlyMat(k,:);
@@ -146,7 +175,7 @@ parfor k=1:N-1
     else
       try
         %vS_sol{1,k}=Prenucl(vS{k}); % solution y restricted to S.
-         vS_sol{1,k}=cplex_prenucl_mod4(vS{k});
+         vS_sol{1,k}=msk_prenucl_llp(vS{k});
       catch
         vS_sol{1,k}=PreNucl(vS{k}); % use a third party solver instead!
       end
@@ -154,6 +183,11 @@ parfor k=1:N-1
       vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
       rcpq{k}=abs(vS_y{1,k}-x)<tol;
     end
+ elseif strcmp(str,'HMS_CORE')
+     [~,vS_sol{1,k}]=LeastCore(vS{k}); % solution y restricted to S.
+     rSk=PlyMat(k,:);
+     vS_y{1,k}(rSk)=vS_sol{1,k}; % extension to (y,x_N\S).
+     rcpq{k}=belongToCoreQ(v,vS_y{1,k}); % if the core does not exist, it is false.    
  else % default
     vS_sol{1,k}=PreKernel(vS{k}); % solution y restricted to S.
     rSk=PlyMat(k,:);
@@ -173,15 +207,38 @@ elseif strcmp(str,'CORE')
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'PRN')
   try
-    vS_sol{1,N}=clv.cplex_prenucl_mod4();
+    vS_sol{1,N}=clv.msk_prenucl_llp();
   catch
     vS_sol{1,N}=clv.PreNucl();
+  end
+  rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+  vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'LOR')	
+  LD=clv.LorenzSol();
+  lmQ=clv.LorenzMaxCoreQ(LD.Cp);
+  if lmQ 
+     vS_sol{1,N}=LD.Cp;
+     rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+     vS_y{1,N}=vS_sol{1,N};
+  else
+     rcpq{1,N}=false;
+     vS_y{1,N}=vS_sol{1,N};
+  end	  
+elseif strcmp(str,'MODIC')
+  try
+   vS_sol{1,N}=msk_modiclus(v);
+  catch
+   vS_sol{1,N}=Modiclus(v);
   end
   rcpq{N}=abs(vS_sol{1,N}-x)<tol;
   vS_y{1,N}=vS_sol{1,N};
 elseif strcmp(str,'SHAP')
   vS_sol{1,N}=clv.p_ShapleyValue();
   rcpq{N}=abs(vS_sol{1,N}-x)<tol;
+  vS_y{1,N}=vS_sol{1,N};
+elseif strcmp(str,'HMS_CORE')
+  vS_sol{1,N}=clv.LeastCore();
+  rcpq{N}=clv.belongToCoreQ(x);
   vS_y{1,N}=vS_sol{1,N};
 else
   vS_sol{1,N}=clv.p_PreKernel(x);

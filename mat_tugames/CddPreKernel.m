@@ -28,6 +28,7 @@ function [x, Lerr, smat, xarr]=CddPreKernel(v,x)
 %   05/20/2012        0.2 beta        hme
 %   10/25/2012        0.3 beta        hme
 %   05/03/2019        1.1             hme
+%   06/14/2022        1.9.1           hme
 %                
 
 
@@ -270,33 +271,36 @@ for i=1:n
 end
 
 %-------------------------------
-function Seff=SortSets(effij,n,bd,smc);
+function Seff=SortSets(effij,n,bd,smc)
 % Sorting the set of most effective
 % coalitions with respect to their
 % cardinality. Ascent ordering.
 % Smallest coalitions are coming first.
-   Pm=zeros(bd,n);
-   for k=1:n, Pm(:,k) = bitget(effij,k);end
-   ov=ones(n,1);
-   clsize=Pm*ov;
-   if smc==1
+% Those of equal size are order lexicographically.     
+pl=1:n;
+bd=length(effij);
+it=0:-1:1-n;
+indM=rem(floor(effij(:)*pow2(it)),2);
+ov=ones(n,1);
+clsize=indM*ov;
+  if smc==1
      mcl=min(clsize);
-   else
+  else
      mcl=max(clsize);
-   end
-   eqm=find(clsize==mcl);
-   lc=length(eqm);
-   if lc~=bd
+  end
+  eqm=find(clsize==mcl);
+  lc=length(eqm);
+  if lc~=bd
      effij=effij(eqm);
-     Pm=Pm(eqm,:);
-     clsize=clsize(eqm);
-   end
-   pwcl=clsize.^3;
-   J=1:n;
-   J=J(ones(lc,1),:);
-   M=Pm.*J;
-   M=M.^(1/2);
-   clix=M*ov;
-   clnb=clix.*pwcl;
-   [~, ix]=sort(clnb);
-   Seff=effij(ix);
+     indM=indM(eqm,:);
+  end
+expl=pl.*ones(lc,n);
+imat=indM.*expl;
+clm=n-imat;
+clm=2.^clm;
+dln=clm*ov;
+%dln=sum(clm,2)'; %% canonical numbers of coalitions S.
+%% canonical order R lex T iff d(R) > d(T).
+[st,sid]=sort(dln,'descend');
+%% Determining canonical order of coalitions S.
+Seff=effij(sid);

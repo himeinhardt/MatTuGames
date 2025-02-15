@@ -22,6 +22,8 @@ function [x1, fmin]=Anti_Nucl_llp(clv,tol)
 %   ====================================================
 %   02/09/2017        0.9             hme
 %   03/25/2021        1.9             hme
+%   06/22/2023        1.9.1           hme
+%   05/25/2024        1.9.2           hme
 %                
 
 
@@ -65,7 +67,12 @@ ub=[vi,Inf];
 options.Display='off';
 options.Simplex='on';
 options.LargeScale='on';
-options.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    options.Algorithm='dual-simplex-highs';
+else
+    options.Algorithm='dual-simplex';
+end
 options.TolFun=1e-10;
 options.TolX=1e-10;
 options.TolRLPFun=1e-10;
@@ -79,7 +86,11 @@ options.MaxIter=10*(N+n);
 
 bA=find(A1(:,end)==0)';
 while 1
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],options);
+  try
+    [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,opts);
+  catch %% old api (before R2022a) with initial value.
+   [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,[],[],lb,ub,[],opts);
+  end  
   x=xmin;
   x1=x';
   x1(end)=[];

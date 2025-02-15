@@ -37,6 +37,12 @@ tol=-tol;
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
+if N==3
+  x1=clv.StandardSolution();
+  alp=-inf;
+  return
+end
+
 S=1:N;
 A1=zeros(N,n);
 for k=1:n, A1(:,k) = -bitget(S,k);end

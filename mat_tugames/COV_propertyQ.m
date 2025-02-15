@@ -145,7 +145,7 @@ elseif strcmp('PMPRK',str)
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('PRN',str)
    try 
-       sol_v2=cplex_prenucl(v2);
+       sol_v2=msk_prenucl_llp(v2);
    catch
        sol_v2=Prenucl(v2);
    end
@@ -153,7 +153,7 @@ elseif strcmp('PRN',str)
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('APRN',str)
    try
-       sol_v2=cplex_AntiPreNucl(v2);
+       sol_v2=msk_AntiPreNucl(v2);
    catch
        sol_v2=Anti_PreNucl(v2);
    end
@@ -165,7 +165,7 @@ elseif strcmp('SHAP',str)
    covQ=all(abs(sgm-sol_v2)<10^6*eps);
 elseif strcmp('MODIC',str)
    try
-       sol_v2=cplex_modiclus(v2);
+       sol_v2=msk_modiclus(v2);
    catch
        sol_v2=Modiclus(v2);
    end

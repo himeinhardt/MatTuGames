@@ -21,7 +21,8 @@ function sh=p_ShapleyValueM(v);
 %   05/20/2011        0.1 alpha        hme
 %   10/27/2012        0.3              hme
 %                
-
+msg=nargchk(1,1,nargin);
+error(msg);
 
 
 N=length(v);

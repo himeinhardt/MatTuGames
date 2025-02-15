@@ -26,6 +26,7 @@ function [x, Lerr, smat, xarr]=p_cls_kernel(clv,x)
 %   ====================================================
 %   05/28/2013        0.3             hme
 %   05/12/2019        1.1             hme
+%   09/13/2021        1.9.1           hme
 %                
 
 if nargin<2
@@ -172,17 +173,14 @@ while cnt<CNT
     C=[-eye(n);eye(n);E(m,:)];
     c=[-vi;ra;a(m)];
 % Calling solver constrainted ordinary least squares.
-% Comment these two lines out if you do not have Mosek.
-%    opts = optimset;
-%    opts = optimset(opts,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-10,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-9);
-%    opts = optimset(opts,'MSK_IPAR_OPTIMIZER', 1 ,'MSK_IPAR_INTPNT_BASIS','MSK_ON','MSK_DPAR_INTPNT_TOL_DFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_PFEAS',1.0000e-14,'MSK_DPAR_INTPNT_TOL_MU_RED',1.0000e-14,'MSK_DPAR_INTPNT_TOL_REL_GAP',1.0000e-14);
-% uncomment these values if you do not have Mosek.
-    opts = optimset('LargeScale','on','TolFun',2.2204e-12,'TolPCG',0.2);
-% opts=[]; 
-    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,[],opts);
-% exitflag
+% uncomment these values if you do not have optimwarmstart.
+%    opts = optimset('LargeScale','on','TolFun',2.2204e-12,'TolPCG',0.2);
+%    [x,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,[],opts);
+    opts = optimoptions('lsqlin','Algorithm','active-set','Display','off','TolFun',1e-12);
+    ws = optimwarmstart(x,opts);
+    [ws,resnorm,residual,exitflag] = lsqlin(Q,b,[],[],E(m,:),a(m),vi,ra,ws); 
     if exitflag ~= 1 
-       x=x';
+       x=ws.X';
        warning('ker:No','Probably no kernel point found!');
        break;
     elseif abs(resnorm-ofval)<tol
@@ -195,14 +193,14 @@ while cnt<CNT
        else
           krQ=0;
        end
-       x=x';
+       x=ws.X';
        if krQ==0
           warning('Ker:NoC','Probably no kernel point found!');
        end
        break;
     end
     ofval=resnorm;
-
+    x=ws.X;
 % Due to a badly conditioned matrix, we might get an overflow/underflow.
 % In this case, we restart with a new starting point.
     z1=any(isinf(x));

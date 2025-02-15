@@ -12,7 +12,7 @@ function v=p_PermutationGame(asm)
 %  input:
 %
 %  asm      -- A square assignment matrix.
-%              To construct one invoke, for instance,
+%              To construct one, invoke for instance,
 %              asm=magic(5);
 %
 

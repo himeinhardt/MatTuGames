@@ -54,6 +54,7 @@ function [v,x]=linear_production(A,mB,p)
 %   Date              Version         Programmer
 %   ====================================================
 %   03/17/2021        1.9             hme
+%   04/22/2024        1.9.2           hme
 %
 
 
@@ -74,7 +75,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -99,7 +105,11 @@ k=1:n;
 for S=1:N
    % Matrix and boundary vector for coalition S.
    B=adm(:,S)';
-   [xmax, fmax, status, extra] = linprog(C,A,B,[],[],lb,ub,[],opts);
+   try
+      [xmax, fmax, status, extra] = linprog(C,A,B,[],[],lb,ub,opts);
+   catch
+      [xmax, fmax, status, extra] = linprog(C,A,B,[],[],lb,ub,[],opts);
+   end   
    v(S)=-fmax;
    x(S,:)=xmax';
 end

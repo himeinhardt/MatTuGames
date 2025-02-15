@@ -11,7 +11,7 @@ function asd_vl=apu_SolidarityValue(clv,cs)
 %  input:
 %  clv      -- TuGame class object.
 %  cs       -- A coalition structure like [3 4 8]
-%              for {{1,2},{3},{4}}    
+%              for {[1,2],[3],[4]}    
 %
 
 
@@ -23,11 +23,14 @@ function asd_vl=apu_SolidarityValue(clv,cs)
 %   Date              Version         Programmer
 %   ====================================================
 %   07/27/2013        0.4             hme
+%   05/12/2014        0.5             hme
 % 
 v=clv.tuvalues;
 N=clv.tusize;
 n=clv.tuplayers;
 if isa(clv,'TuVal')
+   ptn = clv.tu_ptn;
+elseif isa(clv,'p_TuVal')
    ptn = clv.tu_ptn;
 else
    ptn='';

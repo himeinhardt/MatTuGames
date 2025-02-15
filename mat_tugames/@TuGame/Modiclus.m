@@ -26,6 +26,7 @@ function [x1, fmin]=Modiclus(clv,tol)
 %   Date              Version         Programmer
 %   ====================================================
 %   12/18/2017        0.9             hme
+%   04/22/2024        1.9.2           hme
 %                
 
 
@@ -77,7 +78,12 @@ opts.Display='off';
 opts.Simplex='on';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -91,7 +97,11 @@ it=0:-1:1-n1;
 bA=find(A2(:,end)==0)';
 while 1
   A2=sparse(A2);
-  [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,Aeq,Beq,lb,ub,[],opts);
+  try
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,Aeq,Beq,lb,ub,opts);
+  catch %% old api (before R2022a) with initial value.
+     [xmin,fmin,exitflag,~,lambda]=linprog(C,A2,B1,Aeq,Beq,lb,ub,[],opts);
+  end
   x=xmin';
   x1=x;
   if isempty(x1) == 1

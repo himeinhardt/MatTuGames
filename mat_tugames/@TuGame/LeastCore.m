@@ -28,6 +28,7 @@ function [fmin,x,A1,B1,exitflag]=LeastCore(clv,tol)
 %   09/22/2014        0.5             hme
 %   03/29/2015        0.7             hme
 %   04/21/2019        1.0             hme
+%   05/26/2024        1.9.2           hme
 %                
 
 
@@ -62,7 +63,12 @@ opts.Simplex='on';
 opts.Display='off';
 %opts.ActiveSet='on';
 opts.LargeScale='on';
-opts.Algorithm='dual-simplex';
+mth1=verLessThan('matlab','24.1.0');
+if mth1==0,
+    opts.Algorithm='dual-simplex-highs';
+else
+    opts.Algorithm='dual-simplex';
+end
 opts.TolFun=1e-10;
 opts.TolX=1e-10;
 opts.TolRLPFun=1e-10;
@@ -72,6 +78,10 @@ opts.Preprocess='none';
 opts.TolCon=1e-6;
 opts.MaxIter=10*(N+n);
 
-[xmin,fmin,exitflag,output,lambda]=linprog(C,A2,B1,[],[],[],ub,[],opts);
+try
+     [xmin,fmin,exitflag,output,lambda]=linprog(C,A2,B1,[],[],[],ub,opts);
+catch
+     [xmin,fmin,exitflag,output,lambda]=linprog(C,A2,B1,[],[],[],ub,[],opts);
+end
 x=xmin';
 x(end)=[];

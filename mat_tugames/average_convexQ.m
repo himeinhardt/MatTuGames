@@ -25,7 +25,7 @@ function [acvQ Smarg sumMg]=average_convexQ(v,tol)
 %   08/13/2010        0.1 beta        hme
 %   06/27/2012        0.2 beta        hme
 %   10/27/2012        0.3             hme
-%   08/02/2018        1,0             hme
+%   08/02/2018        1.0             hme
 %                
 
 
